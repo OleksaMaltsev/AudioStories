@@ -1,3 +1,5 @@
+import 'package:audio_stories/constants/colors.dart';
+import 'package:audio_stories/screens/login/sign_up.dart';
 import 'package:audio_stories/screens/login/widgets/background_purple_widget.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/buttons/orange_button.dart';
@@ -29,7 +31,9 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                     Text(
                       'Твой голос всегда рядом',
-                      style: mainTheme.textTheme.labelSmall,
+                      style: mainTheme.textTheme.labelSmall?.copyWith(
+                        color: ColorsApp.colorWhite,
+                      ),
                     ),
                   ],
                 ),
@@ -48,9 +52,14 @@ class WelcomeScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 50),
-                      const OrangeButton(
-                        text: 'Продолжить',
-                      ),
+                      OrangeButton(
+                          text: 'Продолжить',
+                          function: () {
+                            Navigator.pushNamed(
+                              context,
+                              SignUpScreen.routeName,
+                            );
+                          }),
                     ],
                   ),
                 ),

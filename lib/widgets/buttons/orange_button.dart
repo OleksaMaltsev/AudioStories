@@ -4,15 +4,17 @@ import 'package:flutter/material.dart';
 
 class OrangeButton extends StatelessWidget {
   final String text;
+  final Function() function;
   const OrangeButton({
     super.key,
     required this.text,
+    required this.function,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: function,
       child: Container(
         height: 59,
         decoration: BoxDecoration(

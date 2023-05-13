@@ -1,3 +1,4 @@
+import 'package:audio_stories/screens/login/sign_up.dart';
 import 'package:audio_stories/screens/login/welcome.dart';
 import 'package:audio_stories/screens/splash/splash.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,9 @@ class AppRouter {
         break;
       case WelcomeScreen.routeName:
         builder = (_) => const WelcomeScreen();
+        break;
+      case SignUpScreen.routeName:
+        builder = (_) => const SignUpScreen();
         break;
 
       default:

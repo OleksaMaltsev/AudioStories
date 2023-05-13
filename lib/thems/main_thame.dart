@@ -2,14 +2,10 @@ import 'package:audio_stories/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 final mainTheme = ThemeData(
-  buttonTheme: const ButtonThemeData(
-    height: 59,
-    minWidth: 309,
-    buttonColor: ColorsApp.colorButtonOrange,
-  ),
   textTheme: const TextTheme(
     titleLarge: TextStyle(
       fontFamily: 'TT Norms',
+      letterSpacing: 2,
       fontSize: 50,
       fontWeight: FontWeight.w700,
       color: ColorsApp.colorWhite,
@@ -30,7 +26,7 @@ final mainTheme = ThemeData(
       fontFamily: 'TT Norms',
       fontSize: 14,
       fontWeight: FontWeight.w400,
-      color: ColorsApp.colorWhite,
+      color: ColorsApp.colorLightDark,
     ),
   ),
 );
