@@ -1,4 +1,6 @@
 import 'package:audio_stories/screens/login/sign_up.dart';
+import 'package:audio_stories/screens/login/sign_up_sms.dart';
+import 'package:audio_stories/screens/login/sign_up_thanks.dart';
 import 'package:audio_stories/screens/login/welcome.dart';
 import 'package:audio_stories/screens/splash/splash.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,12 @@ class AppRouter {
       case SignUpScreen.routeName:
         builder = (_) => const SignUpScreen();
         break;
-
+      case SignUpSmsScreen.routeName:
+        builder = (_) => const SignUpSmsScreen();
+        break;
+      case SignUpThanksScreen.routeName:
+        builder = (_) => const SignUpThanksScreen();
+        break;
       default:
         throw Exception('Invalid route: ${settings.name}');
     }

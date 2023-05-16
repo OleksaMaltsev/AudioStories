@@ -30,7 +30,7 @@ class WelcomeScreen extends StatelessWidget {
                           ?.copyWith(fontSize: 48),
                     ),
                     Text(
-                      'Твой голос всегда рядом',
+                      'Твій голос завжди поруч',
                       style: mainTheme.textTheme.labelSmall?.copyWith(
                         color: ColorsApp.colorWhite,
                       ),
@@ -42,18 +42,18 @@ class WelcomeScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        'Привет!',
+                        'Вітаю!',
                         style: mainTheme.textTheme.labelLarge,
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        'Мы рады видеть тебя здесь. \nЭто приложение поможет записывать сказки и держать их в удобном месте не заполняя память на телефоне',
+                        'Ми раді бачити тебе тут. \nЦей додаток допоможе записувати казки та тримати їх у зручному місці, не заповнюючи пам\'ять на телефоні',
                         style: mainTheme.textTheme.labelMedium,
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 50),
                       OrangeButton(
-                          text: 'Продолжить',
+                          text: 'Продовжити',
                           function: () {
                             Navigator.pushNamed(
                               context,

@@ -1,5 +1,5 @@
 import 'package:audio_stories/constants/colors.dart';
-import 'package:audio_stories/screens/login/sign_up_sms.dart';
+import 'package:audio_stories/screens/login/sign_up_thanks.dart';
 import 'package:audio_stories/screens/login/widgets/background_purple_widget.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/buttons/orange_button.dart';
@@ -8,17 +8,18 @@ import 'package:flutter/services.dart';
 
 import 'widgets/description_sing_up_widget.dart';
 import 'widgets/phone_input_formatter_widget.dart';
+import 'widgets/sms_input_formatter_widget.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class SignUpSmsScreen extends StatefulWidget {
+  const SignUpSmsScreen({super.key});
 
-  static const String routeName = '/sign_up';
+  static const String routeName = '/sign_up_sms';
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignUpSmsScreen> createState() => _SignUpSmsScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignUpSmsScreenState extends State<SignUpSmsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,8 +42,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: Column(
                       children: [
                         Text(
-                          'Введи номер телефона',
+                          'Введи код із смс, щоб ми тебе запам\'ятали',
                           style: mainTheme.textTheme.labelMedium,
+                          textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 24),
                         Container(
@@ -60,10 +62,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ],
                           ),
                           child: TextFormField(
-                            initialValue: '+38 ',
                             keyboardType: TextInputType.number,
                             textAlign: TextAlign.center,
-                            inputFormatters: [PhoneInputFormatter()],
+                            inputFormatters: [SmsInputFormatter()],
                             decoration: const InputDecoration(
                               contentPadding:
                                   EdgeInsets.fromLTRB(15, 15, 15, 5),
@@ -80,19 +81,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           function: () {
                             Navigator.pushNamed(
                               context,
-                              SignUpSmsScreen.routeName,
+                              SignUpThanksScreen.routeName,
                             );
                           },
                         ),
-                        const SizedBox(height: 20),
-                        InkWell(
-                          onTap: () {},
-                          child: Text(
-                            'Пропустити',
-                            style: mainTheme.textTheme.labelLarge,
-                          ),
-                        ),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 60),
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
