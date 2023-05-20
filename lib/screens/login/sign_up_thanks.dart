@@ -1,7 +1,8 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/login/sign_up_sms.dart';
-import 'package:audio_stories/screens/login/widgets/background_purple_widget.dart';
+import 'package:audio_stories/screens/main_screen.dart';
 import 'package:audio_stories/thems/main_thame.dart';
+import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:audio_stories/widgets/buttons/orange_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,20 @@ class SignUpThanksScreen extends StatefulWidget {
 }
 
 class _SignUpThanksScreenState extends State<SignUpThanksScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _navigationToMain();
+  }
+
+  Future _navigationToMain() async {
+    await Future.delayed(
+      const Duration(milliseconds: 2000),
+    );
+    Navigator.pushNamedAndRemoveUntil(
+        context, MainScreen.routeName, (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,7 +1,7 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/login/sign_up_sms.dart';
-import 'package:audio_stories/screens/login/widgets/background_purple_widget.dart';
 import 'package:audio_stories/thems/main_thame.dart';
+import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:audio_stories/widgets/buttons/orange_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
