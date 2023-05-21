@@ -1,12 +1,22 @@
+import 'dart:io';
+
 import 'package:audio_stories/constants/colors.dart';
+import 'package:audio_stories/screens/audio/player.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
+
 import 'package:audioplayers/audioplayers.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+String abo = '';
+late Directory tempDir;
+String path = '${tempDir.path}/flutter_sound';
 
 class RecordScreen extends StatefulWidget {
   const RecordScreen({super.key});
@@ -18,6 +28,7 @@ class RecordScreen extends StatefulWidget {
 
 class _RecordScreenState extends State<RecordScreen> {
   final recorder = FlutterSoundRecorder();
+  bool isRecorderReady = false;
 
   @override
   void initState() {
@@ -35,25 +46,42 @@ class _RecordScreenState extends State<RecordScreen> {
   }
 
   Future initRecorder() async {
+    tempDir = await getTemporaryDirectory();
     final status = await Permission.microphone.request();
-    status;
     if (status != PermissionStatus.granted) {
       throw 'Microphone permission not granted';
     }
+    await Permission.storage.request();
+    await Permission.manageExternalStorage.request();
 
     await recorder.openRecorder();
-    setState(() {});
+    isRecorderReady = true;
     recorder.setSubscriptionDuration(
-      const Duration(microseconds: 100),
+      const Duration(milliseconds: 500),
     );
   }
 
   Future record() async {
-    await recorder.startRecorder(toFile: 'audio');
+    if (!isRecorderReady) return;
+
+    await recorder.startRecorder(toFile: path);
   }
 
   Future stop() async {
-    await recorder.stopRecorder();
+    if (!isRecorderReady) return;
+    //await recorder.stopRecorder();
+    final path = await recorder.stopRecorder();
+    final audioFile = File(path!);
+
+    abo = path;
+
+//final audioFile = File('assets/tracks/${path!}');
+    print('Recorder audio $audioFile');
+
+    Navigator.pushNamed(
+      context,
+      PlayerScreen.routeName,
+    );
   }
 
   // player
@@ -129,6 +157,7 @@ class _RecordScreenState extends State<RecordScreen> {
                       'Аудіозапис №1',
                       style: mainTheme.textTheme.labelLarge,
                     ),
+
                     StreamBuilder<RecordingDisposition>(
                       stream: recorder.onProgress,
                       builder: (context, snapshot) {
@@ -142,6 +171,7 @@ class _RecordScreenState extends State<RecordScreen> {
                         final seconds =
                             twoDigits(duration.inSeconds.remainder(60));
 
+                        // return Text('${duration.inMilliseconds} s');
                         return Text('$minutes:$seconds');
                         // return Text([
                         //   if (duration.inHours > 0) hours,
@@ -150,6 +180,7 @@ class _RecordScreenState extends State<RecordScreen> {
                         // ].join(':'));
                       },
                     ),
+                    const SizedBox(height: 30),
                     // Slider(
                     //     min: 0,
                     //     max: duration.inSeconds.toDouble(),

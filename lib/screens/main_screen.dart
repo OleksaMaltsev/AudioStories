@@ -1,5 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/audio/record.dart';
+import 'package:audio_stories/screens/profile/profile.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:flutter/material.dart';
@@ -235,6 +236,26 @@ class _MainScreenState extends State<MainScreen> {
                     RecordScreen.routeName,
                   );
                 });
+              }
+              switch (value) {
+                case 2:
+                  setState(() {
+                    Navigator.pushNamed(
+                      context,
+                      RecordScreen.routeName,
+                    );
+                  });
+                  break;
+                case 4:
+                  setState(() {
+                    Navigator.pushNamed(
+                      context,
+                      ProfileScreen.routeName,
+                    );
+                  });
+                  break;
+                default:
+                  break;
               }
             },
             items: [

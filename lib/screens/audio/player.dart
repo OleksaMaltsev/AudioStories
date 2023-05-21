@@ -1,4 +1,5 @@
 import 'package:audio_stories/constants/colors.dart';
+import 'package:audio_stories/screens/audio/record.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -8,7 +9,7 @@ import 'package:http/http.dart' as http;
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key});
-  static const String routeName = '/record';
+  static const String routeName = '/player';
 
   @override
   State<PlayerScreen> createState() => _PlayerScreenState();
@@ -23,6 +24,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   void initState() {
     super.initState();
+
+    // setAudio();
 
     audioPlayer.onPlayerStateChanged.listen((state) {
       setState(() {
@@ -41,6 +44,19 @@ class _PlayerScreenState extends State<PlayerScreen> {
         position = newPosition;
       });
     });
+  }
+
+  // Future setAudio() async {
+  //   audioPlayer.setReleaseMode(ReleaseMode.loop);
+  //   // String url = '';
+  //   // audioPlayer.setSourceUrl(url);
+  //   final file = abo;
+  // }
+
+  @override
+  void dispose() {
+    audioPlayer.dispose();
+    super.dispose();
   }
 
   String formatTime(Duration duration) {
@@ -139,7 +155,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           } else {
                             String apiEndpoint =
                                 'https://archive.org/download/IGM-V7/IGM%20-%20Vol.%207/25%20Diablo%20-%20Tristram%20%28Blizzard%29.mp3';
-                            await audioPlayer.play(UrlSource(apiEndpoint));
+                            await audioPlayer.play(DeviceFileSource(path));
                           }
                           setState(() {});
                         },
