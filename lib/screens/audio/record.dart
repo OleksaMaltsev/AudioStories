@@ -16,7 +16,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 String abo = '';
 late Directory tempDir;
-String path = '${tempDir.path}/flutter_sound';
+String? path;
 
 class RecordScreen extends StatefulWidget {
   const RecordScreen({super.key});
@@ -39,9 +39,7 @@ class _RecordScreenState extends State<RecordScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     recorder.closeRecorder();
-
     super.dispose();
   }
 
@@ -52,30 +50,27 @@ class _RecordScreenState extends State<RecordScreen> {
       throw 'Microphone permission not granted';
     }
     await Permission.storage.request();
-    await Permission.manageExternalStorage.request();
 
     await recorder.openRecorder();
     isRecorderReady = true;
     recorder.setSubscriptionDuration(
       const Duration(milliseconds: 500),
     );
+    record();
+    setState(() {});
   }
 
   Future record() async {
     if (!isRecorderReady) return;
 
-    await recorder.startRecorder(toFile: path);
+    await recorder.startRecorder(toFile: 'audio.mp4');
   }
 
   Future stop() async {
     if (!isRecorderReady) return;
-    //await recorder.stopRecorder();
-    final path = await recorder.stopRecorder();
+    path = await recorder.stopRecorder() ?? '';
     final audioFile = File(path!);
 
-    abo = path;
-
-//final audioFile = File('assets/tracks/${path!}');
     print('Recorder audio $audioFile');
 
     Navigator.pushNamed(
@@ -118,7 +113,7 @@ class _RecordScreenState extends State<RecordScreen> {
               flex: 5,
               child: Container(
                 margin: const EdgeInsets.fromLTRB(5, 30, 5, 0),
-                padding: const EdgeInsets.fromLTRB(17, 24, 17, 0),
+                padding: const EdgeInsets.fromLTRB(17, 0, 17, 120),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15),
@@ -135,13 +130,14 @@ class _RecordScreenState extends State<RecordScreen> {
                   ],
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         InkWell(
                           onTap: () {
-                            setState(() {});
+                            Navigator.pop(context);
                           },
                           child: Text('Відмінити'),
                         ),
@@ -153,10 +149,6 @@ class _RecordScreenState extends State<RecordScreen> {
                       'Запис',
                       style: mainTheme.textTheme.labelLarge,
                     ),
-                    Text(
-                      'Аудіозапис №1',
-                      style: mainTheme.textTheme.labelLarge,
-                    ),
 
                     StreamBuilder<RecordingDisposition>(
                       stream: recorder.onProgress,
@@ -164,20 +156,28 @@ class _RecordScreenState extends State<RecordScreen> {
                         final duration = snapshot.hasData
                             ? snapshot.data!.duration
                             : Duration.zero;
-
+                        print(duration);
                         String twoDigits(int n) => n.toString().padLeft(2, '0');
+                        final hours = twoDigits(duration.inHours.remainder(60));
                         final minutes =
                             twoDigits(duration.inMinutes.remainder(60));
                         final seconds =
                             twoDigits(duration.inSeconds.remainder(60));
 
-                        // return Text('${duration.inMilliseconds} s');
-                        return Text('$minutes:$seconds');
-                        // return Text([
-                        //   if (duration.inHours > 0) hours,
-                        //   minutes,
-                        //   seconds,
-                        // ].join(':'));
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 10,
+                              width: 10,
+                              decoration: BoxDecoration(
+                                color: ColorsApp.colorLightRed,
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            Text(' $hours:$minutes:$seconds'),
+                          ],
+                        );
                       },
                     ),
                     const SizedBox(height: 30),
@@ -200,22 +200,24 @@ class _RecordScreenState extends State<RecordScreen> {
                     // ),
                     CircleAvatar(
                       radius: 35,
+                      backgroundColor: ColorsApp.colorButtonOrange,
                       child: IconButton(
                         icon: Icon(
                           recorder.isRecording ? Icons.pause : Icons.mic,
                         ),
                         iconSize: 50,
+                        color: ColorsApp.colorOriginalWhite,
                         onPressed: () async {
                           if (recorder.isRecording) {
                             await stop();
-                          } else {
-                            await record();
                           }
+                          // else {
+                          //   await record();
+                          // }
                           setState(() {});
                         },
                       ),
                     ),
-                    // const SizedBox(height: 80),
                   ],
                 ),
               ),

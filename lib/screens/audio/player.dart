@@ -6,6 +6,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key});
@@ -24,7 +25,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   void initState() {
     super.initState();
-
+    audioPlayer.setReleaseMode(ReleaseMode.loop);
     // setAudio();
 
     audioPlayer.onPlayerStateChanged.listen((state) {
@@ -56,6 +57,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   void dispose() {
     audioPlayer.dispose();
+    audioPlayer.stop();
     super.dispose();
   }
 
@@ -109,9 +111,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         InkWell(
-                          onTap: () {
-                            setState(() {});
-                          },
+                          onTap: () {},
                           child: Text('Відмінити'),
                         ),
                       ],
@@ -155,7 +155,14 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           } else {
                             String apiEndpoint =
                                 'https://archive.org/download/IGM-V7/IGM%20-%20Vol.%207/25%20Diablo%20-%20Tristram%20%28Blizzard%29.mp3';
-                            await audioPlayer.play(DeviceFileSource(path));
+                            await audioPlayer.play(
+                              DeviceFileSource(
+                                path ?? '',
+                              ),
+                            );
+                            // await audioPlayer.play(UrlSource(
+                            //     '/data/user/0/com.example.memory_box/cache/audio.mp4'));
+                            print(await audioPlayer.getDuration().toString());
                           }
                           setState(() {});
                         },
