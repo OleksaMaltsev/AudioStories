@@ -5,6 +5,7 @@ abstract class ColorsApp {
   static const colorOriginalWhite = Color(0xFFFFFFFF);
   static const colorPurple = Color(0xFF8C84E2);
   static const colorLightDark = Color(0xFF3A3A55);
+  static const colorOriginalBlack = Color(0xFF000000);
   static const colorLightOpacityDark = Color.fromARGB(125, 58, 58, 85);
   static const colorButtonOrange = Color(0xFFF1B488);
   static const colorLightGreen = Color(0xFF71A59F);

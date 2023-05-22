@@ -4,6 +4,7 @@ import 'package:audio_stories/screens/audio/record.dart';
 import 'package:audio_stories/screens/profile/profile.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
+import 'package:audio_stories/widgets/bottom_nav_bar/bottom_nav_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -214,87 +215,8 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
             ),
-            bottomNavigationBar: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  topRight: Radius.circular(15),
-                ),
-                color: ColorsApp.colorWhite,
-                boxShadow: [
-                  BoxShadow(
-                    color: Color.fromARGB(25, 0, 0, 0),
-                    spreadRadius: 5,
-                    blurRadius: 15,
-                    offset: Offset(7, 0),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(15),
-                  topRight: Radius.circular(15),
-                ),
-                child: BottomNavigationBar(
-                  currentIndex: 0,
-                  type: BottomNavigationBarType.fixed,
-                  selectedItemColor: ColorsApp.colorPurple,
-                  selectedLabelStyle: mainTheme.textTheme.labelSmall?.copyWith(
-                    fontSize: 10,
-                  ),
-                  unselectedLabelStyle:
-                      mainTheme.textTheme.labelSmall?.copyWith(
-                    fontSize: 10,
-                  ),
-                  onTap: (value) {
-                    switch (value) {
-                      case 2:
-                        setState(() {
-                          Navigator.pushNamed(
-                            context,
-                            RecordScreen.routeName,
-                          );
-                        });
-                        break;
-                      case 4:
-                        setState(() {
-                          Navigator.pushNamed(
-                            context,
-                            ProfileScreen.routeName,
-                          );
-                        });
-                        break;
-                      default:
-                        break;
-                    }
-                  },
-                  items: [
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home_filled),
-                      label: 'Головна',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.apps),
-                      label: 'Добірки',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: SvgPicture.asset(
-                        'assets/svg/record.svg',
-                        width: 40,
-                      ),
-                      label: 'Запис',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.receipt_rounded),
-                      label: 'Аудіоказки',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.person_outlined),
-                      label: 'Профіль',
-                    ),
-                  ],
-                ),
-              ),
+            bottomNavigationBar: const BottomNavBarWidget(
+              recordItem: false,
             ),
             extendBody: true,
           );

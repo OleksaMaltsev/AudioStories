@@ -10,6 +10,13 @@ final mainTheme = ThemeData(
       fontWeight: FontWeight.w700,
       color: ColorsApp.colorWhite,
     ),
+    titleMedium: TextStyle(
+      fontFamily: 'TT Norms',
+      letterSpacing: 2,
+      fontSize: 36,
+      fontWeight: FontWeight.w700,
+      color: ColorsApp.colorWhite,
+    ),
     labelLarge: TextStyle(
       fontFamily: 'TT Norms',
       fontSize: 24,

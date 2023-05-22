@@ -2,6 +2,7 @@ import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/audio/record.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
+import 'package:audio_stories/widgets/bottom_nav_bar/bottom_nav_bar_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -89,7 +90,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
               flex: 5,
               child: Container(
                 margin: const EdgeInsets.fromLTRB(5, 30, 5, 0),
-                padding: const EdgeInsets.fromLTRB(17, 24, 17, 0),
+                padding: const EdgeInsets.fromLTRB(17, 10, 17, 120),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15),
@@ -106,23 +107,35 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   ],
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        SvgPicture.asset(
+                          'assets/svg/Upload.svg',
+                          height: 30,
+                        ),
+                        const SizedBox(width: 30),
+                        SvgPicture.asset(
+                          'assets/svg/PaperDownload.svg',
+                          height: 30,
+                        ),
+                        const SizedBox(width: 30),
+                        SvgPicture.asset(
+                          'assets/svg/Delete.svg',
+                          height: 30,
+                        ),
+                        const Spacer(),
                         InkWell(
                           onTap: () {},
-                          child: Text('Відмінити'),
+                          child: Text('Зберегти'),
                         ),
                       ],
                     ),
                     const SizedBox(height: 50),
                     Text(
-                      'Запис',
-                      style: mainTheme.textTheme.labelLarge,
-                    ),
-                    Text(
-                      'Аудіозапис №1',
+                      'Аудіозапис 1',
                       style: mainTheme.textTheme.labelLarge,
                     ),
                     Slider(
@@ -142,33 +155,54 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         Text(formatTime(duration)),
                       ],
                     ),
-                    CircleAvatar(
-                      radius: 35,
-                      child: IconButton(
-                        icon: Icon(
-                          isPlaying ? Icons.pause : Icons.play_arrow,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        InkWell(
+                          onTap: () {},
+                          child: SvgPicture.asset(
+                            'assets/svg/secLeft.svg',
+                            height: 38,
+                          ),
                         ),
-                        iconSize: 50,
-                        onPressed: () async {
-                          if (isPlaying) {
-                            await audioPlayer.pause();
-                          } else {
-                            String apiEndpoint =
-                                'https://archive.org/download/IGM-V7/IGM%20-%20Vol.%207/25%20Diablo%20-%20Tristram%20%28Blizzard%29.mp3';
-                            await audioPlayer.play(
-                              DeviceFileSource(
-                                path ?? '',
-                              ),
-                            );
-                            // await audioPlayer.play(UrlSource(
-                            //     '/data/user/0/com.example.memory_box/cache/audio.mp4'));
-                            print(await audioPlayer.getDuration().toString());
-                          }
-                          setState(() {});
-                        },
-                      ),
+                        CircleAvatar(
+                          radius: 35,
+                          backgroundColor: ColorsApp.colorButtonOrange,
+                          child: IconButton(
+                            icon: Icon(
+                              isPlaying ? Icons.pause : Icons.play_arrow,
+                            ),
+                            iconSize: 50,
+                            color: ColorsApp.colorOriginalWhite,
+                            onPressed: () async {
+                              if (isPlaying) {
+                                await audioPlayer.pause();
+                              } else {
+                                String apiEndpoint =
+                                    'https://archive.org/download/IGM-V7/IGM%20-%20Vol.%207/25%20Diablo%20-%20Tristram%20%28Blizzard%29.mp3';
+                                await audioPlayer.play(
+                                  DeviceFileSource(
+                                    path ?? '',
+                                  ),
+                                );
+                                // await audioPlayer.play(UrlSource(
+                                //     '/data/user/0/com.example.memory_box/cache/audio.mp4'));
+                                print(
+                                    await audioPlayer.getDuration().toString());
+                              }
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          child: SvgPicture.asset(
+                            'assets/svg/secRight.svg',
+                            height: 38,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 80),
                   ],
                 ),
               ),
@@ -176,69 +210,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
-          ),
-          color: ColorsApp.colorWhite,
-          boxShadow: [
-            BoxShadow(
-              color: Color.fromARGB(25, 0, 0, 0),
-              spreadRadius: 5,
-              blurRadius: 15,
-              offset: Offset(7, 0),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
-          ),
-          child: BottomNavigationBar(
-            currentIndex: 0,
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: ColorsApp.colorPurple,
-            selectedLabelStyle: mainTheme.textTheme.labelSmall?.copyWith(
-              fontSize: 10,
-            ),
-            unselectedLabelStyle: mainTheme.textTheme.labelSmall?.copyWith(
-              fontSize: 10,
-            ),
-            onTap: (value) {
-              if (value == 2) {
-                setState(() {});
-              }
-            },
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home_filled),
-                label: 'Головна',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.apps),
-                label: 'Добірки',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  'assets/svg/record.svg',
-                  width: 40,
-                ),
-                label: 'Запис',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.receipt_rounded),
-                label: 'Аудіоказки',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person_outlined),
-                label: 'Профіль',
-              ),
-            ],
-          ),
-        ),
+      bottomNavigationBar: const BottomNavBarWidget(
+        recordItem: true,
       ),
       extendBody: true,
     );

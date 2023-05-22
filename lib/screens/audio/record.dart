@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/audio/player.dart';
+import 'package:audio_stories/widgets/bottom_nav_bar/bottom_nav_bar_widget.dart';
+import 'package:audio_stories/widgets/bottom_nav_bar/menu_bar_items.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 
@@ -35,6 +37,7 @@ class _RecordScreenState extends State<RecordScreen> {
     super.initState();
 
     initRecorder();
+    setState(() {});
   }
 
   @override
@@ -113,7 +116,7 @@ class _RecordScreenState extends State<RecordScreen> {
               flex: 5,
               child: Container(
                 margin: const EdgeInsets.fromLTRB(5, 30, 5, 0),
-                padding: const EdgeInsets.fromLTRB(17, 0, 17, 120),
+                padding: const EdgeInsets.fromLTRB(17, 10, 17, 120),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15),
@@ -139,7 +142,7 @@ class _RecordScreenState extends State<RecordScreen> {
                           onTap: () {
                             Navigator.pop(context);
                           },
-                          child: Text('Відмінити'),
+                          child: const Text('Відмінити'),
                         ),
                       ],
                     ),
@@ -203,7 +206,8 @@ class _RecordScreenState extends State<RecordScreen> {
                       backgroundColor: ColorsApp.colorButtonOrange,
                       child: IconButton(
                         icon: Icon(
-                          recorder.isRecording ? Icons.pause : Icons.mic,
+                          //recorder.isRecording ? Icons.pause : Icons.mic,
+                          isRecorderReady ? Icons.pause : Icons.mic,
                         ),
                         iconSize: 50,
                         color: ColorsApp.colorOriginalWhite,
@@ -225,69 +229,8 @@ class _RecordScreenState extends State<RecordScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
-          ),
-          color: ColorsApp.colorWhite,
-          boxShadow: [
-            BoxShadow(
-              color: Color.fromARGB(25, 0, 0, 0),
-              spreadRadius: 5,
-              blurRadius: 15,
-              offset: Offset(7, 0),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(15),
-            topRight: Radius.circular(15),
-          ),
-          child: BottomNavigationBar(
-            currentIndex: 0,
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: ColorsApp.colorPurple,
-            selectedLabelStyle: mainTheme.textTheme.labelSmall?.copyWith(
-              fontSize: 10,
-            ),
-            unselectedLabelStyle: mainTheme.textTheme.labelSmall?.copyWith(
-              fontSize: 10,
-            ),
-            onTap: (value) {
-              if (value == 2) {
-                setState(() {});
-              }
-            },
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home_filled),
-                label: 'Головна',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.apps),
-                label: 'Добірки',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  'assets/svg/record.svg',
-                  width: 40,
-                ),
-                label: 'Запис',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.receipt_rounded),
-                label: 'Аудіоказки',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person_outlined),
-                label: 'Профіль',
-              ),
-            ],
-          ),
-        ),
+      bottomNavigationBar: const BottomNavBarWidget(
+        recordItem: true,
       ),
       extendBody: true,
     );
