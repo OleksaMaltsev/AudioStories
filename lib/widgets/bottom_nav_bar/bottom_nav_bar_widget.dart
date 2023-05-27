@@ -1,4 +1,5 @@
 import 'package:audio_stories/constants/colors.dart';
+import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/screens/audio/record.dart';
 import 'package:audio_stories/screens/main_screen.dart';
 import 'package:audio_stories/screens/profile/profile.dart';
@@ -76,8 +77,11 @@ class BottomNavBarWidget extends StatelessWidget {
             }
           },
           items: [
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.home_filled),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset(
+                AppIcons.home,
+              ),
+              //icon: Icon(Icons.home_filled),
               label: 'Головна',
             ),
             const BottomNavigationBarItem(

@@ -1,9 +1,13 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/login/widgets/phone_input_formatter_widget.dart';
+import 'package:audio_stories/screens/main_screen.dart';
+import 'package:audio_stories/screens/profile/subscription.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:audio_stories/widgets/bottom_nav_bar/bottom_nav_bar_widget.dart';
+import 'package:audio_stories/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -21,45 +25,9 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Builder(
-                      builder: (context) => IconButton(
-                        onPressed: () => Scaffold.of(context).openDrawer(),
-                        icon: const Icon(
-                          Icons.menu_rounded,
-                          color: ColorsApp.colorWhite,
-                          size: 35,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Column(
-                      children: [
-                        Text(
-                          'Профіль',
-                          style: mainTheme.textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          'Твоя частинка',
-                          style: mainTheme.textTheme.labelMedium?.copyWith(
-                            color: ColorsApp.colorWhite,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Container(),
-                  ),
-                ],
+              const CustomAppBar(
+                title: 'Профіль',
+                subTitle: 'Твоя частинка',
               ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
@@ -105,7 +73,12 @@ class ProfileScreen extends StatelessWidget {
                     Text('Редагувати', style: mainTheme.textTheme.labelSmall),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    SubscriptionScreen.routeName,
+                  );
+                },
                 child: Text(
                   'Підписка',
                   style: mainTheme.textTheme.labelSmall
@@ -166,8 +139,62 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
-      drawer: Drawer(),
+      drawer: const CustomDrawer(),
       bottomNavigationBar: const BottomNavBarWidget(recordItem: false),
+    );
+  }
+}
+
+class CustomAppBar extends StatelessWidget {
+  final String title;
+  final String subTitle;
+  const CustomAppBar({
+    required this.title,
+    required this.subTitle,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 1,
+          child: Builder(
+            builder: (context) => IconButton(
+              onPressed: () => Scaffold.of(context).openDrawer(),
+              icon: const Icon(
+                Icons.menu_rounded,
+                color: ColorsApp.colorWhite,
+                size: 35,
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 3,
+          child: Column(
+            children: [
+              Text(
+                title,
+                style: mainTheme.textTheme.titleMedium,
+              ),
+              const SizedBox(height: 2),
+              Text(
+                subTitle,
+                style: mainTheme.textTheme.labelMedium?.copyWith(
+                  color: ColorsApp.colorWhite,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Container(),
+        ),
+      ],
     );
   }
 }
