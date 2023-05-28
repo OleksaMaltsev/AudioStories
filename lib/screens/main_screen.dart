@@ -215,9 +215,7 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
             ),
-            bottomNavigationBar: const BottomNavBarWidget(
-              recordItem: false,
-            ),
+            bottomNavigationBar: const BottomNavBarWidget(),
             extendBody: true,
           );
         },

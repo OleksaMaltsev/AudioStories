@@ -229,9 +229,7 @@ class _RecordScreenState extends State<RecordScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const BottomNavBarWidget(
-        recordItem: true,
-      ),
+      bottomNavigationBar: const BottomNavBarWidget(),
       extendBody: true,
     );
   }

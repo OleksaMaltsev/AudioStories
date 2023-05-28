@@ -140,7 +140,7 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
       drawer: const CustomDrawer(),
-      bottomNavigationBar: const BottomNavBarWidget(recordItem: false),
+      bottomNavigationBar: const BottomNavBarWidget(),
     );
   }
 }

@@ -10,4 +10,7 @@ class AppIcons {
   static const String search = '$path/Search.svg';
   static const String wallet = '$path/Wallet.svg';
   static const String tickSquare = '$path/TickSquare.svg';
+  static const String cilCloudUpload = '$path/cil_cloud-upload.svg';
+  static const String cilInfinity = '$path/cil_infinity.svg';
+  static const String paperDownload = '$path/PaperDownload.svg';
 }
