@@ -2,6 +2,7 @@ import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/screens/audio/player.dart';
 import 'package:audio_stories/screens/audio/record.dart';
+import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
 import 'package:audio_stories/screens/main_screen.dart';
 import 'package:audio_stories/screens/profile/profile.dart';
 import 'package:audio_stories/thems/main_thame.dart';
@@ -51,7 +52,7 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
         child: BottomNavigationBar(
           currentIndex: _selectIndex,
           type: BottomNavigationBarType.fixed,
-          //selectedItemColor: ColorsApp.colorPurple,
+          selectedItemColor: ColorsApp.colorPurple,
           selectedLabelStyle: mainTheme.textTheme.labelSmall?.copyWith(
             fontSize: 10,
           ),
@@ -62,12 +63,18 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
                 AppIcons.home,
+                color: _selectIndex == 0
+                    ? ColorsApp.colorPurple
+                    : ColorsApp.colorLightDark,
               ),
               label: 'Головна',
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
                 AppIcons.category,
+                color: _selectIndex == 1
+                    ? ColorsApp.colorPurple
+                    : ColorsApp.colorLightDark,
               ),
               label: 'Добірки',
             ),
@@ -79,12 +86,18 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
                 AppIcons.paper,
+                color: _selectIndex == 3
+                    ? ColorsApp.colorPurple
+                    : ColorsApp.colorLightDark,
               ),
               label: 'Аудіоказки',
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
                 AppIcons.profile,
+                color: _selectIndex == 4
+                    ? ColorsApp.colorPurple
+                    : ColorsApp.colorLightDark,
               ),
               label: 'Профіль',
             ),
@@ -106,12 +119,18 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
                   RecordScreen.routeName,
                 );
                 break;
+              case 3:
+                Navigator.pushNamed(
+                  context,
+                  AudioStoriesScreen.routeName,
+                );
+                break;
               case 4:
                 Navigator.pushNamed(
                   context,
                   ProfileScreen.routeName,
                 );
-                setState(() {});
+
                 break;
               default:
                 break;

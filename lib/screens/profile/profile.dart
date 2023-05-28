@@ -3,6 +3,7 @@ import 'package:audio_stories/screens/login/widgets/phone_input_formatter_widget
 import 'package:audio_stories/screens/main_screen.dart';
 import 'package:audio_stories/screens/profile/subscription.dart';
 import 'package:audio_stories/thems/main_thame.dart';
+import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:audio_stories/widgets/bottom_nav_bar/bottom_nav_bar_widget.dart';
 import 'package:audio_stories/widgets/custom_drawer.dart';
@@ -26,8 +27,10 @@ class ProfileScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               const CustomAppBar(
+                leading: null,
                 title: 'Профіль',
                 subTitle: 'Твоя частинка',
+                actions: SizedBox(),
               ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
@@ -141,60 +144,6 @@ class ProfileScreen extends StatelessWidget {
       ),
       drawer: const CustomDrawer(),
       bottomNavigationBar: const BottomNavBarWidget(),
-    );
-  }
-}
-
-class CustomAppBar extends StatelessWidget {
-  final String title;
-  final String subTitle;
-  const CustomAppBar({
-    required this.title,
-    required this.subTitle,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 1,
-          child: Builder(
-            builder: (context) => IconButton(
-              onPressed: () => Scaffold.of(context).openDrawer(),
-              icon: const Icon(
-                Icons.menu_rounded,
-                color: ColorsApp.colorWhite,
-                size: 35,
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 3,
-          child: Column(
-            children: [
-              Text(
-                title,
-                style: mainTheme.textTheme.titleMedium,
-              ),
-              const SizedBox(height: 2),
-              Text(
-                subTitle,
-                style: mainTheme.textTheme.labelMedium?.copyWith(
-                  color: ColorsApp.colorWhite,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Container(),
-        ),
-      ],
     );
   }
 }

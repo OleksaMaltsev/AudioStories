@@ -1,6 +1,7 @@
 import 'package:audio_stories/screens/audio/player.dart';
 import 'package:audio_stories/screens/audio/record.dart';
 import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
+import 'package:audio_stories/screens/home_screen_generate.dart';
 import 'package:audio_stories/screens/login/sign_up.dart';
 import 'package:audio_stories/screens/login/sign_up_sms.dart';
 import 'package:audio_stories/screens/login/sign_up_thanks.dart';
@@ -57,6 +58,9 @@ class AppRouter {
         break;
       case AudioStoriesScreen.routeName:
         builder = (_) => const AudioStoriesScreen();
+        break;
+      case HomeScreen.routeName:
+        builder = (_) => const HomeScreen();
         break;
       default:
         throw Exception('Invalid route: ${settings.name}');

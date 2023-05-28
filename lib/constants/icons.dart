@@ -13,4 +13,9 @@ class AppIcons {
   static const String cilCloudUpload = '$path/cil_cloud-upload.svg';
   static const String cilInfinity = '$path/cil_infinity.svg';
   static const String paperDownload = '$path/PaperDownload.svg';
+  static const String dots = '$path/dots.svg';
+  static const String fluentArrow = '$path/fluent_arrow.svg';
+  static const String fluentArrowWhite = '$path/fluent_arrow_white.svg';
+  static const String play = '$path/Play.svg';
+  static const String pause = '$path/pause.svg';
 }

@@ -1,9 +1,9 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/providers/change_choose_provider.dart';
-import 'package:audio_stories/screens/profile/profile.dart';
 import 'package:audio_stories/screens/profile/widgets/custom_box_subscription.dart';
 import 'package:audio_stories/thems/main_thame.dart';
+import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:audio_stories/widgets/bottom_nav_bar/bottom_nav_bar_widget.dart';
 import 'package:audio_stories/widgets/buttons/orange_button.dart';
@@ -33,8 +33,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             child: Column(
               children: [
                 const CustomAppBar(
+                  leading: null,
                   title: 'Підписка',
                   subTitle: 'Розширюй можливості',
+                  actions: SizedBox(),
                 ),
                 Container(
                   width: double.infinity,
