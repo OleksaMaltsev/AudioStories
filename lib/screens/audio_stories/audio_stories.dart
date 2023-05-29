@@ -19,6 +19,8 @@ class AudioStoriesScreen extends StatefulWidget {
 class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
   bool play = false;
   bool repeat = false;
+
+  bool playTrack = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,12 +31,13 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
           child: Column(
             children: [
               const CustomAppBar(
-                  leading: null,
-                  title: 'Аудіозаписи',
-                  subTitle: 'Все в одному місці',
-                  actions: null),
+                leading: null,
+                title: 'Аудіозаписи',
+                subTitle: 'Все в одному місці',
+                actions: null,
+              ),
               Container(
-                padding: const EdgeInsets.fromLTRB(20, 30, 25, 20),
+                padding: const EdgeInsets.fromLTRB(20, 30, 25, 40),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -127,6 +130,80 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
                           ),
                         ),
                       ],
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 1,
+                          color: ColorsApp.colorSlimOpacityDark,
+                        ),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                left: 5,
+                                right: 10,
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  playTrack = !playTrack;
+                                  setState(() {});
+                                },
+                                child: SvgPicture.asset(
+                                  playTrack
+                                      ? AppIcons.play50
+                                      : AppIcons.pause50,
+                                  color: ColorsApp.colorBlue,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Track 1',
+                                    style: mainTheme.textTheme.labelSmall
+                                        ?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    '30 хвилин',
+                                    style: mainTheme.textTheme.labelSmall,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: SvgPicture.asset(
+                              AppIcons.dots,
+                              color: ColorsApp.colorLightDark,
+                              width: 18,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

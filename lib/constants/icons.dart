@@ -17,5 +17,7 @@ class AppIcons {
   static const String fluentArrow = '$path/fluent_arrow.svg';
   static const String fluentArrowWhite = '$path/fluent_arrow_white.svg';
   static const String play = '$path/Play.svg';
+  static const String play50 = '$path/Play50.svg';
   static const String pause = '$path/pause.svg';
+  static const String pause50 = '$path/pause50.svg';
 }

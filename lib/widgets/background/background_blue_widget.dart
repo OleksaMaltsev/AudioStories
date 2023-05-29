@@ -17,7 +17,7 @@ class BluePainter extends CustomPainter {
     ovalPath.moveTo(width * 2, height * 0.01);
 
     ovalPath.quadraticBezierTo(
-        width * 0.9, height * 0.50, width * 0, height * 0.25);
+        width * 0.9, height * 0.45, width * 0, height * 0.23);
 
     ovalPath.lineTo(0, -height);
 
