@@ -20,4 +20,5 @@ class AppIcons {
   static const String play50 = '$path/Play50.svg';
   static const String pause = '$path/pause.svg';
   static const String pause50 = '$path/pause50.svg';
+  static const String plus = '$path/plus.svg';
 }

@@ -9,6 +9,7 @@ import 'package:audio_stories/screens/login/welcome.dart';
 import 'package:audio_stories/screens/main_screen.dart';
 import 'package:audio_stories/screens/profile/profile.dart';
 import 'package:audio_stories/screens/profile/subscription.dart';
+import 'package:audio_stories/screens/selections/selection.dart';
 import 'package:audio_stories/screens/splash/splash.dart';
 import 'package:flutter/material.dart';
 
@@ -61,6 +62,9 @@ class AppRouter {
         break;
       case HomeScreen.routeName:
         builder = (_) => const HomeScreen();
+        break;
+      case SelectionsScreen.routeName:
+        builder = (_) => const SelectionsScreen();
         break;
       default:
         throw Exception('Invalid route: ${settings.name}');

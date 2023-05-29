@@ -24,7 +24,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const CustomDrawer(),
       body: CustomPaint(
         painter: PurplePainter(),
         child: SingleChildScrollView(
@@ -178,6 +177,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           ),
         ),
       ),
+      drawer: const CustomDrawer(),
       bottomNavigationBar: const BottomNavBarWidget(),
     );
   }

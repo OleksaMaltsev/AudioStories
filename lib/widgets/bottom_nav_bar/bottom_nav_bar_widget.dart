@@ -5,6 +5,7 @@ import 'package:audio_stories/screens/audio/record.dart';
 import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
 import 'package:audio_stories/screens/main_screen.dart';
 import 'package:audio_stories/screens/profile/profile.dart';
+import 'package:audio_stories/screens/selections/selection.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/bottom_nav_bar/menu_bar_items.dart';
 import 'package:flutter/material.dart';
@@ -110,6 +111,12 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
                 Navigator.pushNamed(
                   context,
                   MainScreen.routeName,
+                );
+                break;
+              case 1:
+                Navigator.pushNamed(
+                  context,
+                  SelectionsScreen.routeName,
                 );
                 break;
               // record item
