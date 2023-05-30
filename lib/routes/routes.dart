@@ -14,16 +14,11 @@ import 'package:audio_stories/screens/selections/selection.dart';
 import 'package:audio_stories/screens/splash/splash.dart';
 import 'package:flutter/material.dart';
 
-// final routes = {
-//   '/': (context) => SplashScreen(),
-//   '/welcome': (context) => WelcomeScreen(),
-// };
-
 class AppRouter {
   const AppRouter._();
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    final Object? arguments = settings.arguments;
+    //final Object? arguments = settings.arguments;
 
     WidgetBuilder builder;
 
