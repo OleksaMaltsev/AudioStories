@@ -4,7 +4,6 @@ import 'package:audio_stories/screens/audio/player.dart';
 import 'package:audio_stories/screens/audio/record.dart';
 import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
 import 'package:audio_stories/screens/home_screen.dart';
-import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/screens/profile/profile.dart';
 import 'package:audio_stories/screens/selections/selection.dart';
 import 'package:audio_stories/thems/main_thame.dart';
@@ -13,8 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class BottomNavBarWidget extends StatefulWidget {
-  GlobalKey<NavigatorState> navigatorKey;
-  BottomNavBarWidget({
+  final GlobalKey<NavigatorState> navigatorKey;
+  const BottomNavBarWidget({
     required this.navigatorKey,
     super.key,
   });
@@ -112,23 +111,15 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
               // main screen
               case 0:
                 widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-                  MainPage.routeName,
+                  HomeScreen.routeName,
                   (route) => false,
                 );
-                // Navigator.pushNamed(
-                //   context,
-                //   HomeScreen.routeName,
-                // );
                 break;
               case 1:
                 widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(
                   SelectionsScreen.routeName,
                   (route) => false,
                 );
-                // Navigator.pushNamed(
-                //   context,
-                //   SelectionsScreen.routeName,
-                // );
                 break;
               // record item
               case 2:
@@ -142,10 +133,6 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
                   AudioStoriesScreen.routeName,
                   (route) => false,
                 );
-                // Navigator.pushNamed(
-                //   context,
-                //   AudioStoriesScreen.routeName,
-                // );
                 break;
               case 4:
                 widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(

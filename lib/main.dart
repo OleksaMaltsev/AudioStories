@@ -1,6 +1,5 @@
 import 'package:audio_stories/providers/change_choose_provider.dart';
 import 'package:audio_stories/routes/routes.dart';
-import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/screens/splash/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

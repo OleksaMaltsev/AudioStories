@@ -1,5 +1,4 @@
 import 'package:audio_stories/screens/main_page.dart';
-import 'package:audio_stories/screens/login/welcome.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

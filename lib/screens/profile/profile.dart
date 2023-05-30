@@ -1,14 +1,10 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/login/widgets/phone_input_formatter_widget.dart';
-import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/screens/profile/subscription.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
-import 'package:audio_stories/widgets/bottom_nav_bar/bottom_nav_bar_widget.dart';
-import 'package:audio_stories/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -26,7 +22,8 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const CustomAppBar(
+              CustomAppBar(
+                contextScreen: context,
                 leading: null,
                 title: 'Профіль',
                 subTitle: 'Твоя частинка',
@@ -142,8 +139,6 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
-      drawer: const CustomDrawer(),
-      //bottomNavigationBar: const BottomNavBarWidget(),
     );
   }
 }

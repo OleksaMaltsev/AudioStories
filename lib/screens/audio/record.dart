@@ -2,15 +2,11 @@ import 'dart:io';
 
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/audio/player.dart';
-import 'package:audio_stories/widgets/bottom_nav_bar/bottom_nav_bar_widget.dart';
-import 'package:audio_stories/widgets/bottom_nav_bar/menu_bar_items.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 
-import 'package:audioplayers/audioplayers.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';

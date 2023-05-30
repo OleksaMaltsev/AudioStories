@@ -16,7 +16,7 @@ class _AddSelectionScreenState extends State<AddSelectionScreen> {
     return Scaffold(
       body: CustomPaint(
         painter: GreenPainter(),
-        child: Container(
+        child: SizedBox(
           width: double.infinity,
           child: Column(
             children: [

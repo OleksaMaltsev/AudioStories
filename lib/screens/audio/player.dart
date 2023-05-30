@@ -2,12 +2,9 @@ import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/audio/record.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
-import 'package:audio_stories/widgets/bottom_nav_bar/bottom_nav_bar_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart' as http;
-import 'package:permission_handler/permission_handler.dart';
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key});
@@ -129,7 +126,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         const Spacer(),
                         InkWell(
                           onTap: () {},
-                          child: Text('Зберегти'),
+                          child: const Text('Зберегти'),
                         ),
                       ],
                     ),
@@ -178,8 +175,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               if (isPlaying) {
                                 await audioPlayer.pause();
                               } else {
-                                String apiEndpoint =
-                                    'https://archive.org/download/IGM-V7/IGM%20-%20Vol.%207/25%20Diablo%20-%20Tristram%20%28Blizzard%29.mp3';
+                                // String apiEndpoint =
+                                //     'https://archive.org/download/IGM-V7/IGM%20-%20Vol.%207/25%20Diablo%20-%20Tristram%20%28Blizzard%29.mp3';
                                 await audioPlayer.play(
                                   DeviceFileSource(
                                     path ?? '',
@@ -187,8 +184,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 );
                                 // await audioPlayer.play(UrlSource(
                                 //     '/data/user/0/com.example.memory_box/cache/audio.mp4'));
-                                print(
-                                    await audioPlayer.getDuration().toString());
+                                print(audioPlayer.getDuration().toString());
                               }
                               setState(() {});
                             },
@@ -210,7 +206,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
           ],
         ),
       ),
-      //bottomNavigationBar: const BottomNavBarWidget(),
       extendBody: true,
     );
   }

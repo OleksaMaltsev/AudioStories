@@ -1,11 +1,7 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/thems/main_thame.dart';
-import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
 import 'package:audio_stories/widgets/background/background_blue_widget.dart';
-import 'package:audio_stories/widgets/bottom_nav_bar/bottom_nav_bar_widget.dart';
-import 'package:audio_stories/widgets/custom_drawer.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -31,12 +27,12 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
           padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
           child: Column(
             children: [
-              const CustomAppBar(
-                leading: null,
-                title: 'Аудіозаписи',
-                subTitle: 'Все в одному місці',
-                actions: null,
-              ),
+              // const CustomAppBar(
+              //   leading: null,
+              //   title: 'Аудіозаписи',
+              //   subTitle: 'Все в одному місці',
+              //   actions: null,
+              // ),
               Container(
                 padding: const EdgeInsets.fromLTRB(20, 30, 25, 40),
                 child: Row(
@@ -213,7 +209,7 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
           ),
         ),
       ),
-      drawer: const CustomDrawer(),
+      //drawer: const CustomDrawer(),
       //bottomNavigationBar: const BottomNavBarWidget(),
     );
   }
