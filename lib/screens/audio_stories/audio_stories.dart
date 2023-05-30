@@ -214,7 +214,7 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
         ),
       ),
       drawer: const CustomDrawer(),
-      bottomNavigationBar: const BottomNavBarWidget(),
+      //bottomNavigationBar: const BottomNavBarWidget(),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
-import 'package:audio_stories/screens/main_screen.dart';
+import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/screens/profile/profile.dart';
 import 'package:audio_stories/screens/profile/subscription.dart';
 import 'package:audio_stories/thems/main_thame.dart';
@@ -52,7 +52,7 @@ class CustomDrawer extends StatelessWidget {
                   CustomListTile(
                     title: 'Головна',
                     icon: AppIcons.home,
-                    routePath: MainScreen.routeName,
+                    routePath: HomeScreen.routeName,
                   ),
                   CustomListTile(
                     title: 'Профіль',

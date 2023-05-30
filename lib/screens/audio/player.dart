@@ -210,7 +210,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const BottomNavBarWidget(),
+      //bottomNavigationBar: const BottomNavBarWidget(),
       extendBody: true,
     );
   }

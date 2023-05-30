@@ -1,15 +1,17 @@
 import 'package:audio_stories/screens/audio/player.dart';
 import 'package:audio_stories/screens/audio/record.dart';
 import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
-import 'package:audio_stories/screens/home_screen_generate.dart';
+import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/screens/login/sign_up.dart';
 import 'package:audio_stories/screens/login/sign_up_sms.dart';
 import 'package:audio_stories/screens/login/sign_up_thanks.dart';
 import 'package:audio_stories/screens/login/welcome.dart';
-import 'package:audio_stories/screens/main_screen.dart';
+import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/screens/profile/profile.dart';
 import 'package:audio_stories/screens/profile/subscription.dart';
+import 'package:audio_stories/screens/selections/add_selection.dart';
 import 'package:audio_stories/screens/selections/selection.dart';
+import 'package:audio_stories/screens/selections/widgets/stories_box_selections.dart';
 import 'package:audio_stories/screens/splash/splash.dart';
 import 'package:flutter/material.dart';
 
@@ -42,8 +44,8 @@ class AppRouter {
       case SignUpThanksScreen.routeName:
         builder = (_) => const SignUpThanksScreen();
         break;
-      case MainScreen.routeName:
-        builder = (_) => const MainScreen();
+      case HomeScreen.routeName:
+        builder = (_) => const HomeScreen();
         break;
       case RecordScreen.routeName:
         builder = (_) => const RecordScreen();
@@ -60,11 +62,14 @@ class AppRouter {
       case AudioStoriesScreen.routeName:
         builder = (_) => const AudioStoriesScreen();
         break;
-      case HomeScreen.routeName:
-        builder = (_) => const HomeScreen();
+      case MainPage.routeName:
+        builder = (_) => const MainPage();
         break;
       case SelectionsScreen.routeName:
         builder = (_) => const SelectionsScreen();
+        break;
+      case AddSelectionScreen.routeName:
+        builder = (_) => const AddSelectionScreen();
         break;
       default:
         throw Exception('Invalid route: ${settings.name}');

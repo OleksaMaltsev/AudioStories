@@ -1,5 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/screens/selections/add_selection.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -30,7 +31,12 @@ class CustomSelectionsAppBar extends StatelessWidget {
                 ? Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          AddSelectionScreen.routeName,
+                        );
+                      },
                       child: SvgPicture.asset(AppIcons.plus),
                     ),
                   )

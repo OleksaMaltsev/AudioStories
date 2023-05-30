@@ -54,7 +54,7 @@ class _SelectionsScreenState extends State<SelectionsScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: const BottomNavBarWidget(),
+      //bottomNavigationBar: const BottomNavBarWidget(),
     );
   }
 }

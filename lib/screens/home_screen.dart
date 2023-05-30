@@ -12,15 +12,15 @@ import 'package:bloc/bloc.dart';
 
 import 'package:permission_handler/permission_handler.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
   //static const String routeName = '/main';
-  static const String routeName = '/';
+  static const String routeName = 'home_screen';
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -215,7 +215,6 @@ class _MainScreenState extends State<MainScreen> {
                 ],
               ),
             ),
-            bottomNavigationBar: const BottomNavBarWidget(),
             extendBody: true,
           );
         },

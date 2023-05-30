@@ -3,7 +3,8 @@ import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/screens/audio/player.dart';
 import 'package:audio_stories/screens/audio/record.dart';
 import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
-import 'package:audio_stories/screens/main_screen.dart';
+import 'package:audio_stories/screens/home_screen.dart';
+import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/screens/profile/profile.dart';
 import 'package:audio_stories/screens/selections/selection.dart';
 import 'package:audio_stories/thems/main_thame.dart';
@@ -12,7 +13,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class BottomNavBarWidget extends StatefulWidget {
-  const BottomNavBarWidget({
+  GlobalKey<NavigatorState> navigatorKey;
+  BottomNavBarWidget({
+    required this.navigatorKey,
     super.key,
   });
 
@@ -108,34 +111,46 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
             switch (value) {
               // main screen
               case 0:
-                Navigator.pushNamed(
-                  context,
-                  MainScreen.routeName,
+                widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+                  MainPage.routeName,
+                  (route) => false,
                 );
+                // Navigator.pushNamed(
+                //   context,
+                //   HomeScreen.routeName,
+                // );
                 break;
               case 1:
-                Navigator.pushNamed(
-                  context,
+                widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(
                   SelectionsScreen.routeName,
+                  (route) => false,
                 );
+                // Navigator.pushNamed(
+                //   context,
+                //   SelectionsScreen.routeName,
+                // );
                 break;
               // record item
               case 2:
-                Navigator.pushNamed(
-                  context,
+                widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(
                   RecordScreen.routeName,
+                  (route) => false,
                 );
                 break;
               case 3:
-                Navigator.pushNamed(
-                  context,
+                widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(
                   AudioStoriesScreen.routeName,
+                  (route) => false,
                 );
+                // Navigator.pushNamed(
+                //   context,
+                //   AudioStoriesScreen.routeName,
+                // );
                 break;
               case 4:
-                Navigator.pushNamed(
-                  context,
+                widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(
                   ProfileScreen.routeName,
+                  (route) => false,
                 );
 
                 break;

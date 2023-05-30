@@ -178,7 +178,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         ),
       ),
       drawer: const CustomDrawer(),
-      bottomNavigationBar: const BottomNavBarWidget(),
+      //bottomNavigationBar: const BottomNavBarWidget(),
     );
   }
 }

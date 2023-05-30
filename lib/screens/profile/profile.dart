@@ -1,6 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/login/widgets/phone_input_formatter_widget.dart';
-import 'package:audio_stories/screens/main_screen.dart';
+import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/screens/profile/subscription.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
@@ -143,7 +143,7 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
       drawer: const CustomDrawer(),
-      bottomNavigationBar: const BottomNavBarWidget(),
+      //bottomNavigationBar: const BottomNavBarWidget(),
     );
   }
 }

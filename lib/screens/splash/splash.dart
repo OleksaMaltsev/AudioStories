@@ -1,3 +1,4 @@
+import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/screens/login/welcome.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
-  static const String routeName = '/a';
+  static const String routeName = '/';
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -21,8 +22,12 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(
       const Duration(milliseconds: 2000),
     );
-    Navigator.pushNamedAndRemoveUntil(
-        context, WelcomeScreen.routeName, (route) => false);
+    Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+      MainPage.routeName,
+      (_) => false,
+    );
+    // Navigator.pushNamedAndRemoveUntil(
+    //     context, HomeScreen.routeName, (route) => false);
   }
 
   @override
