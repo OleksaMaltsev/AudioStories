@@ -15,28 +15,38 @@ class StoriesBoxSelections extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 222,
-      width: MediaQuery.of(context).size.width * 0.45,
+      height: 220,
+     width: MediaQuery.of(context).size.width * 0.45,
       child: Stack(
-        children: [
-          Image.asset(imagePath),
+        children: [          
           Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [
-                  0.1,
-                  0.6,
-                ],
-                colors: [
-                  Color.fromARGB(50, 0, 0, 0),
-                  Color.fromARGB(140, 45, 45, 45),
-                ],
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            image: DecorationImage(
+              fit: BoxFit.fill,
+              image: AssetImage(
+                 imagePath,
               ),
             ),
           ),
+          ),
+          Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [
+                      0.1,
+                      0.6,
+                    ],
+                    colors: [
+                      Color.fromARGB(50, 0, 0, 0),
+                      Color.fromARGB(140, 45, 45, 45),
+                    ],
+                  ),
+                ),
+              ),
           Container(
             padding: const EdgeInsets.only(bottom: 10),
             child: Row(

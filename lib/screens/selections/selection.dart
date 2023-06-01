@@ -18,7 +18,7 @@ class _SelectionsScreenState extends State<SelectionsScreen> {
       body: CustomPaint(
         painter: GreenPainter(),
         child: Container(
-          padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+          padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
           child: const Column(
             children: [
               CustomSelectionsAppBar(
@@ -49,7 +49,6 @@ class _SelectionsScreenState extends State<SelectionsScreen> {
           ),
         ),
       ),
-      //bottomNavigationBar: const BottomNavBarWidget(),
     );
   }
 }
