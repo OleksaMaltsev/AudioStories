@@ -1,3 +1,4 @@
+import 'package:audio_stories/screens/selections/choies_selection.dart';
 import 'package:audio_stories/screens/selections/widgets/custom_selections_app_bar.dart';
 import 'package:audio_stories/screens/selections/widgets/stories_box_selections.dart';
 import 'package:audio_stories/widgets/background/background_green_widget.dart';
@@ -19,7 +20,7 @@ class _SelectionsScreenState extends State<SelectionsScreen> {
         painter: GreenPainter(),
         child: Container(
           padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-          child: const Column(
+          child: Column(
             children: [
               CustomSelectionsAppBar(
                 leading: null,
@@ -44,6 +45,13 @@ class _SelectionsScreenState extends State<SelectionsScreen> {
                     ],
                   ),
                 ],
+              ),
+              //TODO: delete button
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, ChoiceSelectionScreen.routeName);
+                },
+                child: Text('choice_selection'),
               ),
             ],
           ),
