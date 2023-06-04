@@ -74,7 +74,6 @@ class _ChoiceSelectionScreenState extends State<ChoiceSelectionScreen> {
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: Row(
-                        //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
                             margin: const EdgeInsets.only(

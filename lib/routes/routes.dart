@@ -11,6 +11,7 @@ import 'package:audio_stories/screens/profile/profile.dart';
 import 'package:audio_stories/screens/profile/subscription.dart';
 import 'package:audio_stories/screens/selections/add_selection.dart';
 import 'package:audio_stories/screens/selections/choies_selection.dart';
+import 'package:audio_stories/screens/selections/edit_selection.dart';
 import 'package:audio_stories/screens/selections/selection.dart';
 import 'package:audio_stories/screens/splash/splash.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +69,9 @@ class AppRouter {
         break;
       case ChoiceSelectionScreen.routeName:
         builder = (_) => const ChoiceSelectionScreen();
+        break;
+      case EditSelectionScreen.routeName:
+        builder = (_) => const EditSelectionScreen();
         break;
       default:
         throw Exception('Invalid route: ${settings.name}');

@@ -3,6 +3,7 @@ import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/providers/change_choose_provider.dart';
 import 'package:audio_stories/screens/profile/widgets/custom_box_subscription.dart';
 import 'package:audio_stories/thems/main_thame.dart';
+import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:audio_stories/widgets/buttons/orange_button.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       body: CustomPaint(
         painter: PurplePainter(),
         child: SingleChildScrollView(
@@ -29,12 +29,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
             child: Column(
               children: [
-                // const CustomAppBar(
-                //   leading: null,
-                //   title: 'Підписка',
-                //   subTitle: 'Розширюй можливості',
-                //   actions: SizedBox(),
-                // ),
+                CustomAppBar(
+                  contextScreen: context,
+                  leading: null,
+                  title: 'Підписка',
+                  subTitle: 'Розширюй можливості',
+                  actions: const SizedBox(),
+                ),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(10),

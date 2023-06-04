@@ -1,5 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/screens/selections/widgets/custom_app_bar_selections.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_green_widget.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class _AddSelectionScreenState extends State<AddSelectionScreen> {
           width: double.infinity,
           child: Column(
             children: [
-              const CustomAppBarSelections(),
+              const CustomAppBarSelections(name: 'Створення'),
               const SizedBox(height: 10),
               Column(
                 children: [
@@ -108,46 +109,6 @@ class _AddSelectionScreenState extends State<AddSelectionScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class CustomAppBarSelections extends StatelessWidget {
-  const CustomAppBarSelections({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        InkWell(
-          onTap: () {
-            Navigator.pop(
-              context,
-              (route) => false,
-            );
-          },
-          child: SvgPicture.asset(AppIcons.back),
-        ),
-        Text(
-          'Створення',
-          style: mainTheme.textTheme.titleMedium,
-        ),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            padding: const EdgeInsets.only(top: 25),
-            child: Text(
-              'Готово',
-              style: mainTheme.textTheme.labelMedium?.copyWith(
-                color: ColorsApp.colorWhite,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

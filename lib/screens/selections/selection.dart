@@ -1,5 +1,6 @@
 import 'package:audio_stories/screens/selections/choies_selection.dart';
 import 'package:audio_stories/screens/selections/widgets/custom_selections_app_bar.dart';
+import 'package:audio_stories/screens/selections/widgets/dropdown_button_selection.dart';
 import 'package:audio_stories/screens/selections/widgets/stories_box_selections.dart';
 import 'package:audio_stories/widgets/background/background_green_widget.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class _SelectionsScreenState extends State<SelectionsScreen> {
                 leading: null,
                 title: 'Добірки',
                 subTitle: 'Все в одному місці',
-                actions: null,
+                actions: DropdownButtonSelection(),
               ),
               SizedBox(height: 30),
               Column(
