@@ -1,5 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/home_screen.dart';
+import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,7 @@ class _SignUpThanksScreenState extends State<SignUpThanksScreen> {
       const Duration(milliseconds: 2000),
     );
     Navigator.pushNamedAndRemoveUntil(
-        context, HomeScreen.routeName, (route) => false);
+        context, MainPage.routeName, (route) => false);
   }
 
   @override

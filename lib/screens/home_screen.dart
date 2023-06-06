@@ -3,6 +3,7 @@ import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,6 +17,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String? uid = FirebaseAuth.instance.currentUser?.uid;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -206,6 +209,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       'assets/svg/ArrowDown.svg',
                       width: 60,
                     ),
+                    //todo delete text
+                    Text(uid ?? 'no'),
                   ],
                 ),
               ),

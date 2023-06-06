@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "68835276193",
+    "project_id": "audiostories-eb9d8",
+    "storage_bucket": "audiostories-eb9d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:68835276193:android:1ef73e91b26bfaf89747e0",
+        "android_client_info": {
+          "package_name": "com.example.audio_stories"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "68835276193-c7pq05unnpvomci6o8j1etmnrlm2qq7s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.audio_stories",
+            "certificate_hash": "2112dcd383a1454430dbecbb92d00846f1872ebc"
+          }
+        },
+        {
+          "client_id": "68835276193-doq3pcu4mfle7gucsmmfvr0eeakmfeun.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMZBR6eIz-sDdWCscoIdXHttyjH02e_Wg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "68835276193-doq3pcu4mfle7gucsmmfvr0eeakmfeun.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "68835276193-ndhqvojgghhijf37nhoorc1ro2os1iku.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.audioStories"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

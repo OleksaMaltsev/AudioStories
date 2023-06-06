@@ -1,5 +1,7 @@
+import 'package:audio_stories/screens/login/sign_up.dart';
 import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/thems/main_thame.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -21,10 +23,20 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(
       const Duration(milliseconds: 2000),
     );
-    Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
-      MainPage.routeName,
-      (_) => false,
-    );
+
+    if (FirebaseAuth.instance.currentUser != null) {
+      print(FirebaseAuth.instance.currentUser?.uid);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        MainPage.routeName,
+        (route) => false,
+      );
+    } else {
+      Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+        SignUpScreen.routeName,
+        (_) => false,
+      );
+    }
     // Navigator.pushNamedAndRemoveUntil(
     //     context, HomeScreen.routeName, (route) => false);
   }
