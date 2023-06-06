@@ -37,8 +37,6 @@ class _SplashScreenState extends State<SplashScreen> {
         (_) => false,
       );
     }
-    // Navigator.pushNamedAndRemoveUntil(
-    //     context, HomeScreen.routeName, (route) => false);
   }
 
   @override

@@ -1,15 +1,20 @@
 import 'package:audio_stories/constants/colors.dart';
+import 'package:audio_stories/providers/user_sign_up_provider.dart';
 import 'package:audio_stories/screens/login/sign_up_thanks.dart';
+import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:audio_stories/widgets/buttons/orange_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'widgets/description_sing_up_widget.dart';
 import 'widgets/sms_input_formatter_widget.dart';
 
 class SignUpSmsScreen extends StatefulWidget {
-  const SignUpSmsScreen({super.key});
+  const SignUpSmsScreen({
+    super.key,
+  });
 
   static const String routeName = '/sign_up_sms';
 
@@ -18,6 +23,65 @@ class SignUpSmsScreen extends StatefulWidget {
 }
 
 class _SignUpSmsScreenState extends State<SignUpSmsScreen> {
+  TextEditingController smsController = TextEditingController();
+  FirebaseAuth auth = FirebaseAuth.instance;
+  String? _verificationCode;
+  _verifyPhone() async {
+    try {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        //phoneNumber: '+380 99 391 1133',
+        phoneNumber: userGlobal,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await FirebaseAuth.instance
+              .signInWithCredential(credential)
+              .then((value) async {
+            if (value.user != null) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MainPage()),
+                  (route) => false);
+            }
+          });
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          print(e.message);
+        },
+        codeSent: (String? verficationID, int? resendToken) {
+          setState(() {
+            _verificationCode = verficationID;
+            try {
+              FirebaseAuth.instance
+                  .signInWithCredential(PhoneAuthProvider.credential(
+                      verificationId: _verificationCode ?? '000000',
+                      smsCode: smsController.text))
+                  .then((value) async {
+                if (value.user != null) {
+                  Navigator.pushNamed(
+                    context,
+                    SignUpThanksScreen.routeName,
+                  );
+                }
+                print(value.user);
+              });
+            } catch (e) {
+              FocusScope.of(context).unfocus();
+              print('invalid OTP');
+              print(e);
+            }
+          });
+        },
+        codeAutoRetrievalTimeout: (String verficationID) {
+          setState(() {
+            _verificationCode = verficationID;
+          });
+        },
+        timeout: const Duration(seconds: 120),
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e.code);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,8 +123,8 @@ class _SignUpSmsScreenState extends State<SignUpSmsScreen> {
                         ),
                         child: TextFormField(
                           keyboardType: TextInputType.number,
+                          controller: smsController,
                           textAlign: TextAlign.center,
-                          inputFormatters: [SmsInputFormatter()],
                           decoration: const InputDecoration(
                             contentPadding: EdgeInsets.fromLTRB(15, 15, 15, 5),
                             border: InputBorder.none,
@@ -74,10 +138,7 @@ class _SignUpSmsScreenState extends State<SignUpSmsScreen> {
                       OrangeButton(
                         text: 'Продовжити',
                         function: () {
-                          Navigator.pushNamed(
-                            context,
-                            SignUpThanksScreen.routeName,
-                          );
+                          _verifyPhone();
                         },
                       ),
                       const SizedBox(height: 60),
