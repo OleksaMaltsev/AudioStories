@@ -1,5 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/audio/record.dart';
+import 'package:audio_stories/screens/audio/record_wave.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key});
+
   static const String routeName = '/player';
 
   @override
@@ -179,7 +181,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 //     'https://archive.org/download/IGM-V7/IGM%20-%20Vol.%207/25%20Diablo%20-%20Tristram%20%28Blizzard%29.mp3';
                                 await audioPlayer.play(
                                   DeviceFileSource(
-                                    path ?? '',
+                                    globalPath ?? '',
                                   ),
                                 );
                                 // await audioPlayer.play(UrlSource(

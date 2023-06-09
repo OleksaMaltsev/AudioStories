@@ -1,5 +1,6 @@
 import 'package:audio_stories/screens/audio/player.dart';
 import 'package:audio_stories/screens/audio/record.dart';
+import 'package:audio_stories/screens/audio/record_wave.dart';
 import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
 import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/screens/login/sign_up.dart';
@@ -42,6 +43,9 @@ class AppRouter {
         break;
       case HomeScreen.routeName:
         builder = (_) => const HomeScreen();
+        break;
+      case RecordWaveScreen.routeName:
+        builder = (_) => const RecordWaveScreen();
         break;
       case RecordScreen.routeName:
         builder = (_) => const RecordScreen();

@@ -2,6 +2,7 @@ import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/screens/audio/player.dart';
 import 'package:audio_stories/screens/audio/record.dart';
+import 'package:audio_stories/screens/audio/record_wave.dart';
 import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
 import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/screens/profile/profile.dart';
@@ -81,7 +82,22 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
               ),
               label: 'Добірки',
             ),
-            (PlayerScreen.routeName == ModalRoute.of(context)?.settings.name ||
+            // (PlayerScreen.routeName == ModalRoute.of(context)?.settings.name ||
+            //         RecordScreen.routeName ==
+            //             ModalRoute.of(context)?.settings.name)
+            //     ? MenuBarItem.activeItem
+            //     : MenuBarItem.passiveItem,
+            // BottomNavigationBarItem(
+            //   icon: SvgPicture.asset(
+            //     AppIcons.paper,
+            //     color: _selectIndex == 3
+            //         ? ColorsApp.colorPurple
+            //         : ColorsApp.colorLightDark,
+            //   ),
+            //   label: 'Аудіоказки',
+            // ),
+            (RecordWaveScreen.routeName ==
+                        ModalRoute.of(context)?.settings.name ||
                     RecordScreen.routeName ==
                         ModalRoute.of(context)?.settings.name)
                 ? MenuBarItem.activeItem
@@ -95,6 +111,7 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
               ),
               label: 'Аудіоказки',
             ),
+
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
                 AppIcons.profile,
@@ -124,7 +141,7 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
               // record item
               case 2:
                 widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-                  RecordScreen.routeName,
+                  RecordWaveScreen.routeName,
                   (route) => false,
                 );
                 break;

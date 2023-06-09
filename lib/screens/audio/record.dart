@@ -1,10 +1,9 @@
 import 'dart:io';
-
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/audio/player.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
-
 
 import 'package:flutter/material.dart';
 
