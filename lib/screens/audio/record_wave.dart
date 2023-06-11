@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/audio/player.dart';
+import 'package:audio_stories/screens/home_screen.dart';
+import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:flutter/material.dart';
@@ -77,27 +79,6 @@ class _RecordWaveScreenState extends State<RecordWaveScreen> {
     super.dispose();
   }
 
-  // void _stopRecord() async {
-  //   final path = await recorderController.stop(false);
-  //   if (path != null) {
-  //     isRecordingCompleted = true;
-  //     debugPrint(path);
-  //     debugPrint(pathAudio);
-  //     try {
-  //       debugPrint("Recorded file size: ${File(pathAudio!).lengthSync()}");
-  //     } catch (e) {
-  //       debugPrint(e.toString());
-  //     }
-
-  //     globalPath = pathAudio!;
-  //     Navigator.pushNamed(
-  //       context,
-  //       PlayerScreen.routeName,
-  //     );
-  //     print('yes');
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,7 +95,7 @@ class _RecordWaveScreenState extends State<RecordWaveScreen> {
                 flex: 5,
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(5, 30, 5, 0),
-                  padding: const EdgeInsets.fromLTRB(17, 10, 17, 120),
+                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(15),
@@ -133,38 +114,48 @@ class _RecordWaveScreenState extends State<RecordWaveScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Відмінити'),
-                          ),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.only(right: 17),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  HomeScreen.routeName,
+                                  (route) => false,
+                                );
+                              },
+                              child: Text(
+                                'Відмінити',
+                                style: mainTheme.textTheme.labelMedium,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 50),
+                      //const SizedBox(height: 50),
                       Text(
                         'Запис',
                         style: mainTheme.textTheme.labelLarge,
                       ),
                       AudioWaveforms(
-                        backgroundColor: Colors.grey,
+                        backgroundColor: ColorsApp.colorWhite,
                         size: Size(MediaQuery.of(context).size.width, 200.0),
                         recorderController: recorderController,
                         enableGesture: true,
-                        waveStyle: WaveStyle(
+                        waveStyle: const WaveStyle(
                           waveColor: Colors.black,
                           showDurationLabel: false, // активна тайм лінія знизу
-                          spacing: 5, // відстань між хвилями
+                          spacing: 4, // відстань між хвилями
                           showBottom: true, // хвиля посередені
                           extendWaveform: true,
                           showMiddleLine: false,
                           durationLinesHeight: 19,
-                          middleLineThickness: 1,
+                          //middleLineThickness: 1,
                           waveThickness: 2, // товщина поділок
-                          scaleFactor: 70, // висота поділок
+                          scaleFactor: 80, // висота поділок
                         ),
                       ),
                       StreamBuilder<Duration>(
@@ -189,7 +180,7 @@ class _RecordWaveScreenState extends State<RecordWaveScreen> {
                                 height: 10,
                                 width: 10,
                                 decoration: BoxDecoration(
-                                  color: Colors.red,
+                                  color: ColorsApp.colorLightRed,
                                   borderRadius: BorderRadius.circular(50),
                                 ),
                               ),
@@ -198,7 +189,6 @@ class _RecordWaveScreenState extends State<RecordWaveScreen> {
                           );
                         },
                       ),
-                      const SizedBox(height: 30),
                       CircleAvatar(
                         radius: 35,
                         backgroundColor: ColorsApp.colorButtonOrange,

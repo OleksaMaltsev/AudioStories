@@ -1,11 +1,13 @@
 import 'package:audio_stories/constants/colors.dart';
-import 'package:audio_stories/screens/audio/record.dart';
 import 'package:audio_stories/screens/audio/record_wave.dart';
+import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:file_saver/file_saver.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key});
@@ -21,12 +23,19 @@ class _PlayerScreenState extends State<PlayerScreen> {
   bool isPlaying = false;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
+  late Duration currentPostion;
+  Duration newPosition = const Duration(seconds: 0);
 
   @override
   void initState() {
     super.initState();
+    initPlayer();
+  }
+
+  void initPlayer() {
     audioPlayer.setReleaseMode(ReleaseMode.loop);
     // setAudio();
+    audioPlayer.setSource(DeviceFileSource(globalPath));
 
     audioPlayer.onPlayerStateChanged.listen((state) {
       setState(() {
@@ -35,24 +44,50 @@ class _PlayerScreenState extends State<PlayerScreen> {
     });
 
     audioPlayer.onDurationChanged.listen((newDuration) {
+      print('Max duration: $newDuration');
+
       setState(() {
         duration = newDuration;
       });
     });
 
     audioPlayer.onPositionChanged.listen((newPosition) {
+      if (newPosition == duration) {
+        audioPlayer.stop();
+      }
+
       setState(() {
         position = newPosition;
+        currentPostion = position;
       });
     });
   }
 
-  // Future setAudio() async {
-  //   audioPlayer.setReleaseMode(ReleaseMode.loop);
-  //   // String url = '';
-  //   // audioPlayer.setSourceUrl(url);
-  //   final file = abo;
-  // }
+  // todo: change 2 sec on 15 sec
+  void _rewindUp() async {
+    await audioPlayer.seek(currentPostion += Duration(seconds: 2));
+    print(position);
+  }
+
+  void _rewindDown() async {
+    await audioPlayer.seek(currentPostion -= Duration(seconds: 2));
+    print(position);
+  }
+
+  void saveAs() async {
+    await FileSaver.instance.saveAs(
+      ext: 'm4a',
+      mimeType: MimeType.aac,
+      name: 'audio',
+      filePath: globalPath,
+    );
+  }
+
+  void sharePressed() {
+    String message = 'Share audio stories';
+
+    Share.shareXFiles([XFile(globalPath)]);
+  }
 
   @override
   void dispose() {
@@ -89,7 +124,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
               flex: 5,
               child: Container(
                 margin: const EdgeInsets.fromLTRB(5, 30, 5, 0),
-                padding: const EdgeInsets.fromLTRB(17, 10, 17, 120),
+                padding: const EdgeInsets.fromLTRB(17, 20, 17, 20),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15),
@@ -106,24 +141,44 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   ],
                 ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        SvgPicture.asset(
-                          'assets/svg/Upload.svg',
-                          height: 30,
+                        InkWell(
+                          onTap: () {
+                            sharePressed();
+                          },
+                          child: SvgPicture.asset(
+                            'assets/svg/Upload.svg',
+                            height: 30,
+                          ),
                         ),
                         const SizedBox(width: 30),
-                        SvgPicture.asset(
-                          'assets/svg/PaperDownload.svg',
-                          height: 30,
+                        InkWell(
+                          onTap: () {
+                            saveAs();
+                          },
+                          child: SvgPicture.asset(
+                            'assets/svg/PaperDownload.svg',
+                            height: 30,
+                          ),
                         ),
                         const SizedBox(width: 30),
-                        SvgPicture.asset(
-                          'assets/svg/Delete.svg',
-                          height: 30,
+                        InkWell(
+                          onTap: () {
+                            //todo: trable with setState
+                            // Navigator.pushNamedAndRemoveUntil(
+                            //   context,
+                            //   HomeScreen.routeName,
+                            //   (route) => false,
+                            // );
+                          },
+                          child: SvgPicture.asset(
+                            'assets/svg/Delete.svg',
+                            height: 30,
+                          ),
                         ),
                         const Spacer(),
                         InkWell(
@@ -132,33 +187,44 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 50),
                     Text(
                       'Аудіозапис 1',
                       style: mainTheme.textTheme.labelLarge,
                     ),
-                    Slider(
-                        min: 0,
-                        max: duration.inSeconds.toDouble(),
-                        value: position.inSeconds.toDouble(),
-                        onChanged: (value) async {
-                          final position = Duration(seconds: value.toInt());
-                          await audioPlayer.seek(position);
-
-                          await audioPlayer.resume();
-                        }),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Column(
                       children: [
-                        Text(formatTime(position)),
-                        Text(formatTime(duration)),
+                        Slider(
+                          activeColor: ColorsApp.colorLightDark,
+                          inactiveColor: ColorsApp.colorLightDark,
+                          min: 0,
+                          max: duration.inSeconds.toDouble(),
+                          value: position.inSeconds.toDouble(),
+                          onChanged: (value) async {
+                            final position = Duration(seconds: value.toInt());
+                            await audioPlayer.seek(position);
+                          },
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(formatTime(position)),
+                            Text(formatTime(duration)),
+                          ],
+                        ),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            setState(() {
+                              _rewindDown();
+                            });
+
+                            print(position);
+                            print('fe');
+                          },
                           child: SvgPicture.asset(
                             'assets/svg/secLeft.svg',
                             height: 38,
@@ -181,19 +247,20 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 //     'https://archive.org/download/IGM-V7/IGM%20-%20Vol.%207/25%20Diablo%20-%20Tristram%20%28Blizzard%29.mp3';
                                 await audioPlayer.play(
                                   DeviceFileSource(
-                                    globalPath ?? '',
+                                    globalPath,
                                   ),
                                 );
-                                // await audioPlayer.play(UrlSource(
-                                //     '/data/user/0/com.example.memory_box/cache/audio.mp4'));
                                 print(audioPlayer.getDuration().toString());
                               }
-                              setState(() {});
                             },
                           ),
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            setState(() {
+                              _rewindUp();
+                            });
+                          },
                           child: SvgPicture.asset(
                             'assets/svg/secRight.svg',
                             height: 38,
