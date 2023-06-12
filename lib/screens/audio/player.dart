@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/audio/record_wave.dart';
 import 'package:audio_stories/screens/home_screen.dart';
@@ -8,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key});
@@ -19,6 +23,8 @@ class PlayerScreen extends StatefulWidget {
 }
 
 class _PlayerScreenState extends State<PlayerScreen> {
+  List<Reference>? references;
+
   final audioPlayer = AudioPlayer();
   bool isPlaying = false;
   Duration duration = Duration.zero;
@@ -26,10 +32,49 @@ class _PlayerScreenState extends State<PlayerScreen> {
   late Duration currentPostion;
   Duration newPosition = const Duration(seconds: 0);
 
+  bool _isUploading = false;
+
   @override
   void initState() {
     super.initState();
     initPlayer();
+    _onUploadComplete();
+  }
+
+  Future<void> _onUploadComplete() async {
+    final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+    ListResult listResult =
+        await firebaseStorage.ref().child('upload_voice_firebase').list();
+    setState(() {
+      references = listResult.items;
+    });
+  }
+
+  Future<void> _onFileUpload() async {
+    FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+    setState(() {
+      _isUploading = true;
+    });
+    try {
+      await firebaseStorage
+          .ref('upload-voice-firebase')
+          .child(globalPath.substring(
+              globalPath.lastIndexOf('/'), globalPath.length))
+          .putFile(File(globalPath));
+      _onUploadComplete();
+      print(firebaseStorage);
+    } catch (error) {
+      print('Error occured while uplaoding to Firebase ${error.toString()}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error occured while uplaoding'),
+        ),
+      );
+    } finally {
+      setState(() {
+        _isUploading = false;
+      });
+    }
   }
 
   void initPlayer() {
@@ -116,9 +161,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
         painter: PurplePainter(),
         child: Column(
           children: [
-            const Expanded(
+            Expanded(
               flex: 1,
-              child: SizedBox(),
+              child: SizedBox(
+                child: ListView(
+                  children: [Text(references.toString())],
+                ),
+              ),
             ),
             Expanded(
               flex: 5,
@@ -182,7 +231,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         ),
                         const Spacer(),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            _onFileUpload();
+                          },
                           child: const Text('Зберегти'),
                         ),
                       ],

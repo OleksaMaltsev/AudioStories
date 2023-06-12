@@ -31,14 +31,13 @@ class _RecordWaveScreenState extends State<RecordWaveScreen> {
   @override
   void initState() {
     super.initState();
-    //final hasPermission = recorderController.checkPermission();
     _getDir();
     _initialiseControllers();
   }
 
   void _getDir() async {
     appDirectory = await getApplicationDocumentsDirectory();
-    pathAudio = "${appDirectory.path}/recordingg.m4a";
+    pathAudio = "${appDirectory.path}/recording.m4a";
     setState(() {});
   }
 
