@@ -3,6 +3,7 @@ import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
 import 'package:audio_stories/widgets/background/background_blue_widget.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -15,6 +16,16 @@ class AudioStoriesScreen extends StatefulWidget {
 }
 
 class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
+  late Future<ListResult> futureFiles;
+
+  @override
+  void initState() {
+    super.initState();
+
+    futureFiles =
+        FirebaseStorage.instance.ref('/upload-voice-firebase/').list();
+  }
+
   bool play = false;
   bool repeat = false;
 
@@ -36,7 +47,7 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
                 actions: null,
               ),
               Container(
-                padding: const EdgeInsets.fromLTRB(20, 30, 25, 40),
+                padding: const EdgeInsets.fromLTRB(20, 20, 25, 40),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -202,6 +213,36 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+
+                    // todo: edit it and delete
+                    Container(
+                      height: 400,
+                      child: FutureBuilder(
+                        future: futureFiles,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            final files = snapshot.data!.items;
+                            return ListView.builder(
+                              itemCount: files.length,
+                              itemBuilder: (context, index) {
+                                final file = files[index];
+                                return ListTile(
+                                  title: Text(file.name),
+                                );
+                              },
+                            );
+                          } else if (snapshot.hasError) {
+                            return const Center(
+                              child: Text('some error'),
+                            );
+                          } else {
+                            return const Center(
+                              child: CircularProgressIndicator.adaptive(),
+                            );
+                          }
+                        },
                       ),
                     ),
                   ],

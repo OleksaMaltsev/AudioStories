@@ -37,7 +37,7 @@ class _RecordWaveScreenState extends State<RecordWaveScreen> {
 
   void _getDir() async {
     appDirectory = await getApplicationDocumentsDirectory();
-    pathAudio = "${appDirectory.path}/recording.m4a";
+    pathAudio = "${appDirectory.path}/recording1.m4a";
     setState(() {});
   }
 

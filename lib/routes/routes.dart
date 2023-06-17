@@ -51,7 +51,7 @@ class AppRouter {
         builder = (_) => const RecordScreen();
         break;
       case PlayerScreen.routeName:
-        builder = (_) => const PlayerScreen();
+        builder = (_) => PlayerScreen();
         break;
       case ProfileScreen.routeName:
         builder = (_) => const ProfileScreen();

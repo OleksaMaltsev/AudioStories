@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/screens/audio/record_wave.dart';
+import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
 import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
@@ -14,7 +15,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 class PlayerScreen extends StatefulWidget {
-  const PlayerScreen({super.key});
+  PlayerScreen({super.key});
+  bool isMount = true;
 
   static const String routeName = '/player';
 
@@ -45,24 +47,36 @@ class _PlayerScreenState extends State<PlayerScreen> {
     final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
     ListResult listResult =
         await firebaseStorage.ref().child('upload_voice_firebase').list();
-    setState(() {
-      references = listResult.items;
-    });
+    if (widget.isMount) {
+      setState(() {
+        references = listResult.items;
+      });
+    }
   }
 
   Future<void> _onFileUpload() async {
     FirebaseStorage firebaseStorage = FirebaseStorage.instance;
-    setState(() {
-      _isUploading = true;
-    });
+    final spaceRef = FirebaseStorage.instance.ref();
+    if (widget.isMount) {
+      setState(() {
+        _isUploading = true;
+      });
+    }
+
     try {
       await firebaseStorage
           .ref('upload-voice-firebase')
           .child(globalPath.substring(
               globalPath.lastIndexOf('/'), globalPath.length))
           .putFile(File(globalPath));
-      _onUploadComplete();
+      //_onUploadComplete();
       print(firebaseStorage);
+      if (mounted) {
+        Navigator.pushReplacementNamed(
+          context,
+          AudioStoriesScreen.routeName,
+        );
+      }
     } catch (error) {
       print('Error occured while uplaoding to Firebase ${error.toString()}');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -71,9 +85,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
         ),
       );
     } finally {
-      setState(() {
-        _isUploading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isUploading = false;
+        });
+      }
     }
   }
 
@@ -83,28 +99,30 @@ class _PlayerScreenState extends State<PlayerScreen> {
     audioPlayer.setSource(DeviceFileSource(globalPath));
 
     audioPlayer.onPlayerStateChanged.listen((state) {
-      setState(() {
-        isPlaying = state == PlayerState.playing;
-      });
+      if (widget.isMount) {
+        setState(() {
+          isPlaying = state == PlayerState.playing;
+        });
+      }
     });
 
     audioPlayer.onDurationChanged.listen((newDuration) {
       print('Max duration: $newDuration');
 
-      setState(() {
-        duration = newDuration;
-      });
+      if (widget.isMount) {
+        setState(() {
+          duration = newDuration;
+        });
+      }
     });
 
     audioPlayer.onPositionChanged.listen((newPosition) {
       if (newPosition == duration) {
         audioPlayer.stop();
       }
-
-      setState(() {
-        position = newPosition;
-        currentPostion = position;
-      });
+      position = newPosition;
+      currentPostion = position;
+      setState(() {});
     });
   }
 
@@ -130,14 +148,14 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   void sharePressed() {
     String message = 'Share audio stories';
-
     Share.shareXFiles([XFile(globalPath)]);
   }
 
   @override
   void dispose() {
-    audioPlayer.dispose();
+    widget.isMount = false;
     audioPlayer.stop();
+    audioPlayer.dispose();
     super.dispose();
   }
 
@@ -272,9 +290,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             setState(() {
                               _rewindDown();
                             });
-
-                            print(position);
-                            print('fe');
                           },
                           child: SvgPicture.asset(
                             'assets/svg/secLeft.svg',
