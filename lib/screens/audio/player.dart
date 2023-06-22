@@ -15,8 +15,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 class PlayerScreen extends StatefulWidget {
-  PlayerScreen({super.key});
-  bool isMount = true;
+  const PlayerScreen({super.key});
 
   static const String routeName = '/player';
 
@@ -47,7 +46,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
     final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
     ListResult listResult =
         await firebaseStorage.ref().child('upload_voice_firebase').list();
-    if (widget.isMount) {
+    if (mounted) {
       setState(() {
         references = listResult.items;
       });
@@ -57,7 +56,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   Future<void> _onFileUpload() async {
     FirebaseStorage firebaseStorage = FirebaseStorage.instance;
     final spaceRef = FirebaseStorage.instance.ref();
-    if (widget.isMount) {
+    if (mounted) {
       setState(() {
         _isUploading = true;
       });
@@ -99,7 +98,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
     audioPlayer.setSource(DeviceFileSource(globalPath));
 
     audioPlayer.onPlayerStateChanged.listen((state) {
-      if (widget.isMount) {
+      if (mounted) {
         setState(() {
           isPlaying = state == PlayerState.playing;
         });
@@ -109,7 +108,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
     audioPlayer.onDurationChanged.listen((newDuration) {
       print('Max duration: $newDuration');
 
-      if (widget.isMount) {
+      if (mounted) {
         setState(() {
           duration = newDuration;
         });
@@ -122,7 +121,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
       }
       position = newPosition;
       currentPostion = position;
-      setState(() {});
+
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -153,10 +155,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   @override
   void dispose() {
-    widget.isMount = false;
     audioPlayer.stop();
     audioPlayer.dispose();
-    super.dispose();
+    if (mounted) {
+      super.dispose();
+    }
   }
 
   String formatTime(Duration duration) {

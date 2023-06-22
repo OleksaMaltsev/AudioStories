@@ -51,6 +51,7 @@ dependencies:
   file_saver: ^0.2.4
   share_plus: ^7.0.2
   firebase_storage: ^11.2.2
+  cloud_firestore: ^4.7.1
 
 dev_dependencies:
   flutter_test:
