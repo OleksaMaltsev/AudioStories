@@ -17,7 +17,7 @@ class PurplePainter extends CustomPainter {
     ovalPath.moveTo(width * 2, height * 0.01);
 
     ovalPath.quadraticBezierTo(
-        width * 0.9, height * 0.50, width * 0, height * 0.25);
+        width * 0.99, height * 0.40, width * 0, height * 0.20);
 
     ovalPath.lineTo(0, -height);
 

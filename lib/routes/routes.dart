@@ -36,7 +36,7 @@ class AppRouter {
         builder = (_) => const SignUpScreen();
         break;
       case SignUpSmsScreen.routeName:
-        builder = (_) => const SignUpSmsScreen();
+        builder = (_) => SignUpSmsScreen();
         break;
       case SignUpThanksScreen.routeName:
         builder = (_) => const SignUpThanksScreen();
@@ -51,7 +51,7 @@ class AppRouter {
         builder = (_) => const RecordScreen();
         break;
       case PlayerScreen.routeName:
-        builder = (_) => PlayerScreen();
+        builder = (_) => const PlayerScreen();
         break;
       case ProfileScreen.routeName:
         builder = (_) => const ProfileScreen();

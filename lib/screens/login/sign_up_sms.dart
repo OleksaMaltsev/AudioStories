@@ -1,5 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/providers/user_sign_up_provider.dart';
+import 'package:audio_stories/screens/login/sign_up.dart';
 import 'package:audio_stories/screens/login/sign_up_thanks.dart';
 import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/thems/main_thame.dart';
@@ -7,6 +8,8 @@ import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:audio_stories/widgets/buttons/orange_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 import 'widgets/description_sing_up_widget.dart';
 import 'widgets/sms_input_formatter_widget.dart';
@@ -26,61 +29,6 @@ class _SignUpSmsScreenState extends State<SignUpSmsScreen> {
   TextEditingController smsController = TextEditingController();
   FirebaseAuth auth = FirebaseAuth.instance;
   String? _verificationCode;
-  _verifyPhone() async {
-    try {
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        //phoneNumber: '+380 99 391 1133',
-        phoneNumber: userGlobal,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          await FirebaseAuth.instance
-              .signInWithCredential(credential)
-              .then((value) async {
-            if (value.user != null) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MainPage()),
-                  (route) => false);
-            }
-          });
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          print(e.message);
-        },
-        codeSent: (String? verficationID, int? resendToken) {
-          setState(() {
-            _verificationCode = verficationID;
-            try {
-              FirebaseAuth.instance
-                  .signInWithCredential(PhoneAuthProvider.credential(
-                      verificationId: _verificationCode ?? '000000',
-                      smsCode: smsController.text))
-                  .then((value) async {
-                if (value.user != null) {
-                  Navigator.pushNamed(
-                    context,
-                    SignUpThanksScreen.routeName,
-                  );
-                }
-                print(value.user);
-              });
-            } catch (e) {
-              FocusScope.of(context).unfocus();
-              print('invalid OTP');
-              print(e);
-            }
-          });
-        },
-        codeAutoRetrievalTimeout: (String verficationID) {
-          setState(() {
-            _verificationCode = verficationID;
-          });
-        },
-        timeout: const Duration(seconds: 120),
-      );
-    } on FirebaseAuthException catch (e) {
-      print(e.code);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +86,7 @@ class _SignUpSmsScreenState extends State<SignUpSmsScreen> {
                       OrangeButton(
                         text: 'Продовжити',
                         function: () {
-                          _verifyPhone();
+                          _verifyPhone(context);
                         },
                       ),
                       const SizedBox(height: 60),
@@ -167,5 +115,65 @@ class _SignUpSmsScreenState extends State<SignUpSmsScreen> {
         ),
       ),
     );
+  }
+
+  _verifyPhone(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber:
+            Provider.of<UserSignUpProvider>(context, listen: false).userPhone,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await FirebaseAuth.instance
+              .signInWithCredential(credential)
+              .then((value) async {
+            if (value.user != null) {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MainPage()),
+                  (route) => false);
+            }
+          });
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          print(e.message);
+          print('ffff');
+        },
+        codeSent: (String? verficationID, int? resendToken) {
+          setState(() {
+            _verificationCode = verficationID;
+            try {
+              FirebaseAuth.instance
+                  .signInWithCredential(PhoneAuthProvider.credential(
+                      verificationId: _verificationCode ?? '1',
+                      smsCode: smsController.text))
+                  .then((value) async {
+                if (value.user != null) {
+                  Navigator.pushNamed(
+                    context,
+                    SignUpThanksScreen.routeName,
+                  );
+                }
+                print(value.user);
+              });
+            } catch (e) {
+              FocusScope.of(context).unfocus();
+              print('invalid OTP');
+              print(e);
+            }
+          });
+        },
+        codeAutoRetrievalTimeout: (String verficationID) {
+          setState(() {
+            _verificationCode = verficationID;
+          });
+        },
+        timeout: const Duration(seconds: 120),
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e.code);
+      print('fef');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Невірний код з смс')));
+    }
   }
 }
