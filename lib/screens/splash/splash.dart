@@ -25,18 +25,19 @@ class _SplashScreenState extends State<SplashScreen> {
       const Duration(milliseconds: 2000),
     );
 
-    // if (FirebaseAuth.instance.currentUser != null) {
-    //   print(FirebaseAuth.instance.currentUser?.uid);
-    //   Navigator.pushNamedAndRemoveUntil(
-    //     context,
-    //     MainPage.routeName,
-    //     (route) => false,
-    //   );
-    // } else {
-    Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
-      WelcomeScreen.routeName,
-      (_) => false,
-    );
+    if (FirebaseAuth.instance.currentUser != null) {
+      print(FirebaseAuth.instance.currentUser?.uid);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        MainPage.routeName,
+        (route) => false,
+      );
+    } else {
+      Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+        WelcomeScreen.routeName,
+        (_) => false,
+      );
+    }
   }
 
   @override

@@ -1,7 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
-import 'package:audio_stories/screens/audio/player.dart';
-import 'package:audio_stories/screens/audio/record.dart';
+
 import 'package:audio_stories/screens/audio/record_wave.dart';
 import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
 import 'package:audio_stories/screens/home_screen.dart';
@@ -97,9 +96,7 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
             //   label: 'Аудіоказки',
             // ),
             (RecordWaveScreen.routeName ==
-                        ModalRoute.of(context)?.settings.name ||
-                    RecordScreen.routeName ==
-                        ModalRoute.of(context)?.settings.name)
+                    ModalRoute.of(context)?.settings.name)
                 ? MenuBarItem.activeItem
                 : MenuBarItem.passiveItem,
             BottomNavigationBarItem(

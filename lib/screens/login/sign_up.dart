@@ -90,10 +90,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               child: TextFormField(
                                 //initialValue: '+38 ',
+                                cursorColor: ColorsApp.colorLightOpacityDark,
                                 keyboardType: TextInputType.phone,
                                 controller: phoneController,
                                 textAlign: TextAlign.center,
-                                //inputFormatters: [PhoneInputFormatter()],
+                                inputFormatters: [PhoneInputFormatter()],
                                 decoration: const InputDecoration(
                                   contentPadding:
                                       EdgeInsets.fromLTRB(15, 15, 15, 5),
@@ -114,7 +115,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           function: () async {
                             Provider.of<UserSignUpProvider>(context,
                                     listen: false)
-                                .changeUserPhone(phoneController.text);
+                                .changeUserPhone(
+                                    phoneController.text.replaceAll(' ', ''));
                             // _sendOtp(
                             //     phoneNumber: _phoneNumberController.text,
                             //     context: context);

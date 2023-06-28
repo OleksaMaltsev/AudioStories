@@ -1,9 +1,12 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/models/track_model.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
 import 'package:audio_stories/widgets/background/background_blue_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -39,6 +42,29 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
     setState(() {});
   }
 
+  Future<QuerySnapshot<Map<String, dynamic>>>? dataStream;
+
+  void getAllTrack() {
+    final db = FirebaseFirestore.instance;
+    dataStream = db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("tracks")
+        .get();
+    // .asStream();
+
+    //     .then(
+    //   (querySnapshot) {
+    //     dataSnap = querySnapshot.docs;
+    //     print("Successfully completed");
+    //     for (var docSnapshot in querySnapshot.docs) {
+    //       print('${docSnapshot.id} => ${docSnapshot.data()}');
+    //     }
+    //   },
+    //   onError: (e) => print("Error completing: $e"),
+    // );
+  }
+
   void _getPath(String path) async {
     // String fullPath = 'e';
     // var futureFiles2 = FirebaseStorage.instance.ref(path);
@@ -57,12 +83,12 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
     //setState(() {});
   }
 
-  Future<void> _initData() async {
-    Track track = await FirebaseRepository().getTrack();
-    setState(() {
-      //listRef.add(track);
-    });
-  }
+  // Future<void> _initData() async {
+  //   Track track = await FirebaseRepository().getTrack();
+  //   setState(() {
+  //     // listRef.add(track.url);
+  //   });
+  // }
 
   //late Future<ListResult> _futureDate;
   late ListResult listResult;
@@ -71,7 +97,7 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
   @override
   void initState() {
     super.initState();
-
+    getAllTrack();
     futureFiles =
         FirebaseStorage.instance.ref('/upload-voice-firebase/').list();
     futureFiles.then((value) {
@@ -218,20 +244,40 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
                   children: [
                     Container(
                       height: 400,
-                      child: ListView.builder(
-                        itemCount: listRef.length,
-                        itemBuilder: (context, index) {
-                          final file = listRef[index];
-                          //_getPath(file.fullPath);
-                          count = listRef.length;
-                          // Future.delayed(Duration.zero, () async {
-                          //   _refresh();
-                          // });
+                      child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                        future: dataStream,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            return ListView.builder(
+                              itemCount: snapshot.data?.docs.length,
+                              itemBuilder: (context, index) {
+                                final file = snapshot.data?.docs[index];
+                                //_getPath(file.fullPath);
+                                count = listRef.length;
+                                print(file!.data());
+                                // Future.delayed(Duration.zero, () async {
+                                //   _refresh();
+                                // });
 
-                          return TrackContainer(
-                            name: file.name,
-                            urlTrack: file,
-                          );
+                                // return TrackContainer(
+                                //   name: file.name,
+                                //   urlTrack: file,
+                                // );
+                                return TrackContainer(
+                                  name: null,
+                                  urlTrack: null,
+                                  data: file!.data(),
+                                );
+                              },
+                            );
+                          }
+
+                          if (snapshot.hasError) {
+                            return const Text("Something went wrong");
+                          }
+
+                          return const CircularProgressIndicator.adaptive();
                         },
                       ),
                     ),
@@ -310,10 +356,15 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
 }
 
 class TrackContainer extends StatefulWidget {
-  const TrackContainer({super.key, required this.name, required this.urlTrack});
+  const TrackContainer(
+      {super.key,
+      required this.name,
+      required this.urlTrack,
+      required this.data});
 
-  final String name;
-  final Reference urlTrack;
+  final String? name;
+  final Reference? urlTrack;
+  final Map<String, dynamic> data;
 
   @override
   State<TrackContainer> createState() => _TrackContainerState();
@@ -323,6 +374,7 @@ class _TrackContainerState extends State<TrackContainer> {
   AudioPlayer audioPlayer = AudioPlayer();
   bool playTrack = false;
   String path = '';
+  Track? track;
   @override
   void initState() {
     //audioPlayer.setSourceUrl(widget.urlTrack);
@@ -331,10 +383,18 @@ class _TrackContainerState extends State<TrackContainer> {
     setState(() {});
 
     super.initState();
+    // final duration = widget.data['duration'];
+    // final trackName = widget.data['trackName'];
+    // final url = widget.data['url'];
+    track = Track(
+      title: widget.data['trackName'],
+      url: widget.data['url'],
+      time: widget.data['duration'],
+    );
   }
 
   void _getPath() async {
-    path = await widget.urlTrack.getDownloadURL();
+    //path = await widget.urlTrack.getDownloadURL();
     print(path + 'ff');
     setState(() {});
   }
@@ -364,7 +424,8 @@ class _TrackContainerState extends State<TrackContainer> {
               child: InkWell(
                 onTap: () {
                   setState(() {});
-                  audioPlayer.play(UrlSource(path));
+                  //audioPlayer.play(UrlSource(path));
+                  audioPlayer.play(UrlSource(track?.url ?? ''));
 
                   //audioPlayer.stop();
 
@@ -386,13 +447,15 @@ class _TrackContainerState extends State<TrackContainer> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.name ?? 'Track',
+                    //widget.name ?? 'Track',
+                    track?.title ?? 'Track',
                     style: mainTheme.textTheme.labelSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   Text(
-                    '30 хвилин ${path}',
+                    //'30 хвилин ${path}',
+                    '${track?.time}',
                     style: mainTheme.textTheme.labelSmall,
                   ),
                 ],
@@ -412,3 +475,22 @@ class _TrackContainerState extends State<TrackContainer> {
     );
   }
 }
+
+
+// work variant
+// return ListView.builder(
+//                               itemCount: listRef.length,
+//                               itemBuilder: (context, index) {
+//                                 final file = listRef[index];
+//                                 //_getPath(file.fullPath);
+//                                 count = listRef.length;
+//                                 // Future.delayed(Duration.zero, () async {
+//                                 //   _refresh();
+//                                 // });
+
+//                                 return TrackContainer(
+//                                   name: file.name,
+//                                   urlTrack: file,
+//                                 );
+//                               },
+//                             );

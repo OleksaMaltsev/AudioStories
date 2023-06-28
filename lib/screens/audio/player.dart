@@ -1,15 +1,22 @@
 import 'dart:io';
 
 import 'package:audio_stories/constants/colors.dart';
+import 'package:audio_stories/providers/track_path_provider.dart';
+import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/audio/record_wave.dart';
+import 'package:audio_stories/screens/audio/save_track_in_selection.dart';
+import 'package:audio_stories/screens/audio/widgets/custom_slider_thumb_oval.dart';
 import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
 import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:file_saver/file_saver.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -34,10 +41,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
   Duration newPosition = const Duration(seconds: 0);
 
   bool _isUploading = false;
+  late String pathTrack;
 
   @override
   void initState() {
     super.initState();
+    pathTrack = Provider.of<TrackPathProvider>(context, listen: false).path!;
     initPlayer();
     _onUploadComplete();
   }
@@ -54,6 +63,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   Future<void> _onFileUpload() async {
+    FirebaseRepository().saveTrack(duration, pathTrack);
     FirebaseStorage firebaseStorage = FirebaseStorage.instance;
     final spaceRef = FirebaseStorage.instance.ref();
     if (mounted) {
@@ -65,9 +75,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
     try {
       await firebaseStorage
           .ref('upload-voice-firebase')
-          .child(globalPath.substring(
-              globalPath.lastIndexOf('/'), globalPath.length))
-          .putFile(File(globalPath));
+          .child(
+              pathTrack.substring(pathTrack.lastIndexOf('/'), pathTrack.length))
+          .putFile(File(
+              Provider.of<TrackPathProvider>(context, listen: false).path!));
       //_onUploadComplete();
       print(firebaseStorage);
       if (mounted) {
@@ -79,7 +90,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
     } catch (error) {
       print('Error occured while uplaoding to Firebase ${error.toString()}');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Error occured while uplaoding'),
         ),
       );
@@ -95,7 +106,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   void initPlayer() {
     audioPlayer.setReleaseMode(ReleaseMode.loop);
     // setAudio();
-    audioPlayer.setSource(DeviceFileSource(globalPath));
+    audioPlayer.setSource(DeviceFileSource(pathTrack));
 
     audioPlayer.onPlayerStateChanged.listen((state) {
       if (mounted) {
@@ -144,13 +155,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
       ext: 'm4a',
       mimeType: MimeType.aac,
       name: 'audio',
-      filePath: globalPath,
+      filePath: pathTrack,
     );
   }
 
   void sharePressed() {
     String message = 'Share audio stories';
-    Share.shareXFiles([XFile(globalPath)]);
+    Share.shareXFiles([XFile(pathTrack)]);
   }
 
   @override
@@ -184,11 +195,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
           children: [
             Expanded(
               flex: 1,
-              child: SizedBox(
-                child: ListView(
-                  children: [Text(references.toString())],
-                ),
-              ),
+              child: SizedBox(),
             ),
             Expanded(
               flex: 5,
@@ -253,7 +260,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         const Spacer(),
                         InkWell(
                           onTap: () {
-                            _onFileUpload();
+                            // _onFileUpload();
+                            Navigator.pushNamedAndRemoveUntil(context,
+                                SaveTrackScreen.routeName, (route) => false,
+                                arguments: pathTrack);
                           },
                           child: const Text('Зберегти'),
                         ),
@@ -265,17 +275,36 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     ),
                     Column(
                       children: [
-                        Slider(
-                          activeColor: ColorsApp.colorLightDark,
-                          inactiveColor: ColorsApp.colorLightDark,
-                          min: 0,
-                          max: duration.inSeconds.toDouble(),
-                          value: position.inSeconds.toDouble(),
-                          onChanged: (value) async {
-                            final position = Duration(seconds: value.toInt());
-                            await audioPlayer.seek(position);
-                          },
+                        SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            thumbShape: CustomSliderThumbOval(
+                                thumbRadius: 15,
+                                max: duration.inSeconds,
+                                min: 0),
+                          ),
+                          child: Slider(
+                            activeColor: ColorsApp.colorLightDark,
+                            inactiveColor: ColorsApp.colorLightDark,
+                            min: 0,
+                            max: duration.inSeconds.toDouble(),
+                            value: position.inSeconds.toDouble(),
+                            onChanged: (value) async {
+                              final position = Duration(seconds: value.toInt());
+                              await audioPlayer.seek(position);
+                            },
+                          ),
                         ),
+                        // Slider(
+                        //   activeColor: ColorsApp.colorLightDark,
+                        //   inactiveColor: ColorsApp.colorLightDark,
+                        //   min: 0,
+                        //   max: duration.inSeconds.toDouble(),
+                        //   value: position.inSeconds.toDouble(),
+                        //   onChanged: (value) async {
+                        //     final position = Duration(seconds: value.toInt());
+                        //     await audioPlayer.seek(position);
+                        //   },
+                        // ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -316,7 +345,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 //     'https://archive.org/download/IGM-V7/IGM%20-%20Vol.%207/25%20Diablo%20-%20Tristram%20%28Blizzard%29.mp3';
                                 await audioPlayer.play(
                                   DeviceFileSource(
-                                    globalPath,
+                                    pathTrack,
                                   ),
                                 );
                                 print(audioPlayer.getDuration().toString());

@@ -1,6 +1,6 @@
 import 'package:audio_stories/screens/audio/player.dart';
-import 'package:audio_stories/screens/audio/record.dart';
 import 'package:audio_stories/screens/audio/record_wave.dart';
+import 'package:audio_stories/screens/audio/save_track_in_selection.dart';
 import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
 import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/screens/login/sign_up.dart';
@@ -9,6 +9,7 @@ import 'package:audio_stories/screens/login/sign_up_thanks.dart';
 import 'package:audio_stories/screens/login/welcome.dart';
 import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/screens/profile/profile.dart';
+import 'package:audio_stories/screens/profile/profile_edit.dart';
 import 'package:audio_stories/screens/profile/subscription.dart';
 import 'package:audio_stories/screens/selections/add_selection.dart';
 import 'package:audio_stories/screens/selections/choies_selection.dart';
@@ -47,14 +48,17 @@ class AppRouter {
       case RecordWaveScreen.routeName:
         builder = (_) => const RecordWaveScreen();
         break;
-      case RecordScreen.routeName:
-        builder = (_) => const RecordScreen();
-        break;
       case PlayerScreen.routeName:
         builder = (_) => const PlayerScreen();
         break;
+      case SaveTrackScreen.routeName:
+        builder = (_) => const SaveTrackScreen();
+        break;
       case ProfileScreen.routeName:
         builder = (_) => const ProfileScreen();
+        break;
+      case ProfileEditScreen.routeName:
+        builder = (_) => const ProfileEditScreen();
         break;
       case SubscriptionScreen.routeName:
         builder = (_) => const SubscriptionScreen();

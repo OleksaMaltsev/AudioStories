@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:audio_stories/constants/colors.dart';
+import 'package:audio_stories/providers/track_path_provider.dart';
 import 'package:audio_stories/screens/audio/player.dart';
 import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/screens/main_page.dart';
@@ -9,9 +10,10 @@ import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 //TODO: create bloc
-late String globalPath;
+//late String globalPath;
 
 class RecordWaveScreen extends StatefulWidget {
   const RecordWaveScreen({super.key});
@@ -37,7 +39,7 @@ class _RecordWaveScreenState extends State<RecordWaveScreen> {
 
   void _getDir() async {
     appDirectory = await getApplicationDocumentsDirectory();
-    pathAudio = "${appDirectory.path}/recording1.m4a";
+    pathAudio = "${appDirectory.path}/recording02.m4a";
     setState(() {});
   }
 
@@ -65,11 +67,17 @@ class _RecordWaveScreenState extends State<RecordWaveScreen> {
       isRecordingCompleted = true;
       debugPrint(path);
       debugPrint("Recorded file size: ${File(path).lengthSync()}");
-      globalPath = pathAudio!;
-      Navigator.pushNamed(
-        context,
-        PlayerScreen.routeName,
-      );
+      //globalPath = pathAudio!;
+      if (mounted) {
+        Provider.of<TrackPathProvider>(context, listen: false)
+            .setPath(pathAudio!);
+      }
+      if (mounted) {
+        Navigator.pushNamed(
+          context,
+          PlayerScreen.routeName,
+        );
+      }
     }
   }
 
