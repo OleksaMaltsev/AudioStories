@@ -18,33 +18,43 @@ class CustomAppBarSelections extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        InkWell(
-          onTap: () {
-            Navigator.pop(
-              context,
-              (route) => false,
-            );
-          },
-          child: SvgPicture.asset(AppIcons.back),
+        Expanded(
+          flex: 1,
+          child: InkWell(
+            onTap: () {
+              Navigator.pop(
+                context,
+                (route) => false,
+              );
+            },
+            child: SvgPicture.asset(AppIcons.back),
+          ),
         ),
-        Text(
-          name,
-          style: mainTheme.textTheme.titleMedium,
+        Expanded(
+          flex: 3,
+          child: Text(
+            name,
+            style: mainTheme.textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
         ),
-        actions == null
-            ? InkWell(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.only(top: 25),
-                  child: Text(
-                    'Готово',
-                    style: mainTheme.textTheme.labelMedium?.copyWith(
-                      color: ColorsApp.colorWhite,
+        Expanded(
+          flex: 1,
+          child: actions == null
+              ? InkWell(
+                  onTap: () {},
+                  child: Container(
+                    padding: const EdgeInsets.only(top: 25),
+                    child: Text(
+                      'Готово',
+                      style: mainTheme.textTheme.labelMedium?.copyWith(
+                        color: ColorsApp.colorWhite,
+                      ),
                     ),
                   ),
-                ),
-              )
-            : actions!,
+                )
+              : actions!,
+        ),
       ],
     );
   }

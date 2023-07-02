@@ -1,4 +1,5 @@
 import 'package:audio_stories/screens/login/sign_up.dart';
+import 'package:audio_stories/screens/login/sign_up_thanks_auth_user.dart';
 import 'package:audio_stories/screens/login/welcome.dart';
 import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/thems/main_thame.dart';
@@ -27,16 +28,20 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (FirebaseAuth.instance.currentUser != null) {
       print(FirebaseAuth.instance.currentUser?.uid);
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        MainPage.routeName,
-        (route) => false,
-      );
+      if (mounted) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AuthUserThanksScreen.routeName,
+          (route) => false,
+        );
+      }
     } else {
-      Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
-        WelcomeScreen.routeName,
-        (_) => false,
-      );
+      if (mounted) {
+        Navigator.of(context, rootNavigator: true).pushNamedAndRemoveUntil(
+          WelcomeScreen.routeName,
+          (_) => false,
+        );
+      }
     }
   }
 

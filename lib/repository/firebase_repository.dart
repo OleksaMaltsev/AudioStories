@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
-
+import 'package:uuid/uuid.dart';
 import 'package:audio_stories/models/user_model.dart';
 import 'package:audio_stories/providers/user_sign_up_provider.dart';
 import 'package:audio_stories/screens/login/sign_up_thanks.dart';
@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class FirebaseRepository {
@@ -48,6 +49,43 @@ class FirebaseRepository {
           .doc(
             user.uid,
           )
+          .set(data, SetOptions(merge: true));
+    }
+  }
+
+  void setNewTrackName(String name, String trackUrl) async {
+    String trackId = '';
+    await db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("tracks")
+        .get()
+        .then(
+      (querySnapshot) {
+        print("Successfully completed");
+        for (var docSnapshot in querySnapshot.docs) {
+          final data = docSnapshot.data();
+          if (data['url'] == trackUrl) {
+            trackId = docSnapshot.id;
+          }
+          //print('${docSnapshot.id} => ${docSnapshot.data()}');
+        }
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      //set phone,name in db
+      Map<String, String?> data = {
+        "trackName": name,
+      };
+      db
+          .collection("users")
+          .doc(
+            user.uid,
+          )
+          .collection('tracks')
+          .doc(trackId)
           .set(data, SetOptions(merge: true));
     }
   }
@@ -122,13 +160,14 @@ class FirebaseRepository {
     }
   }
 
-  void saveTrack(Duration duration, String path) {
+  void saveTrack(Duration duration, String path, String name, String track) {
     if (FirebaseAuth.instance.currentUser != null) {
       final db = FirebaseFirestore.instance;
       final dataTrack = <String, dynamic>{
-        'trackName': 'track2',
-        'url': path,
+        'trackName': name,
+        'url': track,
         'duration': duration.inSeconds,
+        'date': Timestamp.now(),
       };
       db
           .collection('users')
@@ -136,6 +175,115 @@ class FirebaseRepository {
           .collection('tracks')
           .add(dataTrack);
     }
+  }
+
+  void saveSellection(String photo, String name, String? description,
+      List<Map<String, dynamic>>? tracks) {
+    if (FirebaseAuth.instance.currentUser != null) {
+      final String descriptionSellection = description ?? '';
+      final db = FirebaseFirestore.instance;
+      if (tracks != null) {
+        final dataSellection = <String, dynamic>{
+          'sellectionName': name,
+          'description': descriptionSellection,
+          'photo': photo,
+          'date': Timestamp.now(),
+          'tracks': tracks,
+        };
+        db
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .collection('sellections')
+            .add(dataSellection);
+      } else {
+        final dataSellection = <String, dynamic>{
+          'sellectionName': name,
+          'description': descriptionSellection,
+          'photo': photo,
+          'date': Timestamp.now(),
+        };
+        db
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .collection('sellections')
+            .add(dataSellection);
+      }
+    }
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getAllSellections() {
+    final db = FirebaseFirestore.instance;
+    final dataStream = db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("sellections")
+        .get();
+    return dataStream;
+  }
+
+  Future<Map<String, dynamic>> getTrackForDb(String docId) async {
+    Map<String, dynamic> nameTrack = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('tracks')
+        .doc(docId)
+        .get()
+        .then(
+      (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return {
+          'trackName': data['trackName'],
+          'url': data['url'],
+          'duration': data['duration'],
+        };
+      },
+      onError: (e) => print("Error getting document: $e"),
+    );
+    print(nameTrack);
+    return nameTrack;
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getAllTrack() {
+    final db = FirebaseFirestore.instance;
+    final dataStream = db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("tracks")
+        .get();
+    return dataStream;
+  }
+
+  Future<String> saveImageInStorage(File file) async {
+    final uuid = Uuid();
+    Reference fbStoragePhotoSellection =
+        FirebaseStorage.instance.ref('/image-firebase/${uuid.v1()}.jpg');
+    try {
+      await fbStoragePhotoSellection.putFile(file);
+    } on FirebaseException catch (e) {
+      debugPrint(e.message);
+    }
+    return await fbStoragePhotoSellection.getDownloadURL();
+  }
+
+  Future<String?> getTrackDocID(String trackUrl) async {
+    await db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("tracks")
+        .get()
+        .then(
+      (querySnapshot) {
+        print("Successfully completed");
+        for (var docSnapshot in querySnapshot.docs) {
+          final data = docSnapshot.data();
+          if (data['url'] == trackUrl) {
+            return docSnapshot.id;
+          }
+          print('${docSnapshot.id} => ${docSnapshot.data()}');
+        }
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
   }
 
   // changePhone(String phone, String verifId) async {

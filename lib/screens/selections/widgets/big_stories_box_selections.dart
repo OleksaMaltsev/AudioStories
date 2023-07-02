@@ -5,13 +5,18 @@ import 'package:audio_stories/thems/main_thame.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 class BigStoriesBoxSelections extends StatefulWidget {
   final String imagePath;
-  final String storiesName;
+  final DateTime dateTime;
+  final int? countTracks;
+  final String? duration;
   const BigStoriesBoxSelections({
     required this.imagePath,
-    required this.storiesName,
+    required this.dateTime,
+    required this.countTracks,
+    required this.duration,
     super.key,
   });
 
@@ -22,6 +27,12 @@ class BigStoriesBoxSelections extends StatefulWidget {
 
 class _BigStoriesBoxSelectionsState extends State<BigStoriesBoxSelections> {
   bool play = false;
+  String? date;
+  @override
+  void initState() {
+    super.initState();
+    date = DateFormat('dd.MM.yy').format(widget.dateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +50,11 @@ class _BigStoriesBoxSelectionsState extends State<BigStoriesBoxSelections> {
           children: [
             Container(
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
                 color: Colors.transparent,
                 image: DecorationImage(
-                  fit: BoxFit.fill,
-                  image: AssetImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
                     widget.imagePath,
                   ),
                 ),
@@ -76,7 +88,7 @@ class _BigStoriesBoxSelectionsState extends State<BigStoriesBoxSelections> {
                       SizedBox(
                         width: 60,
                         child: AutoSizeText(
-                          widget.storiesName,
+                          date ?? '',
                           style: mainTheme.textTheme.labelSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: ColorsApp.colorWhite,
@@ -89,14 +101,14 @@ class _BigStoriesBoxSelectionsState extends State<BigStoriesBoxSelections> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '7 аудіо',
+                            '${widget.countTracks ?? 0} аудіо',
                             style: mainTheme.textTheme.labelMedium?.copyWith(
                               color: ColorsApp.colorWhite,
                               fontSize: 12,
                             ),
                           ),
                           Text(
-                            '2:30 годин',
+                            widget.duration ?? '00:00',
                             style: mainTheme.textTheme.labelMedium?.copyWith(
                               color: ColorsApp.colorWhite,
                               fontSize: 12,

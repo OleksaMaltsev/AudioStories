@@ -23,4 +23,5 @@ class AppIcons {
   static const String plus = '$path/plus.svg';
   static const String back = '$path/back.svg';
   static const String camera = '$path/Camera.svg';
+  static const String allowCircle = '$path/Arrow-LeftCircle.svg';
 }

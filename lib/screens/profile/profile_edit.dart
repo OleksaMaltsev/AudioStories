@@ -297,7 +297,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                   textAlign: TextAlign.center,
                   inputFormatters: [PhoneInputFormatter()],
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.fromLTRB(15, 15, 15, 5),
+                    contentPadding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
                     border: InputBorder.none,
                     hintText:
                         FirebaseAuth.instance.currentUser?.phoneNumber ?? '',

@@ -63,7 +63,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   Future<void> _onFileUpload() async {
-    FirebaseRepository().saveTrack(duration, pathTrack);
+    FirebaseRepository().saveTrack(duration, pathTrack, '', '');
     FirebaseStorage firebaseStorage = FirebaseStorage.instance;
     final spaceRef = FirebaseStorage.instance.ref();
     if (mounted) {
@@ -193,7 +193,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
         painter: PurplePainter(),
         child: Column(
           children: [
-            Expanded(
+            const Expanded(
               flex: 1,
               child: SizedBox(),
             ),

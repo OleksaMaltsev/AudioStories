@@ -46,10 +46,12 @@ class _EditSelectionScreenState extends State<EditSelectionScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  BigStoriesBoxSelections(
-                    imagePath: 'assets/images/Rectangle382big.png',
-                    storiesName: '20.01.22',
-                  ),
+                  //todo: refresh
+                  // BigStoriesBoxSelections(
+                  //   imagePath: 'assets/images/Rectangle382big.png',
+                  //   storiesName: '20.01.22',
+                  //   dateTime: ,
+                  // ),
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.all(10),

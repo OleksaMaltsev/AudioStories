@@ -99,10 +99,6 @@ class _PlayerWidgetState extends State<PlayerWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          'Аудіозапис 1',
-          style: mainTheme.textTheme.labelLarge,
-        ),
         Column(
           children: [
             SliderTheme(
@@ -131,6 +127,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
             ),
           ],
         ),
+        const SizedBox(height: 30),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [

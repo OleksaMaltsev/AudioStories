@@ -1,6 +1,10 @@
 import 'package:audio_stories/firebase_options.dart';
 import 'package:audio_stories/providers/change_choose_provider.dart';
+import 'package:audio_stories/providers/change_name_track.dart';
+import 'package:audio_stories/providers/choise_tracks_provider.dart';
+import 'package:audio_stories/providers/sellection_create_provider.dart';
 import 'package:audio_stories/providers/sms_code_provider.dart';
+import 'package:audio_stories/providers/track_menu_provider.dart';
 import 'package:audio_stories/providers/track_path_provider.dart';
 import 'package:audio_stories/providers/user_sign_up_provider.dart';
 import 'package:audio_stories/routes/routes.dart';
@@ -39,6 +43,18 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => TrackPathProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ChangeNamePovider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => TrackMenuProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SellesticonCreateProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ChoiseTrackProvider(),
         ),
       ],
       child: MaterialApp(

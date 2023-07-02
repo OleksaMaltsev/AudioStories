@@ -1,9 +1,18 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/providers/choise_tracks_provider.dart';
+import 'package:audio_stories/providers/sellection_create_provider.dart';
+import 'package:audio_stories/repository/firebase_repository.dart';
+import 'package:audio_stories/screens/selections/selection.dart';
+import 'package:audio_stories/screens/selections/widgets/track_container_widget.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_green_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class ChoiceSelectionScreen extends StatefulWidget {
   const ChoiceSelectionScreen({super.key});
@@ -16,6 +25,76 @@ class ChoiceSelectionScreen extends StatefulWidget {
 class _ChoiceSelectionScreenState extends State<ChoiceSelectionScreen> {
   bool choose = false;
   bool playTrack = true;
+
+  Future<QuerySnapshot<Map<String, dynamic>>>? dataStream;
+  late Future<ListResult> futureFiles;
+  List<Reference> listRef = [];
+
+  void getAllTrack() {
+    final db = FirebaseFirestore.instance;
+    dataStream = db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("tracks")
+        .get();
+    // .asStream();
+
+    //     .then(
+    //   (querySnapshot) {
+    //     dataSnap = querySnapshot.docs;
+    //     print("Successfully completed");
+    //     for (var docSnapshot in querySnapshot.docs) {
+    //       print('${docSnapshot.id} => ${docSnapshot.data()}');
+    //     }
+    //   },
+    //   onError: (e) => print("Error completing: $e"),
+    // );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getAllTrack();
+    futureFiles =
+        FirebaseStorage.instance.ref('/upload-voice-firebase/').list();
+    futureFiles.then((value) {
+      listRef = value.items;
+    });
+    setState(() {});
+    print(listRef);
+  }
+
+  Future<Map<String, dynamic>> getNameTrackForDb(String docId) async {
+    Map<String, dynamic> nameTrack = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('tracks')
+        .doc(docId)
+        .get()
+        .then(
+      (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return {
+          'trackName': data['trackName'],
+          'url': data['url'],
+          'duration': data['duration'],
+        };
+      },
+      onError: (e) => print("Error getting document: $e"),
+    );
+    print(nameTrack);
+    return nameTrack;
+  }
+
+  Future<List<Map<String, dynamic>>> setTracksInSellection(
+      List listWithDocId) async {
+    List<Map<String, dynamic>> listMap = [];
+    for (String value in listWithDocId) {
+      listMap.add(await getNameTrackForDb(value));
+    }
+    return listMap;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +105,57 @@ class _ChoiceSelectionScreenState extends State<ChoiceSelectionScreen> {
           width: double.infinity,
           child: Column(
             children: [
-              const CustomAppBarSelections(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(
+                        context,
+                        (route) => false,
+                      );
+                    },
+                    child: SvgPicture.asset(AppIcons.back),
+                  ),
+                  Text(
+                    'Вибрати',
+                    style: mainTheme.textTheme.titleMedium,
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      final list = Provider.of<ChoiseTrackProvider>(context,
+                          listen: false);
+                      final sellection = Provider.of<SellesticonCreateProvider>(
+                          context,
+                          listen: false);
+                      //sellection.setTracks();
+                      if (list.getList().isNotEmpty) {
+                        //sellection.setTracks(list),
+                        final listMapsTracks =
+                            await setTracksInSellection(list.getList());
+                        FirebaseRepository().saveSellection(
+                            sellection.sellectionModel.photo!,
+                            sellection.sellectionModel.name!,
+                            sellection.sellectionModel.description,
+                            listMapsTracks);
+                      }
+                      if (mounted) {
+                        Navigator.pushNamedAndRemoveUntil(context,
+                            SelectionsScreen.routeName, (route) => false);
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 25),
+                      child: Text(
+                        'Додати',
+                        style: mainTheme.textTheme.labelMedium?.copyWith(
+                          color: ColorsApp.colorWhite,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 30),
               Column(
                 children: [
@@ -58,83 +187,37 @@ class _ChoiceSelectionScreenState extends State<ChoiceSelectionScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
               Container(
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                 child: Column(
                   children: [
                     Container(
-                      width: double.infinity,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 1,
-                          color: ColorsApp.colorSlimOpacityDark,
-                        ),
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(
-                              left: 5,
-                              right: 20,
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                playTrack = !playTrack;
-                                setState(() {});
+                      height: 400,
+                      child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                        future: dataStream,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            return ListView.builder(
+                              itemCount: snapshot.data?.docs.length,
+                              itemBuilder: (context, index) {
+                                final file = snapshot.data?.docs[index];
+                                final fileDocId = snapshot.data?.docs[index].id;
+                                print(file!.data());
+                                return TrackGreenContainer(
+                                  data: file.data(),
+                                  fileDocId: fileDocId!,
+                                );
                               },
-                              child: SvgPicture.asset(
-                                playTrack ? AppIcons.play50 : AppIcons.pause50,
-                                color: ColorsApp.colorLightGreen,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Track 1',
-                                  style:
-                                      mainTheme.textTheme.labelSmall?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Text(
-                                  '30 хвилин',
-                                  style: mainTheme.textTheme.labelSmall,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5),
-                            child: InkWell(
-                              onTap: () => setState(() {
-                                choose = !choose;
-                              }),
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  border: Border.all(
-                                    width: 2,
-                                    color: ColorsApp.colorLightDark,
-                                  ),
-                                ),
-                                child: choose
-                                    ? SvgPicture.asset(AppIcons.tickSquare)
-                                    : const SizedBox(),
-                              ),
-                            ),
-                          ),
-                        ],
+                            );
+                          }
+
+                          if (snapshot.hasError) {
+                            return const Text("Something went wrong");
+                          }
+
+                          return const CircularProgressIndicator.adaptive();
+                        },
                       ),
                     ),
                   ],
@@ -144,46 +227,6 @@ class _ChoiceSelectionScreenState extends State<ChoiceSelectionScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class CustomAppBarSelections extends StatelessWidget {
-  const CustomAppBarSelections({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        InkWell(
-          onTap: () {
-            Navigator.pop(
-              context,
-              (route) => false,
-            );
-          },
-          child: SvgPicture.asset(AppIcons.back),
-        ),
-        Text(
-          'Вибрати',
-          style: mainTheme.textTheme.titleMedium,
-        ),
-        InkWell(
-          onTap: () {},
-          child: Container(
-            padding: const EdgeInsets.only(top: 25),
-            child: Text(
-              'Додати',
-              style: mainTheme.textTheme.labelMedium?.copyWith(
-                color: ColorsApp.colorWhite,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
