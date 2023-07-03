@@ -3,6 +3,7 @@ import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/widgets/bottom_nav_bar/bottom_nav_bar_widget.dart';
 import 'package:audio_stories/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -25,7 +26,9 @@ class _MainPageState extends State<MainPage> {
         onGenerateRoute: AppRouter.generateRoute,
       ),
       drawerEnableOpenDragGesture: false,
-      drawer: const CustomDrawer(),
+      drawer: CustomDrawer(
+        navigatorKey: _navigatorKey,
+      ),
       bottomNavigationBar: BottomNavBarWidget(navigatorKey: _navigatorKey),
     );
   }

@@ -310,7 +310,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               TextButton(
                 onPressed: () async {
                   saveChanges();
-
                   FirebaseRepository()
                       .setValuesInDB(nameTextController.text.trim());
                   FirebaseAuth.instance.userChanges().listen((user) {

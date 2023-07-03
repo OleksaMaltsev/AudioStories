@@ -18,15 +18,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:provider/provider.dart';
 
-class AudioStoriesScreen extends StatefulWidget {
-  const AudioStoriesScreen({super.key});
-  static const String routeName = '/audio-stories';
+class DeletedTracksScreen extends StatefulWidget {
+  const DeletedTracksScreen({super.key});
+  static const String routeName = '/deleted-tracks';
 
   @override
-  State<AudioStoriesScreen> createState() => _AudioStoriesScreenState();
+  State<DeletedTracksScreen> createState() => _DeletedTracksScreenState();
 }
 
-class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
+class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
   late Future<ListResult> futureFiles;
   List<Reference> listRef = [];
 
@@ -120,115 +120,16 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
               CustomAppBar(
                 contextScreen: context,
                 leading: null,
-                title: 'Аудіозаписи',
-                subTitle: 'Все в одному місці',
+                title: 'Нещодавно видалені',
+                subTitle: null,
                 actions: null,
               ),
               Container(
-                padding: const EdgeInsets.fromLTRB(20, 20, 25, 40),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '1 аудіо',
-                          style: mainTheme.textTheme.labelSmall?.copyWith(
-                            color: ColorsApp.colorWhite,
-                          ),
-                        ),
-                        Text(
-                          '30 хвилин',
-                          style: mainTheme.textTheme.labelSmall?.copyWith(
-                            color: ColorsApp.colorWhite,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Stack(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            repeat = !repeat;
-
-                            setState(() {});
-                          },
-                          child: Container(
-                            width: 200,
-                            height: 46,
-                            decoration: BoxDecoration(
-                              color: repeat
-                                  ? ColorsApp.colorOpacityWhite
-                                  : ColorsApp.colorOpacityBlue,
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 12),
-                                child: SvgPicture.asset(
-                                  repeat
-                                      ? AppIcons.fluentArrow
-                                      : AppIcons.fluentArrowWhite,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              play = !play;
-                            });
-                          },
-                          child: Container(
-                            width: 148,
-                            height: 46,
-                            padding: const EdgeInsets.only(right: 10),
-                            decoration: BoxDecoration(
-                              color: ColorsApp.colorWhite,
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                !play
-                                    ? SvgPicture.asset(
-                                        AppIcons.play,
-                                      )
-                                    : Padding(
-                                        padding: const EdgeInsets.only(left: 4),
-                                        child: SvgPicture.asset(
-                                          AppIcons.pause,
-                                          width: 38,
-                                          color: ColorsApp.colorPurple,
-                                        ),
-                                      ),
-                                Text(
-                                  'Запустити все',
-                                  style:
-                                      mainTheme.textTheme.labelSmall?.copyWith(
-                                    color: ColorsApp.colorPurple,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 2,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20, 60, 20, 0),
                 child: Column(
                   children: [
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.6,
+                      height: MediaQuery.of(context).size.height * 0.622,
                       child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
                         future: dataStream,
                         builder: (context, snapshot) {
@@ -239,9 +140,9 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
                               itemBuilder: (context, index) {
                                 final file = snapshot.data?.docs[index];
                                 final fileDocId = snapshot.data?.docs[index].id;
-                                print(file!.data());
-                                return TrackContainer(
-                                  data: file.data(),
+                                //print(file!.data());
+                                return DeletedTrackContainer(
+                                  data: file!.data(),
                                   fileDocId: fileDocId!,
                                 );
                               },
@@ -267,8 +168,8 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
   }
 }
 
-class TrackContainer extends StatefulWidget {
-  const TrackContainer({
+class DeletedTrackContainer extends StatefulWidget {
+  const DeletedTrackContainer({
     super.key,
     required this.data,
     required this.fileDocId,
@@ -278,10 +179,10 @@ class TrackContainer extends StatefulWidget {
   final String fileDocId;
 
   @override
-  State<TrackContainer> createState() => _TrackContainerState();
+  State<DeletedTrackContainer> createState() => _DeletedTrackContainerState();
 }
 
-class _TrackContainerState extends State<TrackContainer> {
+class _DeletedTrackContainerState extends State<DeletedTrackContainer> {
   AudioPlayer audioPlayer = AudioPlayer();
   bool playTrack = false;
 

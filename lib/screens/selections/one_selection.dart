@@ -8,6 +8,7 @@ import 'package:audio_stories/screens/selections/widgets/track_container_widget.
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_green_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class OneSelectionScreen extends StatefulWidget {
@@ -19,9 +20,29 @@ class OneSelectionScreen extends StatefulWidget {
 }
 
 class _OneSelectionScreenState extends State<OneSelectionScreen> {
+  Map<String, dynamic> dataTrack = {};
+  List? list;
+  void getTrackSellection(String docId) {
+    final db = FirebaseFirestore.instance;
+    Map<String, dynamic> data = {};
+    final dataStream = db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("sellections")
+        .doc(docId)
+        .get();
+    dataStream.then((doc) {
+      data = doc.data() as Map<String, dynamic>;
+      dataTrack = data;
+      print(dataTrack['tracks']);
+      list = dataTrack['tracks'];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final arg = ModalRoute.of(context)!.settings.arguments as Map;
+    getTrackSellection(arg['docId']);
     return Scaffold(
       body: CustomPaint(
         painter: GreenPainter(),
@@ -66,48 +87,31 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
                       maxLines: 3,
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Детальніше',
-                      style: mainTheme.textTheme.labelSmall?.copyWith(
-                        color: ColorsApp.colorLightOpacityDark,
-                      ),
-                    ),
-                  ),
+                  // TextButton(
+                  //   onPressed: () {},
+                  //   child: Text(
+                  //     'Детальніше',
+                  //     style: mainTheme.textTheme.labelSmall?.copyWith(
+                  //       color: ColorsApp.colorLightOpacityDark,
+                  //     ),
+                  //   ),
+                  // ),
                   Column(
                     children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.32,
-                        child:
-                            FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                          future: FirebaseRepository().getAllTrack(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              return ListView.builder(
-                                itemCount: snapshot.data?.docs.length,
-                                itemBuilder: (context, index) {
-                                  final file = snapshot.data?.docs[index];
-                                  final fileDocId =
-                                      snapshot.data?.docs[index].id;
-                                  print(file!.data());
-                                  return TrackGreenContainer(
-                                    data: file.data(),
-                                    fileDocId: fileDocId!,
-                                  );
-                                },
-                              );
-                            }
-
-                            if (snapshot.hasError) {
-                              return const Text("Something went wrong");
-                            }
-
-                            return const CircularProgressIndicator.adaptive();
-                          },
-                        ),
-                      ),
+                      // Container(
+                      //   height: MediaQuery.of(context).size.height * 0.378,
+                      //   child: ListView.builder(
+                      //     itemCount: list.length,
+                      //     itemBuilder: (context, index) {
+                      //       final Map<String, dynamic> file = list[index];
+                      //       print(file);
+                      //       return TrackGreenContainer(
+                      //         data: file,
+                      //         fileDocId: arg['docId'],
+                      //       );
+                      //     },
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],

@@ -50,9 +50,9 @@ class _SelectionsScreenState extends State<SelectionsScreen> {
                         itemBuilder: (context, index) {
                           final file = snapshot.data?.docs[index];
                           final fileDocId = snapshot.data?.docs[index].id;
-                          print(file!.data());
+
                           return StoriesBoxSelections(
-                            data: file.data(),
+                            data: file!.data(),
                             docId: fileDocId!,
                           );
                         },

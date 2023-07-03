@@ -1,5 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -63,7 +64,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                 AutoSizeText(
                   widget.title != null ? widget.title! : '',
                   style: mainTheme.textTheme.titleMedium,
-                  maxLines: 1,
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 2),
                 AutoSizeText(

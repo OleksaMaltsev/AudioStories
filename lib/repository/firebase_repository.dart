@@ -160,7 +160,8 @@ class FirebaseRepository {
     }
   }
 
-  void saveTrack(Duration duration, String path, String name, String track) {
+  Map<String, dynamic> saveTrack(
+      Duration duration, String path, String name, String track) {
     if (FirebaseAuth.instance.currentUser != null) {
       final db = FirebaseFirestore.instance;
       final dataTrack = <String, dynamic>{
@@ -174,6 +175,9 @@ class FirebaseRepository {
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .collection('tracks')
           .add(dataTrack);
+      return dataTrack;
+    } else {
+      return {};
     }
   }
 
@@ -251,6 +255,22 @@ class FirebaseRepository {
         .collection("tracks")
         .get();
     return dataStream;
+  }
+
+  Map<String, dynamic> getTrackSellection(String docId) {
+    final db = FirebaseFirestore.instance;
+    Map<String, dynamic> data = {};
+    final dataStream = db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("tracks")
+        .doc(docId);
+
+    dataStream.get().then((doc) {
+      data = doc.data() as Map<String, dynamic>;
+      print(data);
+    });
+    return data;
   }
 
   Future<String> saveImageInStorage(File file) async {

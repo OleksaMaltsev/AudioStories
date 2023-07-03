@@ -86,6 +86,7 @@ class _StoriesBoxSelectionsState extends State<StoriesBoxSelections> {
             'date': dateTime,
             'countTracks': countTracks,
             'duration': allDuration,
+            'tracks': widget.data['tracks'],
           },
         );
       },

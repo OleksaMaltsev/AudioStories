@@ -57,7 +57,7 @@ class _TrackContainerState extends State<TrackGreenContainer> {
       time: widget.data['duration'],
     );
 
-    getNameTrackForDb();
+    // getNameTrackForDb();
   }
 
   // delete

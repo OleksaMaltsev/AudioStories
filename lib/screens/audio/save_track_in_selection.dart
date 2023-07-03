@@ -11,10 +11,12 @@ import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 
@@ -35,6 +37,7 @@ class _SaveTrackScreenState extends State<SaveTrackScreen> {
   Duration duration = Duration.zero;
   final _validationKey = GlobalKey<FormState>();
   FocusNode trackFocus = FocusNode();
+  String? imagePath;
 
   late String pathTrack;
   @override
@@ -66,8 +69,13 @@ class _SaveTrackScreenState extends State<SaveTrackScreen> {
           .putFile(File(pathAudio));
 
       final trackUrl = await putFile.ref.getDownloadURL();
-      FirebaseRepository()
+      final trackMap = FirebaseRepository()
           .saveTrack(duration, pathTrack, trackNameController.text, trackUrl);
+
+      if (selectionController.text.isNotEmpty && imagePath != null) {
+        FirebaseRepository().saveSellection(
+            imagePath!, selectionController.text, null, [trackMap]);
+      }
       if (mounted) {
         Navigator.pushReplacementNamed(
           context,
@@ -128,7 +136,12 @@ class _SaveTrackScreenState extends State<SaveTrackScreen> {
                         children: [
                           InkWell(
                             onTap: () {
-                              if (trackNameController.text.isNotEmpty) {
+                              if (trackNameController.text.isNotEmpty &&
+                                  selectionController.text.isNotEmpty &&
+                                  imagePath != null) {
+                                _onFileUpload();
+                              } else if (trackNameController.text.isNotEmpty) {
+                                print('npooon');
                                 _onFileUpload();
                               } else {
                                 trackFocus.requestFocus();
@@ -159,37 +172,58 @@ class _SaveTrackScreenState extends State<SaveTrackScreen> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: Stack(
-                            alignment: Alignment.centerLeft,
-                            children: [
-                              Image.asset(
-                                'assets/images/Group6887.jpg',
-                                width: 240,
-                                color: Colors.black45.withOpacity(0.4),
-                                colorBlendMode: BlendMode.darken,
-                              ),
-                              Positioned(
-                                left: 90,
-                                top: 90,
-                                child: Container(
-                                  padding: const EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      width: 1.5,
+                        child: InkWell(
+                          onTap: () async {
+                            if (await Permission.photosAddOnly
+                                .request()
+                                .isGranted) {
+                              FilePickerResult? result = await FilePicker
+                                  .platform
+                                  .pickFiles(type: FileType.any);
+
+                              if (result != null) {
+                                File file = File(result.files.single.path!);
+                                print('path:${file.path}');
+                                imagePath = await FirebaseRepository()
+                                    .saveImageInStorage(file);
+                              }
+                            }
+                            setState(() {});
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Stack(
+                              alignment: Alignment.centerLeft,
+                              children: [
+                                Image.network(
+                                  imagePath ??
+                                      'https://www.englishdom.com/dynamicus/blog-post/000/002/403/1640597013_content_700x455.jpg',
+                                  width: double.infinity,
+                                  color: Colors.black45.withOpacity(0.4),
+                                  colorBlendMode: BlendMode.darken,
+                                ),
+                                Positioned(
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.35,
+                                  top: 85,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 1.5,
+                                        color: ColorsApp.colorWhite,
+                                      ),
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    child: SvgPicture.asset(
+                                      AppIcons.camera,
+                                      width: 50,
                                       color: ColorsApp.colorWhite,
                                     ),
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  child: SvgPicture.asset(
-                                    AppIcons.camera,
-                                    width: 50,
-                                    color: ColorsApp.colorWhite,
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),

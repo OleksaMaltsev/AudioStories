@@ -2,6 +2,7 @@ import 'package:audio_stories/screens/audio/player.dart';
 import 'package:audio_stories/screens/audio/record_wave.dart';
 import 'package:audio_stories/screens/audio/save_track_in_selection.dart';
 import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
+import 'package:audio_stories/screens/deleted_tracks/deleted_tracks.dart';
 import 'package:audio_stories/screens/login/sign_up_thanks_auth_user.dart';
 import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/screens/login/sign_up.dart';
@@ -88,6 +89,9 @@ class AppRouter {
         break;
       case OneSelectionScreen.routeName:
         builder = (_) => const OneSelectionScreen();
+        break;
+      case DeletedTracksScreen.routeName:
+        builder = (_) => const DeletedTracksScreen();
         break;
       default:
         throw Exception('Invalid route: ${settings.name}');

@@ -1,8 +1,12 @@
 import 'package:audio_stories/blocs/bloc/test_bloc.dart';
 import 'package:audio_stories/constants/colors.dart';
+import 'package:audio_stories/repository/firebase_repository.dart';
+import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
+import 'package:audio_stories/screens/selections/widgets/stories_box_selections.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +22,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String? uid = FirebaseAuth.instance.currentUser?.uid;
+
+  Future<QuerySnapshot<Map<String, dynamic>>>? dataStream;
+
+  void getAllTrack() {
+    final db = FirebaseFirestore.instance;
+    dataStream = db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("tracks")
+        .get();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getAllTrack();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
                       Row(
                         children: [
                           Expanded(
@@ -177,40 +198,78 @@ class _HomeScreenState extends State<HomeScreen> {
                           'Аудіозаписи',
                           style: mainTheme.textTheme.labelLarge,
                         ),
-                        // InkWell(
-                        //   onTap: () {
-                        //     // showModalBottomSheet(
-                        //     //     context: context,
-                        //     //     builder: (context) {
-                        //     //       return Scaffold(
-                        //     //         body: Container(),
-                        //     //       );
-                        //     //     });
-                        //     setState(() {});
-                        //   },
-                        //   child: RecordTrack(),
-                        //   // child: Text(
-                        //   //   'Відкрити все',
-                        //   //   style: mainTheme.textTheme.labelSmall,
-                        //   // ),
-                        // ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {});
+                            Navigator.pushNamed(
+                                context, AudioStoriesScreen.routeName);
+                          },
+                          //child: RecordTrack(),
+                          child: Text(
+                            'Відкрити все',
+                            style: mainTheme.textTheme.labelSmall,
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 50),
-                    Text(
-                      'Щойно ти запишеш \nаудіо, вона з\'явиться тут.',
-                      style: mainTheme.textTheme.labelMedium?.copyWith(
-                        color: ColorsApp.colorLightOpacityDark,
-                      ),
-                      textAlign: TextAlign.center,
+                    const SizedBox(height: 5),
+                    Column(
+                      children: [
+                        dataStream != null
+                            ? Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.32,
+                                child: FutureBuilder<
+                                    QuerySnapshot<Map<String, dynamic>>>(
+                                  future: dataStream,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.done) {
+                                      return ListView.builder(
+                                        itemCount: snapshot.data?.docs.length,
+                                        itemBuilder: (context, index) {
+                                          final file =
+                                              snapshot.data?.docs[index];
+                                          final fileDocId =
+                                              snapshot.data?.docs[index].id;
+                                          print(file!.data());
+                                          return TrackContainer(
+                                            data: file.data(),
+                                            fileDocId: fileDocId!,
+                                          );
+                                        },
+                                      );
+                                    }
+
+                                    if (snapshot.hasError) {
+                                      return const Text("Something went wrong");
+                                    }
+
+                                    return const CircularProgressIndicator
+                                        .adaptive();
+                                  },
+                                ),
+                              )
+                            : Column(
+                                children: [
+                                  const SizedBox(height: 50),
+                                  Text(
+                                    'Щойно ти запишеш \nаудіо, вона з\'явиться тут.',
+                                    style: mainTheme.textTheme.labelMedium
+                                        ?.copyWith(
+                                      color: ColorsApp.colorLightOpacityDark,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 50),
+                                  SvgPicture.asset(
+                                    'assets/svg/ArrowDown.svg',
+                                    width: 60,
+                                  ),
+                                ],
+                              ),
+                      ],
                     ),
-                    const SizedBox(height: 50),
-                    SvgPicture.asset(
-                      'assets/svg/ArrowDown.svg',
-                      width: 60,
-                    ),
-                    //todo delete text
-                    Text(uid ?? 'no'),
                   ],
                 ),
               ),
