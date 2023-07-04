@@ -128,16 +128,22 @@ class _ChoiceSelectionScreenState extends State<ChoiceSelectionScreen> {
                       final sellection = Provider.of<SellesticonCreateProvider>(
                           context,
                           listen: false);
-                      //sellection.setTracks();
                       if (list.getList().isNotEmpty) {
-                        //sellection.setTracks(list),
                         final listMapsTracks =
                             await setTracksInSellection(list.getList());
                         FirebaseRepository().saveSellection(
-                            sellection.sellectionModel.photo!,
-                            sellection.sellectionModel.name!,
-                            sellection.sellectionModel.description,
-                            listMapsTracks);
+                          sellection.sellectionModel.photo!,
+                          sellection.sellectionModel.name!,
+                          sellection.sellectionModel.description,
+                          listMapsTracks,
+                        );
+                      } else {
+                        FirebaseRepository().saveSellection(
+                          sellection.sellectionModel.photo!,
+                          sellection.sellectionModel.name!,
+                          sellection.sellectionModel.description,
+                          null,
+                        );
                       }
                       if (mounted) {
                         Navigator.pushNamedAndRemoveUntil(context,

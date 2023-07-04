@@ -25,28 +25,27 @@ class AddSelectionScreen extends StatefulWidget {
 
 class _AddSelectionScreenState extends State<AddSelectionScreen> {
   TextEditingController selectionController = TextEditingController();
-  final _validationKey = GlobalKey<FormState>();
-  FocusNode trackFocus = FocusNode();
   TextEditingController descriptionSelectionController =
       TextEditingController();
+  final _validationKey = GlobalKey<FormState>();
+  FocusNode trackFocus = FocusNode();
   final _validationKey2 = GlobalKey<FormState>();
   FocusNode trackFocusDes = FocusNode();
-  bool readyValues = false;
 
   String? imagePath;
 
-  void saveSellection(bool ready) {
+  void saveSellection(bool goToChoiceTracks) {
     if (descriptionSelectionController.text.isNotEmpty &&
         selectionController.text.isNotEmpty &&
         imagePath != null) {
-      final String sellection = selectionController.text;
+      Provider.of<SellesticonCreateProvider>(context, listen: false).setValues(
+        selectionController.text,
+        descriptionSelectionController.text,
+        imagePath!,
+      );
 
-      final String description = descriptionSelectionController.text;
-
-      Provider.of<SellesticonCreateProvider>(context, listen: false)
-          .setValues(sellection, description, imagePath!);
-      readyValues = true;
-      if (ready) {
+      //chack which button pressed
+      if (goToChoiceTracks) {
         final sellectionProvider =
             Provider.of<SellesticonCreateProvider>(context, listen: false);
         FirebaseRepository().saveSellection(
@@ -54,22 +53,6 @@ class _AddSelectionScreenState extends State<AddSelectionScreen> {
             sellectionProvider.sellectionModel.name!,
             sellectionProvider.sellectionModel.description!,
             null);
-        if (mounted) {
-          Navigator.pushNamedAndRemoveUntil(
-              context, SelectionsScreen.routeName, (route) => false);
-        }
-      } else {
-        final snackBar = SnackBar(
-          content: Text(
-            'Додайте аудіозаписи',
-            style: mainTheme.textTheme.labelLarge?.copyWith(
-              color: ColorsApp.colorWhite,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          backgroundColor: (ColorsApp.colorLightOpacityDark),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     } else {
       final snackBar = SnackBar(
@@ -116,6 +99,14 @@ class _AddSelectionScreenState extends State<AddSelectionScreen> {
                   InkWell(
                     onTap: () {
                       saveSellection(true);
+                      if (descriptionSelectionController.text.isNotEmpty &&
+                          selectionController.text.isNotEmpty &&
+                          imagePath != null) {
+                        Navigator.pushNamed(
+                          context,
+                          SelectionsScreen.routeName,
+                        );
+                      }
                     },
                     child: Container(
                       padding: const EdgeInsets.only(top: 20),
@@ -171,7 +162,6 @@ class _AddSelectionScreenState extends State<AddSelectionScreen> {
 
                         if (result != null) {
                           File file = File(result.files.single.path!);
-                          print('path:${file.path}');
                           imagePath = await FirebaseRepository()
                               .saveImageInStorage(file);
                         }
@@ -250,10 +240,10 @@ class _AddSelectionScreenState extends State<AddSelectionScreen> {
                             ),
                             counter: InkWell(
                               onTap: () {
-                                saveSellection(false);
+                                FocusScope.of(context).unfocus();
                               },
                               child: Text(
-                                'Зберегти',
+                                'Готово',
                                 style:
                                     mainTheme.textTheme.labelMedium?.copyWith(
                                   fontWeight: FontWeight.w600,
@@ -268,23 +258,14 @@ class _AddSelectionScreenState extends State<AddSelectionScreen> {
                   const SizedBox(height: 80),
                   InkWell(
                     onTap: () {
-                      if (readyValues) {
+                      saveSellection(false);
+                      if (descriptionSelectionController.text.isNotEmpty &&
+                          selectionController.text.isNotEmpty &&
+                          imagePath != null) {
                         Navigator.pushNamed(
                           context,
                           ChoiceSelectionScreen.routeName,
                         );
-                      } else {
-                        final snackBar = SnackBar(
-                          content: Text(
-                            'Нажміть "Зберегти"',
-                            style: mainTheme.textTheme.labelLarge?.copyWith(
-                              color: ColorsApp.colorWhite,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          backgroundColor: (ColorsApp.colorLightOpacityDark),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       }
                     },
                     child: Align(

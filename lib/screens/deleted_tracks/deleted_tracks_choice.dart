@@ -19,15 +19,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:provider/provider.dart';
 
-class DeletedTracksScreen extends StatefulWidget {
-  const DeletedTracksScreen({super.key});
+class DeletedTracksChoiceScreen extends StatefulWidget {
+  const DeletedTracksChoiceScreen({super.key});
   static const String routeName = '/deleted-tracks';
 
   @override
-  State<DeletedTracksScreen> createState() => _DeletedTracksScreenState();
+  State<DeletedTracksChoiceScreen> createState() =>
+      _DeletedTracksChoiceScreenState();
 }
 
-class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
+class _DeletedTracksChoiceScreenState extends State<DeletedTracksChoiceScreen> {
   late Future<ListResult> futureFiles;
   List<Reference> listRef = [];
 
@@ -42,44 +43,19 @@ class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
 
   Future<QuerySnapshot<Map<String, dynamic>>>? dataStream;
 
-  void getAllTrack() {
-    final db = FirebaseFirestore.instance;
-    dataStream = db
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .collection("tracks")
-        .get();
-    // .asStream();
-
-    //     .then(
-    //   (querySnapshot) {
-    //     dataSnap = querySnapshot.docs;
-    //     print("Successfully completed");
-    //     for (var docSnapshot in querySnapshot.docs) {
-    //       print('${docSnapshot.id} => ${docSnapshot.data()}');
-    //     }
-    //   },
-    //   onError: (e) => print("Error completing: $e"),
-    // );
-  }
-
-  void _getPath(String path) async {
-    setState(() {});
-  }
-
   late ListResult listResult;
 
   @override
   void initState() {
     super.initState();
-    getAllTrack();
-    futureFiles =
-        FirebaseStorage.instance.ref('/upload-voice-firebase/').list();
-    futureFiles.then((value) {
-      listRef = value.items;
-    });
-    setState(() {});
-    print(listRef);
+    dataStream = FirebaseRepository().getAllTrack();
+    // futureFiles =
+    //     FirebaseStorage.instance.ref('/upload-voice-firebase/').list();
+    // futureFiles.then((value) {
+    //   listRef = value.items;
+    // });
+    // setState(() {});
+    // print(listRef);
   }
 
   @override
@@ -87,23 +63,23 @@ class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
     super.dispose();
   }
 
-  Future<String> getNameTrackForDb(String docID) async {
-    String nameTrack = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .collection('tracks')
-        .doc(docID)
-        .get()
-        .then(
-      (DocumentSnapshot doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return data['trackName'];
-      },
-      onError: (e) => print("Error getting document: $e"),
-    );
-    print(nameTrack);
-    return nameTrack;
-  }
+  // Future<String> getNameTrackForDb(String docID) async {
+  //   String nameTrack = await FirebaseFirestore.instance
+  //       .collection("users")
+  //       .doc(FirebaseAuth.instance.currentUser?.uid)
+  //       .collection('tracks')
+  //       .doc(docID)
+  //       .get()
+  //       .then(
+  //     (DocumentSnapshot doc) {
+  //       final data = doc.data() as Map<String, dynamic>;
+  //       return data['trackName'];
+  //     },
+  //     onError: (e) => print("Error getting document: $e"),
+  //   );
+  //   print(nameTrack);
+  //   return nameTrack;
+  // }
 
   bool play = false;
   bool repeat = false;

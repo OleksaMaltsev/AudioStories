@@ -10,6 +10,10 @@ class ChoiseTrackProvider extends ChangeNotifier {
     _listTracks.clear();
   }
 
+  void removeItem(String item) {
+    _listTracks.remove(item);
+  }
+
   void printList() {
     print(_listTracks);
   }

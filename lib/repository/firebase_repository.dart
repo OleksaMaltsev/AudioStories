@@ -414,19 +414,3 @@ class FirebaseRepository {
     }
   }
 }
-
-
-
-
-// UserApp user = UserApp(
-//         uid: FirebaseAuth.instance.currentUser?.uid,
-//         phoneNumber: phone,
-//         name: 'Введіть імʼя',
-//       );
-//       Map<String, String?> data;
-//       if (user.phoneNumber != null) {
-//         data = {
-//           "phone": user.phoneNumber,
-//         };
-//         db.collection("users").doc(user.uid).set(data, SetOptions(merge: true));
-//       }

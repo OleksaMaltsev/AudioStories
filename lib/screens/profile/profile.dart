@@ -18,6 +18,12 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
+abstract class Kolesa {}
+
+class Car extends Kolesa {}
+
+class Bike extends Kolesa {}
+
 class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController smsController = TextEditingController();
   void signOut() async {
@@ -70,6 +76,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
   }
+
+  void efef() {}
 
   smsAcceptDialog(BuildContext context) {
     return showDialog(
