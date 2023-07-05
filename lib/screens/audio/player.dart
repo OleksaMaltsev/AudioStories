@@ -62,47 +62,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
     }
   }
 
-  Future<void> _onFileUpload() async {
-    FirebaseRepository().saveTrack(duration, pathTrack, '', '');
-    FirebaseStorage firebaseStorage = FirebaseStorage.instance;
-    final spaceRef = FirebaseStorage.instance.ref();
-    if (mounted) {
-      setState(() {
-        _isUploading = true;
-      });
-    }
-
-    try {
-      await firebaseStorage
-          .ref('upload-voice-firebase')
-          .child(
-              pathTrack.substring(pathTrack.lastIndexOf('/'), pathTrack.length))
-          .putFile(File(
-              Provider.of<TrackPathProvider>(context, listen: false).path!));
-      //_onUploadComplete();
-      print(firebaseStorage);
-      if (mounted) {
-        Navigator.pushReplacementNamed(
-          context,
-          AudioStoriesScreen.routeName,
-        );
-      }
-    } catch (error) {
-      print('Error occured while uplaoding to Firebase ${error.toString()}');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error occured while uplaoding'),
-        ),
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isUploading = false;
-        });
-      }
-    }
-  }
-
   void initPlayer() {
     audioPlayer.setReleaseMode(ReleaseMode.loop);
     // setAudio();

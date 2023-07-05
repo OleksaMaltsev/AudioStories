@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -213,63 +214,58 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     const SizedBox(height: 5),
-                    Column(
-                      children: [
-                        dataStream != null
-                            ? Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.32,
-                                child: FutureBuilder<
-                                    QuerySnapshot<Map<String, dynamic>>>(
-                                  future: dataStream,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.done) {
-                                      return ListView.builder(
-                                        itemCount: snapshot.data?.docs.length,
-                                        itemBuilder: (context, index) {
-                                          final file =
-                                              snapshot.data?.docs[index];
-                                          final fileDocId =
-                                              snapshot.data?.docs[index].id;
-                                          print(file!.data());
-                                          return TrackContainer(
-                                            data: file.data(),
-                                            fileDocId: fileDocId!,
-                                          );
-                                        },
+                    dataStream != null
+                        ? Container(
+                            //height: MediaQuery.of(context).size.height * 0.32,
+                            height: 301.h,
+                            child: FutureBuilder<
+                                QuerySnapshot<Map<String, dynamic>>>(
+                              future: dataStream,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  return ListView.builder(
+                                    itemCount: snapshot.data?.docs.length,
+                                    itemBuilder: (context, index) {
+                                      final file = snapshot.data?.docs[index];
+                                      final fileDocId =
+                                          snapshot.data?.docs[index].id;
+                                      print(file!.data());
+                                      return TrackContainer(
+                                        data: file.data(),
+                                        fileDocId: fileDocId!,
                                       );
-                                    }
+                                    },
+                                  );
+                                }
 
-                                    if (snapshot.hasError) {
-                                      return const Text("Something went wrong");
-                                    }
+                                if (snapshot.hasError) {
+                                  return const Text("Something went wrong");
+                                }
 
-                                    return const CircularProgressIndicator
-                                        .adaptive();
-                                  },
+                                return const CircularProgressIndicator
+                                    .adaptive();
+                              },
+                            ),
+                          )
+                        : Column(
+                            children: [
+                              const SizedBox(height: 50),
+                              Text(
+                                'Щойно ти запишеш \nаудіо, вона з\'явиться тут.',
+                                style:
+                                    mainTheme.textTheme.labelMedium?.copyWith(
+                                  color: ColorsApp.colorLightOpacityDark,
                                 ),
-                              )
-                            : Column(
-                                children: [
-                                  const SizedBox(height: 50),
-                                  Text(
-                                    'Щойно ти запишеш \nаудіо, вона з\'явиться тут.',
-                                    style: mainTheme.textTheme.labelMedium
-                                        ?.copyWith(
-                                      color: ColorsApp.colorLightOpacityDark,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 50),
-                                  SvgPicture.asset(
-                                    'assets/svg/ArrowDown.svg',
-                                    width: 60,
-                                  ),
-                                ],
+                                textAlign: TextAlign.center,
                               ),
-                      ],
-                    ),
+                              const SizedBox(height: 50),
+                              SvgPicture.asset(
+                                'assets/svg/ArrowDown.svg',
+                                width: 60,
+                              ),
+                            ],
+                          ),
                   ],
                 ),
               ),

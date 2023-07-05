@@ -1,5 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/helpers/audio_helper.dart';
 import 'package:audio_stories/models/track_model.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
 import 'package:audio_stories/providers/choise_tracks_provider.dart';
@@ -79,16 +80,16 @@ class _TrackContainerState extends State<TrackGreenContainer> {
     return nameTrack;
   }
 
-  String formatTime(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
+  // String formatTime(Duration duration) {
+  //   String twoDigits(int n) => n.toString().padLeft(2, '0');
+  //   final minutes = twoDigits(duration.inMinutes.remainder(60));
+  //   final seconds = twoDigits(duration.inSeconds.remainder(60));
 
-    return [
-      minutes,
-      seconds,
-    ].join(':');
-  }
+  //   return [
+  //     minutes,
+  //     seconds,
+  //   ].join(':');
+  // }
 
   refresh() {
     setState(() {});
@@ -140,7 +141,8 @@ class _TrackContainerState extends State<TrackGreenContainer> {
                     ),
                   ),
                   Text(
-                    formatTime(Duration(seconds: track!.time)),
+                    AudioHelper.formatTime(
+                        duration: Duration(seconds: track!.time)),
                     style: mainTheme.textTheme.labelSmall,
                   ),
                 ],

@@ -14,13 +14,20 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(ScreenUtilInit(
+    builder: (context, child) {
+      return MyApp();
+    },
+    minTextAdapt: true,
+    designSize: const Size(414, 896),
+  ));
 }
 
 class MyApp extends StatelessWidget {

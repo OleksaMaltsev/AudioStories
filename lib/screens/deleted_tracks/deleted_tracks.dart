@@ -8,6 +8,7 @@ import 'package:audio_stories/providers/track_path_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/audio/widgets/dropdown_button.dart';
 import 'package:audio_stories/screens/audio_stories/widgets/dropdown_button_one_track.dart';
+import 'package:audio_stories/screens/deleted_tracks/widget/dropdown_button_one_track.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
 import 'package:audio_stories/widgets/background/background_blue_widget.dart';
@@ -123,7 +124,13 @@ class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
                 leading: null,
                 title: 'Нещодавно видалені',
                 subTitle: null,
-                actions: null,
+                actions: const DropdownDeleteMenu(
+                  items: [
+                    'Вибрати декілька',
+                    'Видалити все',
+                    'Відновити все',
+                  ],
+                ),
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(20, 60, 20, 0),
@@ -353,46 +360,11 @@ class _DeletedTrackContainerState extends State<DeletedTrackContainer> {
           Expanded(
             flex: 1,
             child: InkWell(
-              onTap: () => setState(
-                () {
-                  choose = !choose;
-                  final list =
-                      Provider.of<ChoiseTrackProvider>(context, listen: false);
-
-                  if (choose && !list.getList().contains(track!.url)) {
-                    list.addToList(widget.fileDocId);
-                    list.printList();
-                  }
-                  if (!choose) {
-                    list.removeItem(widget.fileDocId);
-                    list.printList();
-                  }
-                },
-              ),
-              child: Container(
-                width: 50,
-                height: 50,
-                margin: const EdgeInsets.only(
-                  right: 5,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  border: Border.all(
-                    width: 2,
-                    color: ColorsApp.colorLightDark,
-                  ),
-                ),
-                child: choose
-                    ? SvgPicture.asset(AppIcons.tickSquare)
-                    : const SizedBox(),
+              onTap: () {},
+              child: SvgPicture.asset(
+                AppIcons.delete,
               ),
             ),
-            // InkWell(
-            //   onTap: () {},
-            //   child: SvgPicture.asset(
-            //     AppIcons.delete,
-            //   ),
-            // ),
           ),
         ],
       ),

@@ -1,5 +1,7 @@
+import 'package:audio_stories/blocs/navigation_bloc/navigation_bloc.dart';
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/helpers/audio_helper.dart';
 import 'package:audio_stories/models/track_model.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
 import 'package:audio_stories/providers/choise_tracks_provider.dart';
@@ -8,6 +10,8 @@ import 'package:audio_stories/providers/track_path_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/audio/widgets/dropdown_button.dart';
 import 'package:audio_stories/screens/audio_stories/widgets/dropdown_button_one_track.dart';
+import 'package:audio_stories/screens/deleted_tracks/deleted_tracks.dart';
+import 'package:audio_stories/screens/deleted_tracks/widget/dropdown_button_one_track.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
 import 'package:audio_stories/widgets/background/background_blue_widget.dart';
@@ -15,13 +19,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:provider/provider.dart';
 
 class DeletedTracksChoiceScreen extends StatefulWidget {
   const DeletedTracksChoiceScreen({super.key});
-  static const String routeName = '/deleted-tracks';
+  static const String routeName = '/deleted-tracks-choice';
 
   @override
   State<DeletedTracksChoiceScreen> createState() =>
@@ -63,24 +68,6 @@ class _DeletedTracksChoiceScreenState extends State<DeletedTracksChoiceScreen> {
     super.dispose();
   }
 
-  // Future<String> getNameTrackForDb(String docID) async {
-  //   String nameTrack = await FirebaseFirestore.instance
-  //       .collection("users")
-  //       .doc(FirebaseAuth.instance.currentUser?.uid)
-  //       .collection('tracks')
-  //       .doc(docID)
-  //       .get()
-  //       .then(
-  //     (DocumentSnapshot doc) {
-  //       final data = doc.data() as Map<String, dynamic>;
-  //       return data['trackName'];
-  //     },
-  //     onError: (e) => print("Error getting document: $e"),
-  //   );
-  //   print(nameTrack);
-  //   return nameTrack;
-  // }
-
   bool play = false;
   bool repeat = false;
 
@@ -96,17 +83,47 @@ class _DeletedTracksChoiceScreenState extends State<DeletedTracksChoiceScreen> {
             children: [
               CustomAppBar(
                 contextScreen: context,
-                leading: null,
+                leading: const SizedBox(),
                 title: 'Нещодавно видалені',
                 subTitle: null,
-                actions: null,
+                actions: const DropdownDeleteMenu(
+                  items: [
+                    'Видалити все',
+                    'Відновити все',
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      if (context.read<NavigationBloc>().state.currentIndex !=
+                          0) {
+                        context.read<NavigationBloc>().add(
+                              NavigateTab(
+                                tabIndex: 0,
+                                route: DeletedTracksScreen.routeName,
+                              ),
+                            );
+                      }
+                    },
+                    child: Text(
+                      'Відмінити',
+                      style: mainTheme.textTheme.labelMedium?.copyWith(
+                        color: ColorsApp.colorWhite,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               Container(
-                padding: const EdgeInsets.fromLTRB(20, 60, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                 child: Column(
                   children: [
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.622,
+                      height: 542.h,
                       child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
                         future: dataStream,
                         builder: (context, snapshot) {
@@ -186,42 +203,6 @@ class _DeletedTrackContainerState extends State<DeletedTrackContainer> {
       url: widget.data['url'],
       time: widget.data['duration'],
     );
-
-    getNameTrackForDb();
-  }
-
-  // delete
-  Future<String> getNameTrackForDb() async {
-    String nameTrack = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .collection('tracks')
-        .doc(widget.fileDocId)
-        .get()
-        .then(
-      (DocumentSnapshot doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return data['trackName'];
-      },
-      onError: (e) => print("Error getting document: $e"),
-    );
-    print(nameTrack);
-    return nameTrack;
-  }
-
-  String formatTime(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-
-    return [
-      minutes,
-      seconds,
-    ].join(':');
-  }
-
-  refresh() {
-    setState(() {});
   }
 
   @override
@@ -316,7 +297,9 @@ class _DeletedTrackContainerState extends State<DeletedTrackContainer> {
                           ),
                         ),
                         Text(
-                          formatTime(Duration(seconds: track!.time)),
+                          AudioHelper.formatTime(
+                            duration: Duration(seconds: track!.time),
+                          ),
                           style: mainTheme.textTheme.labelSmall,
                         ),
                       ],
@@ -346,11 +329,8 @@ class _DeletedTrackContainerState extends State<DeletedTrackContainer> {
                 },
               ),
               child: Container(
-                width: 50,
-                height: 50,
-                margin: const EdgeInsets.only(
-                  right: 5,
-                ),
+                width: 60,
+                height: 60,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(50),
                   border: Border.all(
@@ -363,12 +343,6 @@ class _DeletedTrackContainerState extends State<DeletedTrackContainer> {
                     : const SizedBox(),
               ),
             ),
-            // InkWell(
-            //   onTap: () {},
-            //   child: SvgPicture.asset(
-            //     AppIcons.delete,
-            //   ),
-            // ),
           ),
         ],
       ),

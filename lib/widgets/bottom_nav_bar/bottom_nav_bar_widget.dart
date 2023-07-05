@@ -11,23 +11,19 @@ import 'package:audio_stories/widgets/bottom_nav_bar/menu_bar_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class BottomNavBarWidget extends StatefulWidget {
+class BottomNavBarWidget extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey;
-  const BottomNavBarWidget({
+  final int currentTab;
+  final void Function(int) onSelect;
+
+  BottomNavBarWidget({
     required this.navigatorKey,
     super.key,
+    required this.currentTab,
+    required this.onSelect,
   });
 
-  @override
-  State<BottomNavBarWidget> createState() => _BottomNavBarWidgetState();
-}
-
-class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
-  int _selectIndex = 0;
-  void _onItenTapped(int index) {
-    _selectIndex = index;
-    setState(() {});
-  }
+  //int _selectIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +49,7 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
           topRight: Radius.circular(15),
         ),
         child: BottomNavigationBar(
-          currentIndex: _selectIndex,
+          currentIndex: currentTab,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: ColorsApp.colorPurple,
           selectedLabelStyle: mainTheme.textTheme.labelSmall?.copyWith(
@@ -66,7 +62,7 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
                 AppIcons.home,
-                color: _selectIndex == 0
+                color: currentTab == 0
                     ? ColorsApp.colorPurple
                     : ColorsApp.colorLightDark,
               ),
@@ -75,26 +71,12 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
                 AppIcons.category,
-                color: _selectIndex == 1
+                color: currentTab == 1
                     ? ColorsApp.colorPurple
                     : ColorsApp.colorLightDark,
               ),
               label: 'Добірки',
             ),
-            // (PlayerScreen.routeName == ModalRoute.of(context)?.settings.name ||
-            //         RecordScreen.routeName ==
-            //             ModalRoute.of(context)?.settings.name)
-            //     ? MenuBarItem.activeItem
-            //     : MenuBarItem.passiveItem,
-            // BottomNavigationBarItem(
-            //   icon: SvgPicture.asset(
-            //     AppIcons.paper,
-            //     color: _selectIndex == 3
-            //         ? ColorsApp.colorPurple
-            //         : ColorsApp.colorLightDark,
-            //   ),
-            //   label: 'Аудіоказки',
-            // ),
             (RecordWaveScreen.routeName ==
                     ModalRoute.of(context)?.settings.name)
                 ? MenuBarItem.activeItem
@@ -102,17 +84,16 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
                 AppIcons.paper,
-                color: _selectIndex == 3
+                color: currentTab == 3
                     ? ColorsApp.colorPurple
                     : ColorsApp.colorLightDark,
               ),
               label: 'Аудіоказки',
             ),
-
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
                 AppIcons.profile,
-                color: _selectIndex == 4
+                color: currentTab == 4
                     ? ColorsApp.colorPurple
                     : ColorsApp.colorLightDark,
               ),
@@ -120,39 +101,44 @@ class _BottomNavBarWidgetState extends State<BottomNavBarWidget> {
             ),
           ],
           onTap: (value) {
-            _onItenTapped(value);
+            //_onItenTapped(value);
             switch (value) {
               // main screen
               case 0:
-                widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-                  HomeScreen.routeName,
-                  (route) => false,
-                );
+                onSelect(0);
+                // navigatorKey.currentState!.pushNamedAndRemoveUntil(
+                //   HomeScreen.routeName,
+                //   (route) => false,
+                // );
                 break;
               case 1:
-                widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-                  SelectionsScreen.routeName,
-                  (route) => false,
-                );
+                onSelect(1);
+                // navigatorKey.currentState!.pushNamedAndRemoveUntil(
+                //   SelectionsScreen.routeName,
+                //   (route) => false,
+                // );
                 break;
               // record item
               case 2:
-                widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-                  RecordWaveScreen.routeName,
-                  (route) => false,
-                );
+                onSelect(2);
+                // navigatorKey.currentState!.pushNamedAndRemoveUntil(
+                //   RecordWaveScreen.routeName,
+                //   (route) => false,
+                // );
                 break;
               case 3:
-                widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-                  AudioStoriesScreen.routeName,
-                  (route) => false,
-                );
+                onSelect(3);
+                // navigatorKey.currentState!.pushNamedAndRemoveUntil(
+                //   AudioStoriesScreen.routeName,
+                //   (route) => false,
+                // );
                 break;
               case 4:
-                widget.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-                  ProfileScreen.routeName,
-                  (route) => false,
-                );
+                onSelect(4);
+                // navigatorKey.currentState!.pushNamedAndRemoveUntil(
+                //   ProfileScreen.routeName,
+                //   (route) => false,
+                // );
 
                 break;
               default:

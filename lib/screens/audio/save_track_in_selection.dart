@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audio_stories/blocs/navigation_bloc/navigation_bloc.dart';
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/providers/track_path_provider.dart';
@@ -33,7 +34,6 @@ class _SaveTrackScreenState extends State<SaveTrackScreen> {
   final audioPlayer = AudioPlayer();
   TextEditingController selectionController = TextEditingController();
   TextEditingController trackNameController = TextEditingController();
-  bool _isUploading = false;
   Duration duration = Duration.zero;
   final _validationKey = GlobalKey<FormState>();
   FocusNode trackFocus = FocusNode();
@@ -49,55 +49,6 @@ class _SaveTrackScreenState extends State<SaveTrackScreen> {
       print('Max duration: $newDuration');
       duration = newDuration;
     });
-  }
-
-  Future<void> _onFileUpload() async {
-    FirebaseStorage firebaseStorage = FirebaseStorage.instance;
-    final appDirectory = await getApplicationDocumentsDirectory();
-    final pathAudio = "${appDirectory.path}/recording.m4a";
-
-    if (mounted) {
-      setState(() {
-        _isUploading = true;
-      });
-    }
-
-    try {
-      final putFile = await firebaseStorage
-          .ref('upload-voice-firebase')
-          .child('${trackNameController.text}.m4a')
-          .putFile(File(pathAudio));
-
-      final trackUrl = await putFile.ref.getDownloadURL();
-      final trackMap = FirebaseRepository()
-          .saveTrack(duration, pathTrack, trackNameController.text, trackUrl);
-
-      if (selectionController.text.isNotEmpty && imagePath != null) {
-        FirebaseRepository().saveSellection(
-            imagePath!, selectionController.text, null, [trackMap]);
-      }
-      if (mounted) {
-        Navigator.pushReplacementNamed(
-          context,
-          AudioStoriesScreen.routeName,
-        );
-      }
-    } catch (error) {
-      print('Error occured while uplaoding to Firebase ${error.toString()}');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error occured while uplaoding'),
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isUploading = false;
-        });
-      }
-    }
   }
 
   @override
@@ -139,10 +90,33 @@ class _SaveTrackScreenState extends State<SaveTrackScreen> {
                               if (trackNameController.text.isNotEmpty &&
                                   selectionController.text.isNotEmpty &&
                                   imagePath != null) {
-                                _onFileUpload();
+                                FirebaseRepository().onTrackUpload(
+                                  trackName: trackNameController.text,
+                                  sellectionName: selectionController.text,
+                                  duration: duration,
+                                  pathTrack: pathTrack,
+                                  imagePath: imagePath,
+                                );
+                                context.read<NavigationBloc>().add(
+                                      NavigateTab(
+                                        tabIndex: 3,
+                                        route: AudioStoriesScreen.routeName,
+                                      ),
+                                    );
                               } else if (trackNameController.text.isNotEmpty) {
-                                print('npooon');
-                                _onFileUpload();
+                                FirebaseRepository().onTrackUpload(
+                                  trackName: trackNameController.text,
+                                  sellectionName: null,
+                                  duration: duration,
+                                  pathTrack: pathTrack,
+                                  imagePath: null,
+                                );
+                                context.read<NavigationBloc>().add(
+                                      NavigateTab(
+                                        tabIndex: 3,
+                                        route: AudioStoriesScreen.routeName,
+                                      ),
+                                    );
                               } else {
                                 trackFocus.requestFocus();
                                 final snackBar = SnackBar(

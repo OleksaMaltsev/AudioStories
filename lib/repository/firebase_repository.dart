@@ -160,24 +160,67 @@ class FirebaseRepository {
     }
   }
 
-  Map<String, dynamic> saveTrack(
-      Duration duration, String path, String name, String track) {
+  Map<String, dynamic> saveTrack(Duration duration, String path, String name,
+      String track, String storagePath) {
     if (FirebaseAuth.instance.currentUser != null) {
       final db = FirebaseFirestore.instance;
+      String docRefId = '';
       final dataTrack = <String, dynamic>{
         'trackName': name,
         'url': track,
         'duration': duration.inSeconds,
         'date': Timestamp.now(),
+        'storagePath': storagePath,
       };
       db
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .collection('tracks')
-          .add(dataTrack);
+          .add(dataTrack)
+          .then((docRef) {
+        db
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .collection('tracks')
+            .doc(docRef.id)
+            .set({'id': docRef.id}, SetOptions(merge: true));
+      });
       return dataTrack;
     } else {
       return {};
+    }
+  }
+
+  Future<void> onTrackUpload({
+    required String trackName,
+    required String? sellectionName,
+    required Duration duration,
+    required String pathTrack,
+    required String? imagePath,
+  }) async {
+    FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+    final appDirectory = await getApplicationDocumentsDirectory();
+    final pathAudio = "${appDirectory.path}/recording.m4a";
+    final String storageDerectoryPath = 'upload-voice-firebase/$trackName.m4a';
+
+    try {
+      final putFile = await firebaseStorage
+          .ref('upload-voice-firebase')
+          .child('${trackName}.m4a')
+          .putFile(File(pathAudio));
+
+      final trackUrl = await putFile.ref.getDownloadURL();
+      final trackMap = FirebaseRepository().saveTrack(
+          duration, pathTrack, trackName, trackUrl, storageDerectoryPath);
+
+      if (sellectionName != null &&
+          sellectionName.isNotEmpty &&
+          imagePath != null) {
+        FirebaseRepository()
+            .saveSellection(imagePath, sellectionName, null, [trackMap]);
+      }
+    } catch (error) {
+      print('Error occured while uplaoding to Firebase ${error.toString()}');
     }
   }
 
