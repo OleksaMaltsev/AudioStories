@@ -33,7 +33,7 @@ class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
   final dbConnect = FirebaseFirestore.instance
       .collection("users")
       .doc(FirebaseAuth.instance.currentUser?.uid)
-      .collection("tracks")
+      .collection("delete")
       .snapshots();
 
   @override
@@ -104,12 +104,23 @@ class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
                               itemCount: snapshot.data?.docs.length,
                               itemBuilder: (context, index) {
                                 final file = snapshot.data?.docs[index];
-                                final fileDocId = snapshot.data?.docs[index].id;
+                                //final fileDocId = snapshot.data?.docs[index];
+
                                 //print(file!.data());
                                 final data = file!.data();
-                                return DeletedTrackContainer(
-                                  data: data,
-                                  fileDocId: fileDocId!,
+                                final List listKeys = data.keys.toList();
+                                return Container(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.622,
+                                  child: ListView.builder(
+                                    itemCount: listKeys.length,
+                                    itemBuilder: ((context, index) {
+                                      return DeletedTrackContainer(
+                                        data: data[listKeys[index]],
+                                        fileDocId: listKeys[index],
+                                      );
+                                    }),
+                                  ),
                                 );
                               },
                             );

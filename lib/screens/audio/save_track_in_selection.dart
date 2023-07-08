@@ -51,6 +51,19 @@ class _SaveTrackScreenState extends State<SaveTrackScreen> {
     });
   }
 
+  SnackBar customSnackBar(String text) {
+    return SnackBar(
+      content: Text(
+        text,
+        style: mainTheme.textTheme.labelLarge?.copyWith(
+          color: ColorsApp.colorWhite,
+        ),
+        textAlign: TextAlign.center,
+      ),
+      backgroundColor: (ColorsApp.colorLightOpacityDark),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,6 +116,11 @@ class _SaveTrackScreenState extends State<SaveTrackScreen> {
                                         route: AudioStoriesScreen.routeName,
                                       ),
                                     );
+                              } else if (trackNameController.text.isNotEmpty &&
+                                  selectionController.text.isNotEmpty &&
+                                  imagePath == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    customSnackBar('Додайте фото добірки'));
                               } else if (trackNameController.text.isNotEmpty) {
                                 FirebaseRepository().onTrackUpload(
                                   trackName: trackNameController.text,
@@ -119,20 +137,9 @@ class _SaveTrackScreenState extends State<SaveTrackScreen> {
                                     );
                               } else {
                                 trackFocus.requestFocus();
-                                final snackBar = SnackBar(
-                                  content: Text(
-                                    'Введіть назву трека',
-                                    style: mainTheme.textTheme.labelLarge
-                                        ?.copyWith(
-                                      color: ColorsApp.colorWhite,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  backgroundColor:
-                                      (ColorsApp.colorLightOpacityDark),
-                                );
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    customSnackBar('Введіть назву трека'));
                               }
                             },
                             child: SvgPicture.asset(AppIcons.allowCircle),

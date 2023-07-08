@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:audio_stories/models/big_track_model.dart';
 import 'package:uuid/uuid.dart';
 import 'package:audio_stories/models/user_model.dart';
 import 'package:audio_stories/providers/user_sign_up_provider.dart';
@@ -193,6 +194,27 @@ class FirebaseRepository {
     for (String id in listDocId) {
       final track =
           db.collection('users').doc(currentUser).collection('tracks').doc(id);
+      final sellection = db
+          .collection('users')
+          .doc(currentUser)
+          .collection('sellections')
+          .doc(id);
+      await sellection.delete();
+      print(id);
+      //_deleteTrackWithSellection(id);
+      // delete with db
+      await track.delete();
+    }
+  }
+
+  void _deleteTrackWithSellection(String id) async {
+    // delete track with sellection
+  }
+
+  void deleteTrackAllOver(List<String> listDocId) async {
+    for (String id in listDocId) {
+      final track =
+          db.collection('users').doc(currentUser).collection('delete').doc(id);
       //delete with storage
       await track.get().then((value) {
         final data = value.data();
@@ -200,8 +222,6 @@ class FirebaseRepository {
         final desertRef = fbStorageRef.child(storageRef);
         desertRef.delete();
       }, onError: (e) => print("Error getting document: $e"));
-      // delete with db
-      track.delete();
     }
   }
 
@@ -249,13 +269,27 @@ class FirebaseRepository {
           'description': descriptionSellection,
           'photo': photo,
           'date': Timestamp.now(),
-          'tracks': tracks,
+          'tracks': tracks
         };
         db
             .collection('users')
-            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .doc(currentUser)
             .collection('sellections')
-            .add(dataSellection);
+            .add(dataSellection)
+            .then((docRef) {
+          db
+              .collection('users')
+              .doc(currentUser)
+              .collection('sellections')
+              .doc(docRef.id)
+              .set({
+            'tracks': tracks.map((e) {
+              final finalData = e;
+              finalData['idSellection'] = [docRef.id];
+              return finalData;
+            })
+          }, SetOptions(merge: true));
+        });
       } else {
         final dataSellection = <String, dynamic>{
           'sellectionName': name,
@@ -265,10 +299,31 @@ class FirebaseRepository {
         };
         db
             .collection('users')
-            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .doc(currentUser)
             .collection('sellections')
             .add(dataSellection);
       }
+    }
+  }
+
+  void transferForDeleteSellection(BigTrackModel track, String date) {
+    if (FirebaseAuth.instance.currentUser != null) {
+      final db = FirebaseFirestore.instance;
+      String docRefId = '';
+      final dataTrack = <String, dynamic>{
+        'trackName': track.name,
+        'url': track.path,
+        'duration': track.duration,
+        'date': track.dateTime,
+        'storagePath': track.storagePath,
+        'id': track.id,
+      };
+      db
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('delete')
+          .doc(date)
+          .set({track.id: dataTrack}, SetOptions(merge: true));
     }
   }
 

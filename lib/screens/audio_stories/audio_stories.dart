@@ -468,6 +468,8 @@ class _TrackContainerState extends State<TrackContainer> {
                   return DropdownButtonOneTrackMenu(
                     pathTrack: widget.data['url'],
                     providerName: appValueNotifier,
+                    trackData: widget.data,
+                    fileDocId: widget.fileDocId,
                   );
                 }
               },
