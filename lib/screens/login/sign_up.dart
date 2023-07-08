@@ -113,15 +113,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         OrangeButton(
                           text: 'Продовжити',
                           function: () async {
-                            Provider.of<UserSignUpProvider>(context,
-                                    listen: false)
-                                .changeUserPhone(
-                                    phoneController.text.replaceAll(' ', ''));
-                            // _sendOtp(
-                            //     phoneNumber: _phoneNumberController.text,
-                            //     context: context);
-                            Navigator.pushNamed(
-                                context, SignUpSmsScreen.routeName);
+                            if (phoneController.text.isNotEmpty) {
+                              Provider.of<UserSignUpProvider>(context,
+                                      listen: false)
+                                  .changeUserPhone(
+                                      phoneController.text.replaceAll(' ', ''));
+                              // _sendOtp(
+                              //     phoneNumber: _phoneNumberController.text,
+                              //     context: context);
+                              Navigator.pushNamed(
+                                  context, SignUpSmsScreen.routeName);
+                            }
                           },
                         ),
                         const SizedBox(height: 20),

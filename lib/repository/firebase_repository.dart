@@ -15,6 +15,8 @@ import 'package:provider/provider.dart';
 
 class FirebaseRepository {
   final db = FirebaseFirestore.instance;
+  final currentUser = FirebaseAuth.instance.currentUser?.uid;
+  final fbStorageRef = FirebaseStorage.instance.ref();
 
   void initValues(String phone) async {
     if (FirebaseAuth.instance.currentUser != null) {
@@ -132,10 +134,6 @@ class FirebaseRepository {
     await FirebaseAuth.instance.currentUser?.updatePhotoURL(photoUserPath);
   }
 
-  // Future<Track> getTrack() async {
-  //   return Track('ff', '/');
-  // }
-
   Future<String> refreshToken() async {
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -188,6 +186,22 @@ class FirebaseRepository {
       return dataTrack;
     } else {
       return {};
+    }
+  }
+
+  void deleteTrack(List<String> listDocId) async {
+    for (String id in listDocId) {
+      final track =
+          db.collection('users').doc(currentUser).collection('tracks').doc(id);
+      //delete with storage
+      await track.get().then((value) {
+        final data = value.data();
+        final storageRef = data?['storagePath'];
+        final desertRef = fbStorageRef.child(storageRef);
+        desertRef.delete();
+      }, onError: (e) => print("Error getting document: $e"));
+      // delete with db
+      track.delete();
     }
   }
 
