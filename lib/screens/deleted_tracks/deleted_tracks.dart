@@ -39,6 +39,7 @@ class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
   @override
   void initState() {
     super.initState();
+    print('s');
   }
 
   @override
