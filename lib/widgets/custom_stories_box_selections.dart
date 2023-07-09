@@ -5,13 +5,16 @@ import 'package:audio_stories/thems/main_thame.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomStoriesBoxSelections extends StatefulWidget {
   final Map<String, dynamic> data;
   final String docId;
+  final double heightBox;
   const CustomStoriesBoxSelections({
     required this.data,
     required this.docId,
+    required this.heightBox,
     super.key,
   });
 
@@ -95,6 +98,8 @@ class _CustomStoriesBoxSelectionsState
       child: Stack(
         children: [
           Container(
+            height: widget.heightBox,
+            width: 180.w,
             decoration: BoxDecoration(
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(13),
@@ -105,6 +110,8 @@ class _CustomStoriesBoxSelectionsState
             ),
           ),
           Container(
+            height: widget.heightBox,
+            width: 180.w,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(13),
               gradient: const LinearGradient(
@@ -121,44 +128,48 @@ class _CustomStoriesBoxSelectionsState
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                SizedBox(
-                  width: 60,
-                  child: AutoSizeText(
-                    sellection.name!,
-                    style: mainTheme.textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: ColorsApp.colorWhite,
+          Positioned(
+            top: widget.heightBox == 240 ? 200 : 75,
+            child: Container(
+              width: 180.w,
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 60,
+                    child: AutoSizeText(
+                      sellection.name!,
+                      style: mainTheme.textTheme.labelSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: ColorsApp.colorWhite,
+                      ),
+                      maxLines: 5,
                     ),
-                    maxLines: 5,
                   ),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${countTracks ?? 0} аудіо',
-                      style: mainTheme.textTheme.labelMedium?.copyWith(
-                        color: ColorsApp.colorWhite,
-                        fontSize: 12,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${countTracks ?? 0} аудіо',
+                        style: mainTheme.textTheme.labelMedium?.copyWith(
+                          color: ColorsApp.colorWhite,
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
-                    Text(
-                      allDuration ?? '00:00',
-                      style: mainTheme.textTheme.labelMedium?.copyWith(
-                        color: ColorsApp.colorWhite,
-                        fontSize: 12,
+                      Text(
+                        allDuration ?? '00:00',
+                        style: mainTheme.textTheme.labelMedium?.copyWith(
+                          color: ColorsApp.colorWhite,
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],

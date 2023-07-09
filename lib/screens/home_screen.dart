@@ -60,13 +60,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void parseList() async {
     await sellectionStream?.then((value) {
       print(value.docs.length);
-      for (int i = 0; i < 2; i++) {
+      for (int i = 0; i <= 2; i++) {
         if (i > value.docs.length && value.docs.isNotEmpty) return;
         firstThreeSellect.add(value.docs[i].data());
         docId.add(value.docs[i].id);
       }
     });
-    print(firstThreeSellect);
+    setState(() {});
   }
 
   @override
@@ -116,88 +116,99 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 10),
                       Row(
                         children: [
-                          Expanded(
-                            child: firstThreeSellect.isNotEmpty
-                                ? CustomStoriesBoxSelections(
-                                    data: firstThreeSellect[0],
-                                    docId: docId[0],
-                                  )
-                                : Container(
-                                    height: 240,
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          200, 113, 165, 159),
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text(
-                                          'Тут буде твій набір казок',
+                          firstThreeSellect.length > 0
+                              ? CustomStoriesBoxSelections(
+                                  data: firstThreeSellect[0],
+                                  docId: docId[0],
+                                  heightBox: 240,
+                                )
+                              : Container(
+                                  height: 240,
+                                  width: 180.w,
+                                  decoration: BoxDecoration(
+                                    color: const Color.fromARGB(
+                                        200, 113, 165, 159),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Text(
+                                        'Тут буде твій набір казок',
+                                        style: mainTheme.textTheme.labelMedium
+                                            ?.copyWith(
+                                          color: ColorsApp.colorWhite,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      TextButton(
+                                        onPressed: () {},
+                                        child: Text(
+                                          'Додати',
+                                          style: mainTheme.textTheme.labelSmall
+                                              ?.copyWith(
+                                            color: ColorsApp.colorWhite,
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                          const SizedBox(width: 16),
+                          Column(
+                            children: [
+                              firstThreeSellect.length > 1
+                                  ? CustomStoriesBoxSelections(
+                                      data: firstThreeSellect[1],
+                                      docId: docId[1],
+                                      heightBox: 112,
+                                    )
+                                  : Container(
+                                      height: 112,
+                                      width: 180.w,
+                                      decoration: BoxDecoration(
+                                        color: ColorsApp.colorButtonOrange,
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'Тут',
                                           style: mainTheme.textTheme.labelMedium
                                               ?.copyWith(
                                             color: ColorsApp.colorWhite,
                                           ),
-                                          textAlign: TextAlign.center,
                                         ),
-                                        TextButton(
-                                          onPressed: () {},
-                                          child: Text(
-                                            'Додати',
-                                            style: mainTheme
-                                                .textTheme.labelSmall
-                                                ?.copyWith(
-                                              color: ColorsApp.colorWhite,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                            ),
+                                      ),
+                                    ),
+                              const SizedBox(height: 16),
+                              firstThreeSellect.length > 2
+                                  ? CustomStoriesBoxSelections(
+                                      data: firstThreeSellect[2],
+                                      docId: docId[2],
+                                      heightBox: 112,
+                                    )
+                                  : Container(
+                                      height: 112,
+                                      width: 180.w,
+                                      decoration: BoxDecoration(
+                                        color: const Color.fromARGB(
+                                            200, 103, 139, 210),
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'Та тут',
+                                          style: mainTheme.textTheme.labelMedium
+                                              ?.copyWith(
+                                            color: ColorsApp.colorWhite,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 112,
-                                  decoration: BoxDecoration(
-                                    color: ColorsApp.colorButtonOrange,
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Тут',
-                                      style: mainTheme.textTheme.labelMedium
-                                          ?.copyWith(
-                                        color: ColorsApp.colorWhite,
                                       ),
                                     ),
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-                                Container(
-                                  height: 112,
-                                  decoration: BoxDecoration(
-                                    color: const Color.fromARGB(
-                                        200, 103, 139, 210),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Та тут',
-                                      style: mainTheme.textTheme.labelMedium
-                                          ?.copyWith(
-                                        color: ColorsApp.colorWhite,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                            ],
                           ),
                         ],
                       ),
