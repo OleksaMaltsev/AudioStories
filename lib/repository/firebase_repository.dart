@@ -191,36 +191,45 @@ class FirebaseRepository {
   }
 
   void deleteTrack(List<String> listDocId) async {
+    // for (String id in listIdSellection) {
+    //   // delete track with sellection
+    //   final sellection = db
+    //       .collection('users')
+    //       .doc(currentUser)
+    //       .collection('sellections')
+    //       .doc(id);
+    //   await sellection.get().then((value) {
+    //     final data = value.data();
+    //     final List list = data?['tracks'];
+    //     list.map((item) => item['id'] == id ? print('yes') : print('no'));
+    //   }); //.update({'idSellection': FieldValue.delete()});
+    // }
     for (String id in listDocId) {
       final track =
           db.collection('users').doc(currentUser).collection('tracks').doc(id);
-      final sellection = db
-          .collection('users')
-          .doc(currentUser)
-          .collection('sellections')
-          .doc(id);
-      await sellection.delete();
-      print(id);
-      //_deleteTrackWithSellection(id);
+
       // delete with db
       await track.delete();
     }
   }
 
-  void _deleteTrackWithSellection(String id) async {
-    // delete track with sellection
-  }
-
-  void deleteTrackAllOver(List<String> listDocId) async {
+  void deleteTrackAllOver(List<String>? listDocId, List<String> idTrack) async {
+    if (listDocId == null) return;
     for (String id in listDocId) {
       final track =
           db.collection('users').doc(currentUser).collection('delete').doc(id);
       //delete with storage
       await track.get().then((value) {
         final data = value.data();
-        final storageRef = data?['storagePath'];
-        final desertRef = fbStorageRef.child(storageRef);
-        desertRef.delete();
+        for (String item in idTrack) {
+          if (data?[item] != null) {
+            final Map<String, dynamic> currentTrack = data?[item];
+            final storageRef = currentTrack?['storagePath'];
+            final desertRef = fbStorageRef.child(storageRef);
+            desertRef.delete();
+            track.update({item: FieldValue.delete()});
+          }
+        }
       }, onError: (e) => print("Error getting document: $e"));
     }
   }
@@ -259,10 +268,13 @@ class FirebaseRepository {
   }
 
   void saveSellection(String photo, String name, String? description,
-      List<Map<String, dynamic>>? tracks) {
+      List<Map<String, dynamic>>? tracks) async {
     if (FirebaseAuth.instance.currentUser != null) {
       final String descriptionSellection = description ?? '';
       final db = FirebaseFirestore.instance;
+      String? docSellectId;
+      String id;
+      List<String> tracksId = [];
       if (tracks != null) {
         final dataSellection = <String, dynamic>{
           'sellectionName': name,
@@ -271,24 +283,28 @@ class FirebaseRepository {
           'date': Timestamp.now(),
           'tracks': tracks
         };
-        db
+
+        //    final String idTrack = tracks.map((item) => item['id']);
+        await db
             .collection('users')
             .doc(currentUser)
             .collection('sellections')
             .add(dataSellection)
             .then((docRef) {
-          db
-              .collection('users')
-              .doc(currentUser)
-              .collection('sellections')
-              .doc(docRef.id)
-              .set({
-            'tracks': tracks.map((e) {
-              final finalData = e;
-              finalData['idSellection'] = [docRef.id];
-              return finalData;
-            })
-          }, SetOptions(merge: true));
+          docSellectId = docRef.id;
+
+          // db
+          //     .collection('users')
+          //     .doc(currentUser)
+          //     .collection('tracks') //.collection('sellections')
+          //     .doc()
+          //     .set({
+          //tracks
+          // 'tracks': tracks.map((e) {
+          //   final finalData = e;
+          //   finalData['idSellection'] = [docRef.id];
+          //   return finalData;
+          // })
         });
       } else {
         final dataSellection = <String, dynamic>{

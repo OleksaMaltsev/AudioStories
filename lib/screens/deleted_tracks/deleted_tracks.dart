@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DeletedTracksScreen extends StatefulWidget {
   const DeletedTracksScreen({super.key});
@@ -39,7 +40,6 @@ class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
   @override
   void initState() {
     super.initState();
-    print('s');
   }
 
   @override
@@ -61,7 +61,6 @@ class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
       },
       onError: (e) => print("Error getting document: $e"),
     );
-    print(nameTrack);
     return nameTrack;
   }
 
@@ -95,7 +94,7 @@ class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
                 child: Column(
                   children: [
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.622,
+                      height: 556.h,
                       child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                         stream: dbConnect,
                         builder: (context, snapshot) {
@@ -104,22 +103,30 @@ class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
                               itemCount: snapshot.data?.docs.length,
                               itemBuilder: (context, index) {
                                 final file = snapshot.data?.docs[index];
-                                //final fileDocId = snapshot.data?.docs[index];
-
-                                //print(file!.data());
                                 final data = file!.data();
                                 final List listKeys = data.keys.toList();
-                                return Container(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.622,
-                                  child: ListView.builder(
-                                    itemCount: listKeys.length,
-                                    itemBuilder: ((context, index) {
-                                      return DeletedTrackContainer(
-                                        data: data[listKeys[index]],
-                                        fileDocId: listKeys[index],
-                                      );
-                                    }),
+                                final String sellectId =
+                                    snapshot.data!.docs[index].id;
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Column(
+                                    children: [
+                                      Text(sellectId),
+                                      const SizedBox(height: 10),
+                                      ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: ScrollPhysics(),
+                                        itemCount: listKeys.length,
+                                        itemBuilder: ((context, index) {
+                                          //print(listKeys[index]);
+                                          return DeletedTrackContainer(
+                                            data: data[listKeys[index]],
+                                            fileDocId: sellectId,
+                                            trackId: listKeys[index],
+                                          );
+                                        }),
+                                      ),
+                                    ],
                                   ),
                                 );
                               },

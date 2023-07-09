@@ -14,10 +14,12 @@ class DeletedTrackContainer extends StatefulWidget {
     super.key,
     required this.data,
     required this.fileDocId,
+    required this.trackId,
   });
 
   final Map<String, dynamic> data;
-  final String fileDocId;
+  final String? fileDocId;
+  final String trackId;
 
   @override
   State<DeletedTrackContainer> createState() => _DeletedTrackContainerState();
@@ -150,7 +152,9 @@ class _DeletedTrackContainerState extends State<DeletedTrackContainer> {
             flex: 1,
             child: InkWell(
               onTap: () {
-                FirebaseRepository().deleteTrack([widget.fileDocId]);
+                //FirebaseRepository().deleteTrack([widget.fileDocId]);
+                FirebaseRepository()
+                    .deleteTrackAllOver([widget.fileDocId!], [widget.trackId]);
               },
               child: SvgPicture.asset(
                 AppIcons.delete,

@@ -118,8 +118,9 @@ class _DropdownButtonOneTrackMenuState
                 ),
                 todayDate!,
               );
-              FirebaseRepository().deleteTrack([widget.fileDocId]);
-
+              FirebaseRepository().deleteTrack(
+                [widget.fileDocId],
+              );
               break;
           }
         },

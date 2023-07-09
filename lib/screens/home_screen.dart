@@ -6,6 +6,7 @@ import 'package:audio_stories/screens/selections/widgets/stories_box_selections.
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
 import 'package:audio_stories/widgets/background/background_purple_widget.dart';
+import 'package:audio_stories/widgets/custom_stories_box_selections.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
   String? uid = FirebaseAuth.instance.currentUser?.uid;
 
   Future<QuerySnapshot<Map<String, dynamic>>>? dataStream;
+  Future<QuerySnapshot<Map<String, dynamic>>>? sellectionStream;
 
+  List<Map<String, dynamic>> firstThreeSellect = [];
+  List<String> docId = [];
   void getAllTrack() {
     final db = FirebaseFirestore.instance;
     dataStream = db
@@ -35,10 +39,34 @@ class _HomeScreenState extends State<HomeScreen> {
         .get();
   }
 
+  void getAllSellection() {
+    final db = FirebaseFirestore.instance;
+    sellectionStream = db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("sellections")
+        .get();
+  }
+
   @override
   void initState() {
     super.initState();
     getAllTrack();
+    getAllSellection();
+
+    parseList();
+  }
+
+  void parseList() async {
+    await sellectionStream?.then((value) {
+      print(value.docs.length);
+      for (int i = 0; i < 2; i++) {
+        if (i > value.docs.length && value.docs.isNotEmpty) return;
+        firstThreeSellect.add(value.docs[i].data());
+        docId.add(value.docs[i].id);
+      }
+    });
+    print(firstThreeSellect);
   }
 
   @override
@@ -89,38 +117,46 @@ class _HomeScreenState extends State<HomeScreen> {
                       Row(
                         children: [
                           Expanded(
-                            child: Container(
-                              height: 240,
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(200, 113, 165, 159),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text(
-                                    'Тут буде твій набір казок',
-                                    style: mainTheme.textTheme.labelMedium
-                                        ?.copyWith(
-                                      color: ColorsApp.colorWhite,
+                            child: firstThreeSellect.isNotEmpty
+                                ? CustomStoriesBoxSelections(
+                                    data: firstThreeSellect[0],
+                                    docId: docId[0],
+                                  )
+                                : Container(
+                                    height: 240,
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(
+                                          200, 113, 165, 159),
+                                      borderRadius: BorderRadius.circular(15),
                                     ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  TextButton(
-                                    onPressed: () {},
-                                    child: Text(
-                                      'Додати',
-                                      style: mainTheme.textTheme.labelSmall
-                                          ?.copyWith(
-                                        color: ColorsApp.colorWhite,
-                                        decoration: TextDecoration.underline,
-                                      ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Text(
+                                          'Тут буде твій набір казок',
+                                          style: mainTheme.textTheme.labelMedium
+                                              ?.copyWith(
+                                            color: ColorsApp.colorWhite,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        TextButton(
+                                          onPressed: () {},
+                                          child: Text(
+                                            'Додати',
+                                            style: mainTheme
+                                                .textTheme.labelSmall
+                                                ?.copyWith(
+                                              color: ColorsApp.colorWhite,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
                           ),
                           const SizedBox(width: 16),
                           Expanded(

@@ -49,6 +49,11 @@ class _DeletedTracksChoiceScreenState extends State<DeletedTracksChoiceScreen> {
   Future<QuerySnapshot<Map<String, dynamic>>>? dataStream;
 
   late ListResult listResult;
+  final dbConnect = FirebaseFirestore.instance
+      .collection("users")
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+      .collection("delete")
+      .snapshots();
 
   @override
   void initState() {
@@ -123,21 +128,36 @@ class _DeletedTracksChoiceScreenState extends State<DeletedTracksChoiceScreen> {
                 child: Column(
                   children: [
                     Container(
-                      height: 542.h,
-                      child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                        future: dataStream,
+                      height: 548.h,
+                      child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                        stream: dbConnect,
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
+                          if (snapshot.hasData) {
                             return ListView.builder(
                               itemCount: snapshot.data?.docs.length,
                               itemBuilder: (context, index) {
                                 final file = snapshot.data?.docs[index];
-                                final fileDocId = snapshot.data?.docs[index].id;
-                                //print(file!.data());
-                                return DeletedTrackContainer(
-                                  data: file!.data(),
-                                  fileDocId: fileDocId!,
+                                final data = file!.data();
+                                final List listKeys = data.keys.toList();
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 10),
+                                  child: Column(
+                                    children: [
+                                      Text(snapshot.data?.docs[index].id ?? ''),
+                                      const SizedBox(height: 10),
+                                      ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: ScrollPhysics(),
+                                        itemCount: listKeys.length,
+                                        itemBuilder: ((context, index) {
+                                          return DeletedTrackContainer(
+                                            data: data[listKeys[index]],
+                                            fileDocId: listKeys[index],
+                                          );
+                                        }),
+                                      ),
+                                    ],
+                                  ),
                                 );
                               },
                             );

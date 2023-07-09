@@ -78,6 +78,7 @@ class _ChoiceSelectionScreenState extends State<ChoiceSelectionScreen> {
           'trackName': data['trackName'],
           'url': data['url'],
           'duration': data['duration'],
+          'id': data['id']
         };
       },
       onError: (e) => print("Error getting document: $e"),

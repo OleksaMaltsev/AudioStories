@@ -87,15 +87,12 @@ class _MainPageState extends State<MainPage> {
                     navigatorKey: _navigatorKey,
                     currentTab: state.currentIndex,
                     onSelect: (int index) {
-                      if (state.currentIndex != index ||
-                          state.currentIndex == 0) {
-                        context.read<NavigationBloc>().add(
-                              NavigateTab(
-                                tabIndex: index,
-                                route: _pages[index],
-                              ),
-                            );
-                      }
+                      context.read<NavigationBloc>().add(
+                            NavigateTab(
+                              tabIndex: index,
+                              route: _pages[index],
+                            ),
+                          );
                     },
                   ),
           );

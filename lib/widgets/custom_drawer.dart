@@ -1,11 +1,15 @@
+import 'package:audio_stories/blocs/navigation_bloc/navigation_bloc.dart';
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
 import 'package:audio_stories/screens/deleted_tracks/deleted_tracks.dart';
 import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/screens/profile/profile.dart';
 import 'package:audio_stories/screens/profile/subscription.dart';
+import 'package:audio_stories/screens/selections/selection.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -56,50 +60,58 @@ class CustomDrawer extends StatelessWidget {
                     title: 'Головна',
                     icon: AppIcons.home,
                     navigatorKey: navigatorKey,
+                    index: 0,
                     routePath: HomeScreen.routeName,
                   ),
                   CustomListTile(
                     title: 'Профіль',
                     icon: AppIcons.profile,
                     navigatorKey: navigatorKey,
+                    index: 4,
                     routePath: ProfileScreen.routeName,
                   ),
                   CustomListTile(
                     title: 'Добірки',
                     icon: AppIcons.category,
                     navigatorKey: navigatorKey,
-                    routePath: ProfileScreen.routeName,
+                    index: 1,
+                    routePath: SelectionsScreen.routeName,
                   ),
                   CustomListTile(
                     title: 'Всі аудіофайли',
                     icon: AppIcons.paper,
                     navigatorKey: navigatorKey,
-                    routePath: ProfileScreen.routeName,
+                    index: 3,
+                    routePath: AudioStoriesScreen.routeName,
                   ),
                   CustomListTile(
                     title: 'Пошук',
                     icon: AppIcons.search,
                     navigatorKey: navigatorKey,
+                    index: 3,
                     routePath: ProfileScreen.routeName,
                   ),
                   CustomListTile(
                     title: 'Нещодавно видалені',
                     icon: AppIcons.delete,
                     navigatorKey: navigatorKey,
+                    index: 3,
                     routePath: DeletedTracksScreen.routeName,
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   CustomListTile(
                     title: 'Підписка',
                     icon: AppIcons.wallet,
                     navigatorKey: navigatorKey,
+                    index: 4,
                     routePath: SubscriptionScreen.routeName,
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   CustomListTile(
                     title: 'Написати в підтримку',
                     icon: AppIcons.edit,
                     navigatorKey: navigatorKey,
+                    index: 4,
                     routePath: ProfileScreen.routeName,
                   ),
                 ],
@@ -117,11 +129,13 @@ class CustomListTile extends StatelessWidget {
   final String icon;
   final String routePath;
   final GlobalKey<NavigatorState> navigatorKey;
+  final int index;
   const CustomListTile({
     required this.title,
     required this.icon,
     required this.routePath,
     required this.navigatorKey,
+    required this.index,
     super.key,
   });
 
@@ -132,10 +146,16 @@ class CustomListTile extends StatelessWidget {
       child: InkWell(
         onTap: () {
           Scaffold.of(context).openEndDrawer();
-          navigatorKey.currentState!.pushNamedAndRemoveUntil(
-            routePath,
-            (route) => false,
-          );
+          // navigatorKey.currentState?.pushNamedAndRemoveUntil(
+          //   routePath,
+          //   (route) => false,
+          // );
+          context.read<NavigationBloc>().add(
+                NavigateTab(
+                  tabIndex: index,
+                  route: routePath,
+                ),
+              );
         },
         child: Row(
           children: [
