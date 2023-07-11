@@ -1,14 +1,79 @@
+import 'dart:io';
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/helpers/allow_dialog_helper.dart';
+import 'package:audio_stories/models/big_track_model.dart';
+import 'package:audio_stories/providers/allow_to_delete_provider.dart';
+import 'package:audio_stories/providers/change_name_track.dart';
+import 'package:audio_stories/providers/track_menu_provider.dart';
+import 'package:audio_stories/providers/track_path_provider.dart';
+import 'package:audio_stories/repository/firebase_repository.dart';
+import 'package:audio_stories/screens/home_screen.dart';
+import 'package:audio_stories/screens/main_page.dart';
 import 'package:audio_stories/thems/main_thame.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:intl/intl.dart';
 
-class DropdownButtonTrackSelection extends StatelessWidget {
-  const DropdownButtonTrackSelection({
+String globPath = '';
+
+class DropdownButtonOneTrackMenuSellection extends StatefulWidget {
+  final String pathTrack;
+  final ChangeNameGreenPovider providerName;
+  final Map<String, dynamic> trackData;
+  final String fileDocId;
+  TrackMenuProvider trackNameNotifier = TrackMenuProvider();
+  DropdownButtonOneTrackMenuSellection({
     super.key,
+    required this.pathTrack,
+    required this.providerName,
+    required this.trackData,
+    required this.fileDocId,
   });
+
+  @override
+  State<DropdownButtonOneTrackMenuSellection> createState() =>
+      _DropdownButtonOneTrackMenuSellectionState();
+}
+
+class _DropdownButtonOneTrackMenuSellectionState
+    extends State<DropdownButtonOneTrackMenuSellection> {
+  ChangeNamePovider appValueNotifier = ChangeNamePovider();
+  String? todayDate;
+
+  @override
+  void initState() {
+    super.initState();
+    globPath = widget.pathTrack;
+    todayDate = DateFormat('dd.MM.yy').format(Timestamp.now().toDate());
+  }
+
+  void saveAs() async {
+    await FileSaver.instance.saveAs(
+      ext: 'm4a',
+      mimeType: MimeType.aac,
+      name: 'audio',
+      filePath: widget.pathTrack,
+    );
+  }
+
+  void sharePressed() {
+    String message = 'Share audio stories';
+    Share.shareXFiles([XFile(widget.pathTrack)]);
+  }
+
+  final List<String> items = [
+    'Перейменувати',
+    'Додати в добірку',
+    'Видалити',
+    'Поділитись',
+  ];
+  String? selectedValue;
 
   @override
   Widget build(BuildContext context) {
@@ -19,80 +84,57 @@ class DropdownButtonTrackSelection extends StatelessWidget {
           color: ColorsApp.colorLightDark,
           width: 20,
         ),
-        items: [
-          ...MenuItems.firstItems.map(
-            (item) => DropdownMenuItem<MenuItem>(
-              value: item,
-              child: MenuItems.buildItem(item),
-            ),
-          )
-        ],
-        onChanged: (value) {
-          MenuItems.onChanged(context, value as MenuItem);
+        items: items
+            .map((String item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(
+                    item,
+                    style: mainTheme.textTheme.labelSmall,
+                  ),
+                ))
+            .toList(),
+        value: selectedValue,
+        onChanged: (value) async {
+          selectedValue = value;
+          switch (value) {
+            case 'Додати в добірку':
+              widget.providerName.changeWidgetNotifier(3);
+              print('ono');
+              break;
+            case 'Поділитись':
+              sharePressed();
+              break;
+            case 'Перейменувати':
+              setState(() {});
+              widget.providerName.changeWidgetNotifier(1);
+              //FirebaseRepository().setNewTrackName('name');
+              break;
+            case 'Видалити':
+              //AllowDialogHelper.allowDeleteDialog(context);
+              FirebaseRepository().deleteTrackInSellection(
+                widget.fileDocId,
+                widget.trackData['id'],
+              );
+              break;
+          }
         },
         dropdownStyleData: DropdownStyleData(
           width: 160,
-          padding: const EdgeInsets.symmetric(vertical: 6),
+          padding: const EdgeInsets.symmetric(vertical: 5),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: ColorsApp.colorWhite,
           ),
           elevation: 8,
-          offset: const Offset(0, 8),
+          offset: const Offset(0, -15),
         ),
         menuItemStyleData: MenuItemStyleData(
           customHeights: [
-            ...List<double>.filled(MenuItems.firstItems.length, 48),
+            ...List<double>.filled(4, 48),
           ],
           padding: const EdgeInsets.only(left: 16, right: 16),
         ),
       ),
     );
-  }
-}
-
-class MenuItem {
-  final String text;
-
-  const MenuItem({
-    required this.text,
-  });
-}
-
-class MenuItems {
-  static const List<MenuItem> firstItems = [
-    itemOne,
-    itemTwo,
-    itemThree,
-    itemFour
-  ];
-
-  static const itemOne = MenuItem(text: '1');
-  static const itemTwo = MenuItem(text: '2');
-  static const itemThree = MenuItem(text: '3');
-  static const itemFour = MenuItem(text: '4');
-
-  static Widget buildItem(MenuItem item) {
-    return Text(
-      item.text,
-      style: mainTheme.textTheme.labelSmall,
-    );
-  }
-
-  static onChanged(BuildContext context, MenuItem item) {
-    switch (item) {
-      case MenuItems.itemOne:
-        //Do something
-        break;
-      case MenuItems.itemThree:
-        //Do something
-        break;
-      case MenuItems.itemTwo:
-        //Do something
-        break;
-      case MenuItems.itemFour:
-        //Do something
-        break;
-    }
   }
 }

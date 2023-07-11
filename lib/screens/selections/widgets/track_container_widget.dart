@@ -7,6 +7,7 @@ import 'package:audio_stories/providers/choise_tracks_provider.dart';
 import 'package:audio_stories/providers/track_menu_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/audio_stories/widgets/dropdown_button_one_track.dart';
+import 'package:audio_stories/screens/selections/widgets/dropdown_button_track_selection.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,10 +21,12 @@ class TrackGreenContainer extends StatefulWidget {
     super.key,
     required this.data,
     required this.fileDocId,
+    required this.choiceAction,
   });
 
   final Map<String, dynamic> data;
   final String fileDocId;
+  final int? choiceAction;
 
   @override
   State<TrackGreenContainer> createState() => _TrackContainerState();
@@ -34,7 +37,7 @@ class _TrackContainerState extends State<TrackGreenContainer> {
   bool playTrack = false;
   bool choose = false;
 
-  ChangeNamePovider appValueNotifier = ChangeNamePovider();
+  ChangeNameGreenPovider appValueNotifier = ChangeNameGreenPovider();
   TrackMenuProvider trackNameNotifier = TrackMenuProvider();
 
   TextEditingController trackNameController = TextEditingController();
@@ -58,6 +61,9 @@ class _TrackContainerState extends State<TrackGreenContainer> {
       time: widget.data['duration'],
     );
 
+    if (widget.choiceAction != null) {
+      appValueNotifier.changeWidgetNotifier(2);
+    }
     // getNameTrackForDb();
   }
 
@@ -151,34 +157,91 @@ class _TrackContainerState extends State<TrackGreenContainer> {
           ),
           Expanded(
             flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 5, right: 5),
-              child: InkWell(
-                onTap: () => setState(() {
-                  choose = !choose;
-                  final list =
-                      Provider.of<ChoiseTrackProvider>(context, listen: false);
-
-                  if (choose && !list.getList().contains(track!.url)) {
-                    list.addToList(widget.fileDocId);
-                    list.printList();
-                  }
-                }),
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border.all(
-                      width: 2,
-                      color: ColorsApp.colorLightDark,
+            child: ValueListenableBuilder(
+              valueListenable: appValueNotifier.valueNotifier,
+              builder: (context, value, child) {
+                if (value == 1) {
+                  return InkWell(
+                    onTap: () async {
+                      if (trackNameController.text.isNotEmpty) {
+                        // await FirebaseRepository()
+                        //     .setNewTrackName(trackNameController.text);
+                        FirebaseRepository().setNewTrackName(
+                            trackNameController.text, track!.url);
+                        appValueNotifier.changeWidgetNotifier(0);
+                      } else {
+                        final snackBar = SnackBar(
+                          content: Text(
+                            'Введіть назву трека',
+                            style: mainTheme.textTheme.labelLarge?.copyWith(
+                              color: ColorsApp.colorWhite,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          backgroundColor: (ColorsApp.colorLightOpacityDark),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                    },
+                    child: Container(
+                      height: 60,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 2,
+                          color: ColorsApp.colorPurple,
+                        ),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'ОК',
+                          style: mainTheme.textTheme.labelMedium,
+                        ),
+                      ),
                     ),
-                  ),
-                  child: choose
-                      ? SvgPicture.asset(AppIcons.tickSquare)
-                      : const SizedBox(),
-                ),
-              ),
+                  );
+                } else if (value == 2) {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    child: InkWell(
+                      onTap: () => setState(() {
+                        final list = Provider.of<ChoiseTrackProvider>(context,
+                            listen: false);
+                        choose = !choose;
+                        if (choose && !list.getList().contains(track!.url)) {
+                          list.addToList(widget.fileDocId);
+                          list.printList();
+                        }
+                        if (!choose) {
+                          list.removeItem(widget.fileDocId);
+                          list.printList();
+                        }
+                      }),
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          border: Border.all(
+                            width: 2,
+                            color: ColorsApp.colorLightDark,
+                          ),
+                        ),
+                        child: choose
+                            ? SvgPicture.asset(AppIcons.tickSquare)
+                            : const SizedBox(),
+                      ),
+                    ),
+                  );
+                } else {
+                  return DropdownButtonOneTrackMenuSellection(
+                    pathTrack: widget.data['url'],
+                    providerName: appValueNotifier,
+                    trackData: widget.data,
+                    fileDocId: widget.fileDocId,
+                  );
+                }
+              },
             ),
           ),
         ],

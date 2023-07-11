@@ -6,6 +6,7 @@ import 'package:audio_stories/screens/deleted_tracks/deleted_tracks.dart';
 import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/screens/profile/profile.dart';
 import 'package:audio_stories/screens/profile/subscription.dart';
+import 'package:audio_stories/screens/search/search.dart';
 import 'package:audio_stories/screens/selections/selection.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +90,7 @@ class CustomDrawer extends StatelessWidget {
                     icon: AppIcons.search,
                     navigatorKey: navigatorKey,
                     index: 3,
-                    routePath: ProfileScreen.routeName,
+                    routePath: SearchTrackScreen.routeName,
                   ),
                   CustomListTile(
                     title: 'Нещодавно видалені',

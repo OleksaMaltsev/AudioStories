@@ -93,6 +93,60 @@ class FirebaseRepository {
     }
   }
 
+  // void setNewTrackNameInSellection(
+  //     String name, String trackId, String sellectionId) async {
+  //   String trackId = '';
+  //   final sellectionResult = await db
+  //       .collection("users")
+  //       .doc(FirebaseAuth.instance.currentUser?.uid)
+  //       .collection("sellection")
+  //       .doc(sellectionId);
+  //   sellectionResult
+  //       .get()
+  //       .then((value) {
+  //         final data = value.data();
+  //         if (data != null) {
+  //           final List list = data['tracks'];
+  //           list.map(
+  //             (item) {
+  //               if (item['id'] == trackId) {
+  //                 item['id'];
+  //               }
+  //             },
+  //           );
+  //         }
+  //       })
+  //       .get()
+  //       .then(
+  //         (querySnapshot) {
+  //           print("Successfully completed");
+  //           for (var docSnapshot in querySnapshot.docs) {
+  //             final data = docSnapshot.data();
+  //             if (data['url'] == trackUrl) {
+  //               trackId = docSnapshot.id;
+  //             }
+  //             //print('${docSnapshot.id} => ${docSnapshot.data()}');
+  //           }
+  //         },
+  //         onError: (e) => print("Error completing: $e"),
+  //       );
+  //   User? user = FirebaseAuth.instance.currentUser;
+  //   if (user != null) {
+  //     //set phone,name in db
+  //     Map<String, String?> data = {
+  //       "trackName": name,
+  //     };
+  //     db
+  //         .collection("users")
+  //         .doc(
+  //           user.uid,
+  //         )
+  //         .collection('tracks')
+  //         .doc(trackId)
+  //         .set(data, SetOptions(merge: true));
+  //   }
+  // }
+
   void deleteUserDB() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -211,6 +265,32 @@ class FirebaseRepository {
       // delete with db
       await track.delete();
     }
+  }
+
+  void deleteTrackInSellection(String sellectionId, String trackId) async {
+    final sellectionResult = db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("sellections")
+        .doc(sellectionId);
+
+    List data;
+    sellectionResult.get().then((value) async {
+      data = await value.data()?['tracks'];
+      // (value.data()?['tracks'] as List)
+      //     .removeWhere((element) => element['id'] == trackId);
+      // value.data()?['tracks'] = [];
+      for (int i = 0; i < data.length; i++) {
+        if (data[i]['id'] == trackId) {
+          //value.data()?['tracks'][i] = [];
+          sellectionResult.set({
+            'tracks': FieldValue.arrayRemove(
+              [data[i]],
+            )
+          }, SetOptions(merge: true));
+        }
+      }
+    });
   }
 
   void deleteTrackAllOver(List<String>? listDocId, List<String> idTrack) async {

@@ -70,7 +70,7 @@ class _OneTrackWidgetState extends State<OneTrackWidget> {
                 const Spacer(),
                 const Padding(
                   padding: EdgeInsets.only(right: 20),
-                  child: DropdownButtonTrackSelection(),
+                  child: Text(''),
                 ),
               ],
             ),

@@ -1,4 +1,5 @@
 import 'package:audio_stories/firebase_options.dart';
+import 'package:audio_stories/providers/allow_to_delete_provider.dart';
 import 'package:audio_stories/providers/change_choose_provider.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
 import 'package:audio_stories/providers/choise_tracks_provider.dart';
@@ -62,6 +63,12 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => ChoiseTrackProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ChangeNameGreenPovider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AllowToDeleteProvider(),
         ),
       ],
       child: MaterialApp(

@@ -59,11 +59,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void parseList() async {
     await sellectionStream?.then((value) {
-      print(value.docs.length);
-      for (int i = 0; i <= 2; i++) {
-        if (i > value.docs.length && value.docs.isNotEmpty) return;
-        firstThreeSellect.add(value.docs[i].data());
-        docId.add(value.docs[i].id);
+      if (value.docs.length >= 3) {
+        print(value.docs.length);
+        for (int i = 0; i <= 2; i++) {
+          if (i > value.docs.length && value.docs.isNotEmpty) return;
+          firstThreeSellect.add(value.docs[i].data());
+          docId.add(value.docs[i].id);
+        }
       }
     });
     setState(() {});
@@ -84,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: null,
                   title: null,
                   subTitle: null,
-                  actions: SizedBox(),
+                  actions: const SizedBox(),
                 ),
                 Container(
                   padding: const EdgeInsets.fromLTRB(17, 0, 17, 0),

@@ -39,10 +39,16 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
     });
   }
 
+  final dbConnect = FirebaseFirestore.instance
+      .collection("users")
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+      .collection("sellections");
+
   @override
   Widget build(BuildContext context) {
     final arg = ModalRoute.of(context)!.settings.arguments as Map;
     getTrackSellection(arg['docId']);
+
     return Scaffold(
       body: CustomPaint(
         painter: GreenPainter(),
@@ -98,6 +104,37 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
                   // ),
                   Column(
                     children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.37,
+                        child: StreamBuilder<
+                            DocumentSnapshot<Map<String, dynamic>>>(
+                          stream: dbConnect.doc(arg['docId']).snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              final List list =
+                                  snapshot.data?.data()?['tracks'];
+                              return ListView.builder(
+                                itemCount: list.length,
+                                itemBuilder: (context, index) {
+                                  final file = list[index];
+                                  print(list);
+                                  return TrackGreenContainer(
+                                    data: file,
+                                    fileDocId: arg['docId'],
+                                    choiceAction: null,
+                                  );
+                                },
+                              );
+                            }
+
+                            if (snapshot.hasError) {
+                              return const Text("Something went wrong");
+                            }
+
+                            return const CircularProgressIndicator.adaptive();
+                          },
+                        ),
+                      ),
                       // Container(
                       //   height: MediaQuery.of(context).size.height * 0.378,
                       //   child: ListView.builder(

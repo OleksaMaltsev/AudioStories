@@ -214,6 +214,7 @@ class _ChoiceSelectionScreenState extends State<ChoiceSelectionScreen> {
                                 return TrackGreenContainer(
                                   data: file.data(),
                                   fileDocId: fileDocId!,
+                                  choiceAction: 2,
                                 );
                               },
                             );
