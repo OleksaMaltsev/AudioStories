@@ -579,10 +579,12 @@ class FirebaseRepository {
         },
         verificationFailed: (FirebaseAuthException e) {
           print(e.message);
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Невірний номер телефону або код з смс')));
         },
         codeSent: (String? verficationID, int? resendToken) {
-          //setState(() {
           _verificationCode = verficationID;
+
           try {
             FirebaseAuth.instance
                 .signInWithCredential(PhoneAuthProvider.credential(
@@ -602,8 +604,6 @@ class FirebaseRepository {
             });
           } catch (e) {
             FocusScope.of(context).unfocus();
-            print('invalid OTP');
-            print(e);
           }
           //},);
         },
@@ -612,7 +612,6 @@ class FirebaseRepository {
           _verificationCode = verficationID;
           // });
         },
-        timeout: const Duration(seconds: 120),
       );
     } on FirebaseAuthException catch (e) {
       print(e.code);

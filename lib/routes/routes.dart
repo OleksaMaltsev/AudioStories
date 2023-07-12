@@ -16,6 +16,7 @@ import 'package:audio_stories/screens/profile/profile_edit.dart';
 import 'package:audio_stories/screens/profile/subscription.dart';
 import 'package:audio_stories/screens/search/search.dart';
 import 'package:audio_stories/screens/selections/add_selection.dart';
+import 'package:audio_stories/screens/selections/choice_some_selection.dart';
 import 'package:audio_stories/screens/selections/choies_selection.dart';
 import 'package:audio_stories/screens/selections/edit_selection.dart';
 import 'package:audio_stories/screens/selections/one_selection.dart';
@@ -100,6 +101,9 @@ class AppRouter {
         break;
       case SearchTrackScreen.routeName:
         builder = (_) => const SearchTrackScreen();
+        break;
+      case ChoiceSomeSelectionsScreen.routeName:
+        builder = (_) => const ChoiceSomeSelectionsScreen();
         break;
       default:
         throw Exception('Invalid route: ${settings.name}');

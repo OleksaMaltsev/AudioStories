@@ -59,9 +59,7 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
             children: [
               const CustomAppBarSelections(
                 name: '',
-                actions: DropdownButtonOneSelection(
-                  colorIcon: ColorsApp.colorWhite,
-                ),
+                actions: DropdownButtonOneSellection(),
               ),
               const SizedBox(height: 10),
               Column(

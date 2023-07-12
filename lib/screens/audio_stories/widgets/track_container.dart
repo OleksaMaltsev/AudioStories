@@ -4,232 +4,12 @@ import 'package:audio_stories/helpers/audio_helper.dart';
 import 'package:audio_stories/models/track_model.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
 import 'package:audio_stories/providers/track_menu_provider.dart';
-import 'package:audio_stories/providers/track_path_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
-import 'package:audio_stories/screens/audio/widgets/dropdown_button.dart';
 import 'package:audio_stories/screens/audio_stories/widgets/dropdown_button_one_track.dart';
 import 'package:audio_stories/thems/main_thame.dart';
-import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
-import 'package:audio_stories/widgets/background/background_blue_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:provider/provider.dart';
-
-class SearchTrackScreen extends StatefulWidget {
-  const SearchTrackScreen({super.key});
-  static const String routeName = '/search';
-
-  @override
-  State<SearchTrackScreen> createState() => _SearchTrackScreenState();
-}
-
-class _SearchTrackScreenState extends State<SearchTrackScreen> {
-  late Future<ListResult> futureFiles;
-  List<Reference> listRef = [];
-
-  AudioPlayer audioPlayer = AudioPlayer();
-  Reference firebaseStorage = FirebaseStorage.instance.ref();
-  String? filePath;
-  int count = 0;
-
-  String dateRef = '';
-
-  List<String> list1 = [];
-
-  Future<QuerySnapshot<Map<String, dynamic>>>? dataStream;
-  final dbConnect = FirebaseFirestore.instance
-      .collection("users")
-      .doc(FirebaseAuth.instance.currentUser?.uid)
-      .collection("tracks")
-      .snapshots();
-
-  void getAllTrack() {
-    final db = FirebaseFirestore.instance;
-    dataStream = db
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .collection("tracks")
-        .get();
-    // .asStream();
-
-    //     .then(
-    //   (querySnapshot) {
-    //     dataSnap = querySnapshot.docs;
-    //     print("Successfully completed");
-    //     for (var docSnapshot in querySnapshot.docs) {
-    //       print('${docSnapshot.id} => ${docSnapshot.data()}');
-    //     }
-    //   },
-    //   onError: (e) => print("Error completing: $e"),
-    // );
-  }
-
-  void _getPath(String path) async {
-    setState(() {});
-  }
-
-  late ListResult listResult;
-
-  @override
-  void initState() {
-    super.initState();
-    getAllTrack();
-    futureFiles =
-        FirebaseStorage.instance.ref('/upload-voice-firebase/').list();
-    futureFiles.then((value) {
-      listRef = value.items;
-    });
-    setState(() {});
-    print(listRef);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  Future<String> getNameTrackForDb(String docID) async {
-    String nameTrack = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .collection('tracks')
-        .doc(docID)
-        .get()
-        .then(
-      (DocumentSnapshot doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return data['trackName'];
-      },
-      onError: (e) => print("Error getting document: $e"),
-    );
-    print(nameTrack);
-    return nameTrack;
-  }
-
-  TextEditingController _searchController = TextEditingController();
-  //TODO Make sure to provide your own Collection instead of 'all_Notes'
-  CollectionReference allNoteCollection = FirebaseFirestore.instance
-      .collection("users")
-      .doc(FirebaseAuth.instance.currentUser?.uid)
-      .collection("tracks");
-  List<DocumentSnapshot> documents = [];
-
-  String searchText = '';
-
-  bool play = false;
-  bool repeat = false;
-
-  bool playTrack = true;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomPaint(
-        painter: BluePainter(),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-          child: Column(
-            children: [
-              CustomAppBar(
-                contextScreen: context,
-                leading: null,
-                title: 'Аудіозаписи',
-                subTitle: 'Все в одному місці',
-                actions: null,
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(5, 0, 25, 0),
-                margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                decoration: BoxDecoration(
-                  color: ColorsApp.colorOriginalWhite,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: (value) {
-                    setState(() {
-                      searchText = value;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Пошук',
-                    hintStyle: mainTheme.textTheme.labelMedium?.copyWith(
-                      fontSize: 20,
-                      color: ColorsApp.colorLightOpacityDark,
-                    ),
-                    border: const OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                    ),
-                    suffixIcon: SvgPicture.asset(
-                      AppIcons.search,
-                      width: 30,
-                    ),
-                    suffixIconConstraints: BoxConstraints.tight(
-                      const Size(30, 30),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                child: Column(
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.616,
-                      child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                        stream: dbConnect,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            documents = snapshot.data!.docs;
-                          }
-                          if (searchText.length > 0) {
-                            documents = documents.where((element) {
-                              return element
-                                  .get('trackName')
-                                  .toString()
-                                  .toLowerCase()
-                                  .contains(searchText.toLowerCase());
-                            }).toList();
-                          }
-                          if (snapshot.hasData) {
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: documents.length,
-                              //itemCount: snapshot.data!.docs.length,
-                              itemBuilder: (context, index) {
-                                //final list = snapshot.data!.docs;
-                                final file = documents[index];
-                                final fileDocId = documents[index].id;
-                                return TrackContainer(
-                                  data: (file.data() as Map<String, dynamic>),
-                                  fileDocId: fileDocId,
-                                );
-                              },
-                            );
-                          }
-
-                          if (snapshot.hasError) {
-                            return const Text("Something went wrong");
-                          }
-
-                          return const CircularProgressIndicator.adaptive();
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class TrackContainer extends StatefulWidget {
   const TrackContainer({
@@ -257,15 +37,9 @@ class _TrackContainerState extends State<TrackContainer> {
   FocusNode trackFocus = FocusNode();
   String? trackDocId = '';
 
-  Track? track;
   @override
   void initState() {
     super.initState();
-    track = Track(
-      title: widget.data['trackName'],
-      url: widget.data['url'],
-      time: widget.data['duration'],
-    );
     setState(() {});
   }
 
@@ -387,7 +161,7 @@ class _TrackContainerState extends State<TrackContainer> {
                         // await FirebaseRepository()
                         //     .setNewTrackName(trackNameController.text);
                         FirebaseRepository().setNewTrackName(
-                            trackNameController.text, track!.url);
+                            trackNameController.text, widget.data['url']);
                         appValueNotifier.changeWidgetNotifier(0);
                       } else {
                         final snackBar = SnackBar(

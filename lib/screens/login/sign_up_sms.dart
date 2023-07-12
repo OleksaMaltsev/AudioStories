@@ -32,6 +32,46 @@ class _SignUpSmsScreenState extends State<SignUpSmsScreen> {
   String? _verificationCode;
 
   @override
+  void initState() {
+    super.initState();
+    _verifyPhone();
+  }
+
+  _verifyPhone() async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber:
+          Provider.of<UserSignUpProvider>(context, listen: false).userPhone,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        await FirebaseAuth.instance
+            .signInWithCredential(credential)
+            .then((value) async {
+          if (value.user != null) {
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              SignUpThanksScreen.routeName,
+              (route) => false,
+            );
+          }
+        });
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        print(e.message);
+      },
+      codeSent: (String? verficationID, int? resendToken) {
+        setState(() {
+          _verificationCode = verficationID;
+        });
+      },
+      codeAutoRetrievalTimeout: (String verificationID) {
+        setState(() {
+          _verificationCode = verificationID;
+        });
+      },
+      timeout: Duration(seconds: 120),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -87,9 +127,29 @@ class _SignUpSmsScreenState extends State<SignUpSmsScreen> {
                       const SizedBox(height: 50),
                       OrangeButton(
                         text: 'Продовжити',
-                        function: () {
-                          FirebaseRepository()
-                              .verifyPhone(context, smsController.text.trim());
+                        function: () async {
+                          try {
+                            await FirebaseAuth.instance
+                                .signInWithCredential(
+                                    PhoneAuthProvider.credential(
+                                        verificationId: _verificationCode!,
+                                        smsCode: smsController.text))
+                                .then((value) async {
+                              if (value.user != null) {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  SignUpThanksScreen.routeName,
+                                  (route) => false,
+                                );
+                              }
+                            });
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(e.toString())));
+                          }
+
+                          // FirebaseRepository()
+                          //     .verifyPhone(context, smsController.text.trim());
                         },
                       ),
                       const SizedBox(height: 60),

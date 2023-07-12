@@ -29,7 +29,7 @@ class _SelectionsScreenState extends State<SelectionsScreen> {
                 leading: null,
                 title: 'Добірки',
                 subTitle: 'Все в одному місці',
-                actions: DropdownButtonSelection(),
+                actions: DropdownButtonSellection(),
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
