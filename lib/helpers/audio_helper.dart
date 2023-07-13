@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 class AudioHelper {
   const AudioHelper._();
 
@@ -10,5 +13,37 @@ class AudioHelper {
       minutes,
       seconds,
     ].join(':');
+  }
+
+  static Future<Map<String, dynamic>> getNameTrackForDb(String docId) async {
+    Map<String, dynamic> nameTrack = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('tracks')
+        .doc(docId)
+        .get()
+        .then(
+      (DocumentSnapshot doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return {
+          'trackName': data['trackName'],
+          'url': data['url'],
+          'duration': data['duration'],
+          'id': data['id']
+        };
+      },
+      onError: (e) => print("Error getting document: $e"),
+    );
+    print(nameTrack);
+    return nameTrack;
+  }
+
+  static Future<List<Map<String, dynamic>>> setTracksInSellection(
+      List listWithDocId) async {
+    List<Map<String, dynamic>> listMap = [];
+    for (String value in listWithDocId) {
+      listMap.add(await getNameTrackForDb(value));
+    }
+    return listMap;
   }
 }

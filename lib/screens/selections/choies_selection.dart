@@ -1,5 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/helpers/audio_helper.dart';
 import 'package:audio_stories/providers/choise_tracks_provider.dart';
 import 'package:audio_stories/providers/sellection_create_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
@@ -26,76 +27,34 @@ class _ChoiceSelectionScreenState extends State<ChoiceSelectionScreen> {
   bool choose = false;
   bool playTrack = true;
 
-  Future<QuerySnapshot<Map<String, dynamic>>>? dataStream;
   late Future<ListResult> futureFiles;
   List<Reference> listRef = [];
-
-  void getAllTrack() {
-    final db = FirebaseFirestore.instance;
-    dataStream = db
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .collection("tracks")
-        .get();
-    // .asStream();
-
-    //     .then(
-    //   (querySnapshot) {
-    //     dataSnap = querySnapshot.docs;
-    //     print("Successfully completed");
-    //     for (var docSnapshot in querySnapshot.docs) {
-    //       print('${docSnapshot.id} => ${docSnapshot.data()}');
-    //     }
-    //   },
-    //   onError: (e) => print("Error completing: $e"),
-    // );
-  }
 
   @override
   void initState() {
     super.initState();
-    getAllTrack();
     futureFiles =
         FirebaseStorage.instance.ref('/upload-voice-firebase/').list();
     futureFiles.then((value) {
       listRef = value.items;
     });
     setState(() {});
-    print(listRef);
   }
 
-  Future<Map<String, dynamic>> getNameTrackForDb(String docId) async {
-    Map<String, dynamic> nameTrack = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .collection('tracks')
-        .doc(docId)
-        .get()
-        .then(
-      (DocumentSnapshot doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return {
-          'trackName': data['trackName'],
-          'url': data['url'],
-          'duration': data['duration'],
-          'id': data['id']
-        };
-      },
-      onError: (e) => print("Error getting document: $e"),
-    );
-    print(nameTrack);
-    return nameTrack;
-  }
+  TextEditingController _searchController = TextEditingController();
+  CollectionReference allNoteCollection = FirebaseFirestore.instance
+      .collection("users")
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+      .collection("tracks");
+  List<DocumentSnapshot> documents = [];
 
-  Future<List<Map<String, dynamic>>> setTracksInSellection(
-      List listWithDocId) async {
-    List<Map<String, dynamic>> listMap = [];
-    for (String value in listWithDocId) {
-      listMap.add(await getNameTrackForDb(value));
-    }
-    return listMap;
-  }
+  String searchText = '';
 
+  final dbConnect = FirebaseFirestore.instance
+      .collection("users")
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+      .collection("tracks")
+      .snapshots();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,7 +90,8 @@ class _ChoiceSelectionScreenState extends State<ChoiceSelectionScreen> {
                           listen: false);
                       if (list.getList().isNotEmpty) {
                         final listMapsTracks =
-                            await setTracksInSellection(list.getList());
+                            await AudioHelper.setTracksInSellection(
+                                list.getList());
                         FirebaseRepository().saveSellection(
                           sellection.sellectionModel.photo!,
                           sellection.sellectionModel.name!,
@@ -173,6 +133,12 @@ class _ChoiceSelectionScreenState extends State<ChoiceSelectionScreen> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: TextField(
+                      controller: _searchController,
+                      onChanged: (value) {
+                        setState(() {
+                          searchText = value;
+                        });
+                      },
                       decoration: InputDecoration(
                         hintText: 'Пошук',
                         hintStyle: mainTheme.textTheme.labelMedium?.copyWith(
@@ -200,20 +166,36 @@ class _ChoiceSelectionScreenState extends State<ChoiceSelectionScreen> {
                   children: [
                     Container(
                       height: 400,
-                      child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                        future: dataStream,
+                      child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                        stream:
+                            dbConnect, //FirebaseRepository().getTrackSnapshot(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
+                          if (snapshot.hasData) {
+                            documents = snapshot.data!.docs;
+                          }
+                          if (searchText.length > 0) {
+                            documents = documents.where((element) {
+                              return element
+                                  .get('trackName')
+                                  .toString()
+                                  .toLowerCase()
+                                  .contains(searchText.toLowerCase());
+                            }).toList();
+                          }
+
+                          if (snapshot.hasData) {
                             return ListView.builder(
-                              itemCount: snapshot.data?.docs.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: documents.length,
                               itemBuilder: (context, index) {
-                                final file = snapshot.data?.docs[index];
-                                final fileDocId = snapshot.data?.docs[index].id;
-                                print(file!.data());
+                                print(documents[index].data());
+                                print('ddd');
+                                final file = documents[index];
+                                final fileDocId = documents[index].id;
                                 return TrackGreenContainer(
-                                  data: file.data(),
-                                  fileDocId: fileDocId!,
+                                  data: (file.data() as Map<String, dynamic>),
+                                  fileDocId: fileDocId,
                                   choiceAction: 2,
                                 );
                               },

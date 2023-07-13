@@ -111,7 +111,6 @@ class _SearchTrackScreenState extends State<SearchTrackScreen> {
   }
 
   TextEditingController _searchController = TextEditingController();
-  //TODO Make sure to provide your own Collection instead of 'all_Notes'
   CollectionReference allNoteCollection = FirebaseFirestore.instance
       .collection("users")
       .doc(FirebaseAuth.instance.currentUser?.uid)

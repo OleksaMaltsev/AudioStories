@@ -402,6 +402,17 @@ class FirebaseRepository {
     }
   }
 
+  void deleteSellections(List<String> list) {
+    for (String id in list) {
+      db
+          .collection('users')
+          .doc(currentUser)
+          .collection('sellections')
+          .doc(id)
+          .delete();
+    }
+  }
+
   void transferForDeleteSellection(BigTrackModel track, String date) {
     if (FirebaseAuth.instance.currentUser != null) {
       final db = FirebaseFirestore.instance;
@@ -512,6 +523,24 @@ class FirebaseRepository {
       },
       onError: (e) => print("Error completing: $e"),
     );
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getSellectionSnapshot() {
+    final dbConnect = FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("sellections")
+        .snapshots();
+    return dbConnect;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getTrackSnapshot() {
+    final dbConnect = FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("tracks")
+        .snapshots();
+    return dbConnect;
   }
 
   // changePhone(String phone, String verifId) async {

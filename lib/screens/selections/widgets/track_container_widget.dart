@@ -120,7 +120,7 @@ class _TrackContainerState extends State<TrackGreenContainer> {
             flex: 1,
             child: InkWell(
               onTap: () {
-                audioPlayer.play(UrlSource(track?.url ?? ''));
+                audioPlayer.play(UrlSource(widget.data['url']));
 
                 //audioPlayer.stop();
 
@@ -141,7 +141,8 @@ class _TrackContainerState extends State<TrackGreenContainer> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    track?.title ?? 'Track',
+                    widget.data['trackName'],
+                    //track?.title ?? 'Track',
                     style: mainTheme.textTheme.labelSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -167,7 +168,7 @@ class _TrackContainerState extends State<TrackGreenContainer> {
                         // await FirebaseRepository()
                         //     .setNewTrackName(trackNameController.text);
                         FirebaseRepository().setNewTrackName(
-                            trackNameController.text, track!.url);
+                            trackNameController.text, widget.data['url']);
                         appValueNotifier.changeWidgetNotifier(0);
                       } else {
                         final snackBar = SnackBar(
