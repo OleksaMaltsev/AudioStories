@@ -28,7 +28,9 @@ class _EditSelectionScreenState extends State<EditSelectionScreen> {
             children: [
               const CustomAppBarSelections(
                 name: '',
-                actions: DropdownButtonOneSellection(),
+                actions: DropdownButtonOneSellection(
+                  fileDocId: '',
+                ),
               ),
               const SizedBox(height: 10),
               Column(

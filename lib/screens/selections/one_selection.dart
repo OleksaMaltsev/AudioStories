@@ -47,6 +47,7 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     final arg = ModalRoute.of(context)!.settings.arguments as Map;
+    if (arg['docId'] == null) return SizedBox();
     getTrackSellection(arg['docId']);
 
     return Scaffold(
@@ -57,9 +58,11 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
           width: double.infinity,
           child: Column(
             children: [
-              const CustomAppBarSelections(
+              CustomAppBarSelections(
                 name: '',
-                actions: DropdownButtonOneSellection(),
+                actions: DropdownButtonOneSellection(
+                  fileDocId: arg['docId'],
+                ),
               ),
               const SizedBox(height: 10),
               Column(
@@ -108,14 +111,15 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
                             DocumentSnapshot<Map<String, dynamic>>>(
                           stream: dbConnect.doc(arg['docId']).snapshots(),
                           builder: (context, snapshot) {
-                            if (snapshot.hasData) {
+                            if (snapshot.hasData &&
+                                snapshot.data?.data()?['tracks'] != null) {
                               final List list =
                                   snapshot.data?.data()?['tracks'];
+
                               return ListView.builder(
                                 itemCount: list.length,
                                 itemBuilder: (context, index) {
                                   final file = list[index];
-                                  print(list);
                                   return TrackGreenContainer(
                                     data: file,
                                     fileDocId: arg['docId'],

@@ -4,6 +4,7 @@ import 'package:audio_stories/providers/change_name_track.dart';
 import 'package:audio_stories/providers/track_menu_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/selections/edit_selection.dart';
+import 'package:audio_stories/screens/selections/selection.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -16,7 +17,9 @@ import 'package:intl/intl.dart';
 String globPath = '';
 
 class DropdownButtonOneSellection extends StatefulWidget {
+  final String fileDocId;
   const DropdownButtonOneSellection({
+    required this.fileDocId,
     super.key,
   });
 
@@ -77,6 +80,11 @@ class _DropdownButtonOneSellectionState
               //sharePressed();
               break;
             case 'Видалити підбірку':
+              FirebaseRepository().deleteSellections([widget.fileDocId]);
+              Navigator.pushReplacementNamed(
+                context,
+                SelectionsScreen.routeName,
+              );
               break;
             case 'Поділитись':
               break;
