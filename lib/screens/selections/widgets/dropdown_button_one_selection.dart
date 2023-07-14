@@ -14,12 +14,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:intl/intl.dart';
 
-String globPath = '';
-
 class DropdownButtonOneSellection extends StatefulWidget {
   final String fileDocId;
+  final Map<String, dynamic>? data;
   const DropdownButtonOneSellection({
     required this.fileDocId,
+    required this.data,
     super.key,
   });
 
@@ -74,7 +74,11 @@ class _DropdownButtonOneSellectionState
           selectedValue = value;
           switch (value) {
             case 'Редагувати':
-              print('ono');
+              Navigator.pushNamed(
+                context,
+                EditSelectionScreen.routeName,
+                arguments: widget.data,
+              );
               break;
             case 'Вибрати декілька':
               //sharePressed();

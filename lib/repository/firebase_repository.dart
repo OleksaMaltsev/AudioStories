@@ -19,6 +19,11 @@ class FirebaseRepository {
   final currentUser = FirebaseAuth.instance.currentUser?.uid;
   final fbStorageRef = FirebaseStorage.instance.ref();
 
+  final dbConnectSellection = FirebaseFirestore.instance
+      .collection("users")
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+      .collection("sellections");
+
   void initValues(String phone) async {
     if (FirebaseAuth.instance.currentUser != null) {
       // set photo
