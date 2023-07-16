@@ -407,6 +407,25 @@ class FirebaseRepository {
     }
   }
 
+  void updateSellectionValue(
+      {String? name,
+      String? photo,
+      String? description,
+      required String docId}) async {
+    final sellection = db
+        .collection('users')
+        .doc(currentUser)
+        .collection('sellections')
+        .doc(docId);
+    final dataSellection = <String, dynamic>{
+      'sellectionName': name,
+      'description': description,
+      'photo': photo,
+    };
+
+    await sellection.update(dataSellection);
+  }
+
   void deleteSellections(List<String> list) {
     for (String id in list) {
       db
