@@ -1,13 +1,11 @@
 import 'dart:io';
 import 'dart:ui';
-
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/providers/sellection_value_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
-import 'package:audio_stories/screens/selections/widgets/big_stories_box_selections.dart';
+import 'package:audio_stories/screens/selections/one_selection.dart';
 import 'package:audio_stories/screens/selections/widgets/custom_app_bar_selections.dart';
-import 'package:audio_stories/screens/selections/widgets/dropdown_button_one_selection.dart';
-import 'package:audio_stories/screens/selections/widgets/one_track.dart';
 import 'package:audio_stories/screens/selections/widgets/track_container_widget.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/background/background_green_widget.dart';
@@ -16,6 +14,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 class EditSelectionScreen extends StatefulWidget {
   const EditSelectionScreen({super.key});
@@ -27,7 +26,6 @@ class EditSelectionScreen extends StatefulWidget {
 
 class _EditSelectionScreenState extends State<EditSelectionScreen> {
   String name = '';
-
   String? imagePath;
   String description = '';
 
@@ -36,10 +34,11 @@ class _EditSelectionScreenState extends State<EditSelectionScreen> {
   @override
   void initState() {
     super.initState();
+    setState(() {});
   }
 
-  void descriptionInit(String value) {
-    _descriptionController.value = TextEditingValue(
+  void descriptionInit(String value, TextEditingController controller) {
+    controller.value = TextEditingValue(
       text: value,
       selection: TextSelection.fromPosition(
         TextPosition(offset: value.length),
@@ -52,9 +51,12 @@ class _EditSelectionScreenState extends State<EditSelectionScreen> {
     final arg =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic> ??
             {};
-    description = arg['description'];
-    descriptionInit(description);
-    imagePath ??= arg['photo'];
+    name = Provider.of<SellectionValueProvider>(context).name ?? '';
+    description =
+        Provider.of<SellectionValueProvider>(context).description ?? '';
+    descriptionInit(description, _descriptionController);
+    descriptionInit(name, _nameController);
+    imagePath ??= Provider.of<SellectionValueProvider>(context).photo ?? '';
 
     return Scaffold(
       body: CustomPaint(
@@ -68,7 +70,21 @@ class _EditSelectionScreenState extends State<EditSelectionScreen> {
                 CustomAppBarSelections(
                   name: '',
                   actions: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      FirebaseRepository().updateSellectionValue(
+                          docId: arg['docId'],
+                          description: _descriptionController.text,
+                          name: _nameController.text,
+                          photo: imagePath);
+                      Provider.of<SellectionValueProvider>(context,
+                              listen: false)
+                          .setValues(
+                        name: _nameController.text,
+                        description: _descriptionController.text,
+                        photo: imagePath ?? arg['photo'],
+                      );
+                      Navigator.pop(context);
+                    },
                     child: Text(
                       'Зберегти',
                       style: mainTheme.textTheme.labelSmall?.copyWith(
@@ -83,7 +99,6 @@ class _EditSelectionScreenState extends State<EditSelectionScreen> {
                   //   data: arg,
                   // ),
                 ),
-                const SizedBox(height: 10),
                 Column(
                   children: [
                     Padding(
@@ -92,17 +107,9 @@ class _EditSelectionScreenState extends State<EditSelectionScreen> {
                         textAlign: TextAlign.start,
                         controller: _nameController,
                         maxLines: 1,
-                        decoration: InputDecoration(
-                          hintText: description,
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                         ),
-                        style: mainTheme.textTheme.labelSmall,
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        arg['name'],
                         style: mainTheme.textTheme.labelLarge?.copyWith(
                           color: ColorsApp.colorWhite,
                           fontWeight: FontWeight.w600,
@@ -123,7 +130,6 @@ class _EditSelectionScreenState extends State<EditSelectionScreen> {
                                 .saveImageInStorage(file);
                           }
                         }
-
                         setState(() {});
                       },
                       child: Container(
@@ -178,10 +184,6 @@ class _EditSelectionScreenState extends State<EditSelectionScreen> {
                         ),
                         style: mainTheme.textTheme.labelSmall,
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => print(_descriptionController.text),
-                      child: const Text('ff'),
                     ),
                     Container(
                       height: MediaQuery.of(context).size.height * 0.312,

@@ -76,39 +76,3 @@ class _SelectionsScreenState extends State<SelectionsScreen> {
     );
   }
 }
-
-            // Column(
-            //   children: [
-            //     const CustomSelectionsAppBar(
-            //       leading: null,
-            //       title: 'Добірки',
-            //       subTitle: 'Все в одному місці',
-            //       actions: DropdownButtonSelection(),
-            //     ),
-            //     const SizedBox(height: 30),
-            //     const Column(
-            //       children: [
-            //         Row(
-            //           mainAxisAlignment: MainAxisAlignment.spaceAround,
-            //           children: [
-            //             StoriesBoxSelections(
-            //               imagePath: 'assets/icons/Rectangle382.png',
-            //               storiesName: 'Казка про малюка Коккі',
-            //             ),
-            //             StoriesBoxSelections(
-            //               imagePath: 'assets/icons/Rectangle3822.png',
-            //               storiesName: 'Казка про Тараса',
-            //             ),
-            //           ],
-            //         ),
-            //       ],
-            //     ),
-            //     //TODO: delete button
-            //     ElevatedButton(
-            //       onPressed: () {
-            //         Navigator.pushNamed(context, ChoiceSelectionScreen.routeName);
-            //       },
-            //       child: Text('choice_selection'),
-            //     ),
-            //   ],
-            // ),

@@ -408,20 +408,26 @@ class FirebaseRepository {
   }
 
   void updateSellectionValue(
-      {String? name,
-      String? photo,
-      String? description,
+      {required String? name,
+      required String? photo,
+      required String? description,
       required String docId}) async {
     final sellection = db
         .collection('users')
         .doc(currentUser)
         .collection('sellections')
         .doc(docId);
-    final dataSellection = <String, dynamic>{
-      'sellectionName': name,
-      'description': description,
-      'photo': photo,
-    };
+    Map<String, dynamic> dataSellection = {};
+
+    if (name != null) {
+      dataSellection['sellectionName'] = name;
+    }
+    if (photo != null) {
+      dataSellection['photo'] = photo;
+    }
+    if (description != null) {
+      dataSellection['description'] = description;
+    }
 
     await sellection.update(dataSellection);
   }

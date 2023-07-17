@@ -1,6 +1,8 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
+import 'package:audio_stories/providers/sellection_create_provider.dart';
+import 'package:audio_stories/providers/sellection_value_provider.dart';
 import 'package:audio_stories/providers/track_menu_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/selections/edit_selection.dart';
@@ -11,6 +13,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:intl/intl.dart';
 
@@ -79,6 +82,17 @@ class _DropdownButtonOneSellectionState
                 EditSelectionScreen.routeName,
                 arguments: widget.data,
               );
+              if (Provider.of<SellectionValueProvider>(context, listen: false)
+                      .name ==
+                  null) {
+                Provider.of<SellectionValueProvider>(context, listen: false)
+                    .setValues(
+                  name: widget.data?['name'],
+                  description: widget.data?['description'],
+                  photo: widget.data?['photo'],
+                );
+              }
+
               break;
             case 'Вибрати декілька':
               //sharePressed();

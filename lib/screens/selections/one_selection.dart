@@ -51,107 +51,111 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
     if (arg['docId'] == null) return SizedBox();
     getTrackSellection(arg['docId']);
 
-    return Scaffold(
-      body: CustomPaint(
-        painter: GreenPainter(),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(15, 50, 15, 0),
-          width: double.infinity,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                CustomAppBarSelections(
-                  name: '',
-                  actions: DropdownButtonOneSellection(
-                    fileDocId: arg['docId'],
-                    data: arg,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: CustomPaint(
+          painter: GreenPainter(),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(15, 50, 15, 0),
+            width: double.infinity,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CustomAppBarSelections(
+                    name: '',
+                    actions: DropdownButtonOneSellection(
+                      fileDocId: arg['docId'],
+                      data: arg,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        arg['name'],
-                        style: mainTheme.textTheme.labelLarge?.copyWith(
-                          color: ColorsApp.colorWhite,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    BigStoriesBoxSelections(
-                      imagePath: arg['photo'],
-                      dateTime: arg['date'],
-                      countTracks: arg['countTracks'],
-                      duration: arg['duration'],
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Text(
-                        arg['description'],
-                        style: mainTheme.textTheme.labelSmall,
-                        textAlign: TextAlign.left,
-                        maxLines: maxLines,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        if (maxLines == 3) {
-                          maxLines = 10;
-                        } else {
-                          maxLines = 3;
-                        }
-                        setState(() {});
-                      },
-                      child: Text(
-                        'Детальніше',
-                        style: mainTheme.textTheme.labelSmall?.copyWith(
-                          color: ColorsApp.colorLightOpacityDark,
-                        ),
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.37,
-                          child: StreamBuilder<
-                              DocumentSnapshot<Map<String, dynamic>>>(
-                            stream: dbConnect.doc(arg['docId']).snapshots(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData &&
-                                  snapshot.data?.data()?['tracks'] != null) {
-                                final List list =
-                                    snapshot.data?.data()?['tracks'];
-
-                                return ListView.builder(
-                                  itemCount: list.length,
-                                  itemBuilder: (context, index) {
-                                    final file = list[index];
-                                    return TrackGreenContainer(
-                                      data: file,
-                                      fileDocId: arg['docId'],
-                                      choiceAction: null,
-                                    );
-                                  },
-                                );
-                              }
-
-                              if (snapshot.hasError) {
-                                return const Text("Something went wrong");
-                              }
-
-                              return const CircularProgressIndicator.adaptive();
-                            },
+                  const SizedBox(height: 10),
+                  Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          arg['name'],
+                          style: mainTheme.textTheme.labelLarge?.copyWith(
+                            color: ColorsApp.colorWhite,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+                      ),
+                      const SizedBox(height: 10),
+                      BigStoriesBoxSelections(
+                        imagePath: arg['photo'],
+                        dateTime: arg['date'],
+                        countTracks: arg['countTracks'],
+                        duration: arg['duration'],
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          arg['description'],
+                          style: mainTheme.textTheme.labelSmall,
+                          textAlign: TextAlign.left,
+                          maxLines: maxLines,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          if (maxLines == 3) {
+                            maxLines = 10;
+                          } else {
+                            maxLines = 3;
+                          }
+                          setState(() {});
+                        },
+                        child: Text(
+                          'Детальніше',
+                          style: mainTheme.textTheme.labelSmall?.copyWith(
+                            color: ColorsApp.colorLightOpacityDark,
+                          ),
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.37,
+                            child: StreamBuilder<
+                                DocumentSnapshot<Map<String, dynamic>>>(
+                              stream: dbConnect.doc(arg['docId']).snapshots(),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData &&
+                                    snapshot.data?.data()?['tracks'] != null) {
+                                  final List list =
+                                      snapshot.data?.data()?['tracks'];
+
+                                  return ListView.builder(
+                                    itemCount: list.length,
+                                    itemBuilder: (context, index) {
+                                      final file = list[index];
+                                      return TrackGreenContainer(
+                                        data: file,
+                                        fileDocId: arg['docId'],
+                                        choiceAction: null,
+                                      );
+                                    },
+                                  );
+                                }
+
+                                if (snapshot.hasError) {
+                                  return const Text("Something went wrong");
+                                }
+
+                                return const CircularProgressIndicator
+                                    .adaptive();
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
