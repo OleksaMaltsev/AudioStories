@@ -1,4 +1,5 @@
 import 'package:audio_stories/constants/colors.dart';
+import 'package:audio_stories/providers/sellection_value_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/selections/widgets/big_stories_box_selections.dart';
 import 'package:audio_stories/screens/selections/widgets/custom_app_bar_selections.dart';
@@ -10,6 +11,7 @@ import 'package:audio_stories/widgets/background/background_green_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class OneSelectionScreen extends StatefulWidget {
   const OneSelectionScreen({super.key});
@@ -22,6 +24,7 @@ class OneSelectionScreen extends StatefulWidget {
 class _OneSelectionScreenState extends State<OneSelectionScreen> {
   int maxLines = 3;
   Map<String, dynamic> dataTrack = {};
+  Map<String, dynamic> dataSellection = {};
   List? list;
   void getTrackSellection(String docId) {
     final db = FirebaseFirestore.instance;
@@ -36,6 +39,8 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
       data = doc.data() as Map<String, dynamic>;
       dataTrack = data;
       list = dataTrack['tracks'];
+
+      dataSellection = data;
     });
   }
 
@@ -75,7 +80,8 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          arg['name'],
+                          Provider.of<SellectionValueProvider>(context).name ??
+                              arg['name'],
                           style: mainTheme.textTheme.labelLarge?.copyWith(
                             color: ColorsApp.colorWhite,
                             fontWeight: FontWeight.w600,
@@ -84,7 +90,9 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
                       ),
                       const SizedBox(height: 10),
                       BigStoriesBoxSelections(
-                        imagePath: arg['photo'],
+                        imagePath: Provider.of<SellectionValueProvider>(context)
+                                .photo ??
+                            arg['photo'],
                         dateTime: arg['date'],
                         countTracks: arg['countTracks'],
                         duration: arg['duration'],
@@ -93,7 +101,9 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
                       Padding(
                         padding: const EdgeInsets.all(10),
                         child: Text(
-                          arg['description'],
+                          Provider.of<SellectionValueProvider>(context)
+                                  .description ??
+                              arg['description'],
                           style: mainTheme.textTheme.labelSmall,
                           textAlign: TextAlign.left,
                           maxLines: maxLines,

@@ -1,23 +1,25 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/providers/allow_to_delete_provider.dart';
+import 'package:audio_stories/repository/firebase_repository.dart';
+import 'package:audio_stories/screens/selections/selection.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:flutter/material.dart';
 
 class AllowDialogHelper {
   AllowToDeleteProvider allowDeleteProvider = AllowToDeleteProvider();
   AllowDialogHelper();
-  allowDeleteDialog(BuildContext context) {
+  allowDeleteDialog(BuildContext contextScreen, String id) {
     return showDialog(
-      context: context,
+      context: contextScreen,
       builder: (context) {
         return AlertDialog(
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(30.0)),
           ),
           contentPadding: const EdgeInsets.fromLTRB(18, 24, 18, 22),
-          title: const Text('Точно видалити аудіофайл?'),
+          title: const Text('Точно видалити добірку?'),
           content: const Text(
-              'Аудіофайл буде видалено з підбірки, але він залишається в "Аудіоказках"'),
+              'Добірка видалиться назавжди. Але аудіофайли залишаються в "Аудіоказках"'),
           actionsPadding: const EdgeInsets.only(bottom: 24),
           actions: <Widget>[
             Row(
@@ -26,7 +28,12 @@ class AllowDialogHelper {
                 InkWell(
                   onTap: () {
                     allowDeleteProvider.setChoice(true);
+                    FirebaseRepository().deleteSellections([id]);
                     Navigator.of(context).pop();
+                    Navigator.pushReplacementNamed(
+                      contextScreen,
+                      SelectionsScreen.routeName,
+                    );
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(

@@ -1,5 +1,7 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/helpers/allow_dialog_helper.dart';
+import 'package:audio_stories/providers/allow_to_delete_provider.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
 import 'package:audio_stories/providers/sellection_create_provider.dart';
 import 'package:audio_stories/providers/sellection_value_provider.dart';
@@ -33,6 +35,7 @@ class DropdownButtonOneSellection extends StatefulWidget {
 
 class _DropdownButtonOneSellectionState
     extends State<DropdownButtonOneSellection> {
+  ChangeNameGreenPovider appValueNotifier = ChangeNameGreenPovider();
   @override
   void initState() {
     super.initState();
@@ -40,7 +43,13 @@ class _DropdownButtonOneSellectionState
 
   void sharePressed() {
     String message = 'Share audio stories';
-    // Share.shareXFiles([XFile(widget.pathTrack)]);
+    List<XFile> pathList = [];
+    final list = widget.data?['tracks'] as List;
+    list.forEach((element) {
+      pathList.add(XFile(element['url']));
+    });
+    Share.shareXFiles(pathList);
+    //[XFile(widget.data?['tracks'])];
   }
 
   final List<String> items = [
@@ -95,16 +104,23 @@ class _DropdownButtonOneSellectionState
 
               break;
             case 'Вибрати декілька':
-              //sharePressed();
+              appValueNotifier.changeWidgetNotifier(2);
               break;
             case 'Видалити підбірку':
-              FirebaseRepository().deleteSellections([widget.fileDocId]);
-              Navigator.pushReplacementNamed(
-                context,
-                SelectionsScreen.routeName,
-              );
+              AllowDialogHelper().allowDeleteDialog(context, widget.fileDocId);
+
+              // if (Provider.of<AllowToDeleteProvider>(context, listen: false)
+              //     .choiceDelete) {
+              //   FirebaseRepository().deleteSellections([widget.fileDocId]);
+              //   Navigator.pushReplacementNamed(
+              //     context,
+              //     SelectionsScreen.routeName,
+              //   );
+              // }
+
               break;
             case 'Поділитись':
+              sharePressed();
               break;
           }
         },

@@ -1,5 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/screens/selections/selection.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -22,8 +23,13 @@ class CustomAppBarSelections extends StatelessWidget {
           flex: 1,
           child: InkWell(
             onTap: () {
-              Navigator.pop(
+              // Navigator.pop(
+              //   context,
+              //   (route) => false,
+              // );
+              Navigator.pushNamedAndRemoveUntil(
                 context,
+                SelectionsScreen.routeName,
                 (route) => false,
               );
             },

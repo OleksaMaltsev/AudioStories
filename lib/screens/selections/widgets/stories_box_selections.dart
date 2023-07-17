@@ -1,10 +1,14 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/models/sellection_model.dart';
+import 'package:audio_stories/providers/sellection_value_provider.dart';
+import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/selections/one_selection.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class StoriesBoxSelections extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -34,9 +38,29 @@ class _StoriesBoxSelectionsState extends State<StoriesBoxSelections> {
   late DateTime dateTime;
   int? countTracks;
   String? allDuration;
+  Map<String, dynamic> dataTrack = {};
+  Map<String, dynamic> dataSellection = {};
+  List? list;
   @override
   void initState() {
     super.initState();
+    final db = FirebaseFirestore.instance;
+    Map<String, dynamic> data = {};
+    final dataStream = db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("sellections")
+        .doc(widget.docId)
+        .get();
+    dataStream.then((doc) {
+      data = doc.data() as Map<String, dynamic>;
+      dataTrack = data;
+      list = dataTrack['tracks'];
+
+      dataSellection = data;
+      print(dataSellection['sellectionName']);
+    });
+
     sellection = SellectionModel(
         name: widget.data['sellectionName'],
         description: widget.data['description'],
@@ -71,8 +95,28 @@ class _StoriesBoxSelectionsState extends State<StoriesBoxSelections> {
     ].join(':');
   }
 
+  void getTrackSellection() {
+    final db = FirebaseFirestore.instance;
+    Map<String, dynamic> data = {};
+    final dataStream = db
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection("sellections")
+        .doc(widget.docId)
+        .get();
+    dataStream.then((doc) {
+      data = doc.data() as Map<String, dynamic>;
+      dataTrack = data;
+      list = dataTrack['tracks'];
+
+      dataSellection = data;
+      print(dataSellection['sellectionName']);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    getTrackSellection();
     return InkWell(
       onTap: () {
         Navigator.pushNamed(
@@ -97,7 +141,7 @@ class _StoriesBoxSelectionsState extends State<StoriesBoxSelections> {
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(13),
               image: DecorationImage(
-                image: NetworkImage(sellection.photo!),
+                image: NetworkImage(widget.data['photo']),
                 fit: BoxFit.cover,
               ),
             ),
@@ -128,7 +172,7 @@ class _StoriesBoxSelectionsState extends State<StoriesBoxSelections> {
                 SizedBox(
                   width: 60,
                   child: AutoSizeText(
-                    sellection.name!,
+                    widget.data['sellectionName'],
                     style: mainTheme.textTheme.labelSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: ColorsApp.colorWhite,

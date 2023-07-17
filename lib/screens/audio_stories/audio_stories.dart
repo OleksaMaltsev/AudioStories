@@ -4,6 +4,7 @@ import 'package:audio_stories/screens/audio_stories/widgets/track_container.dart
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
 import 'package:audio_stories/widgets/background/background_blue_widget.dart';
+import 'package:audio_stories/widgets/mini_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -225,6 +226,7 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                 child: Column(
                   children: [
+                    //MiniPlayer(),
                     Container(
                       height: MediaQuery.of(context).size.height * 0.6,
                       child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
