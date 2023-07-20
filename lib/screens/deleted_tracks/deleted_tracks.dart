@@ -107,28 +107,34 @@ class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
                                 final List listKeys = data.keys.toList();
                                 final String sellectId =
                                     snapshot.data!.docs[index].id;
-                                return Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: Column(
-                                    children: [
-                                      Text(sellectId),
-                                      const SizedBox(height: 10),
-                                      ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: ScrollPhysics(),
-                                        itemCount: listKeys.length,
-                                        itemBuilder: ((context, index) {
-                                          //print(listKeys[index]);
-                                          return DeletedTrackContainer(
-                                            data: data[listKeys[index]],
-                                            fileDocId: sellectId,
-                                            trackId: listKeys[index],
-                                          );
-                                        }),
-                                      ),
-                                    ],
-                                  ),
-                                );
+                                print(sellectId);
+                                if (file.data().isNotEmpty) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Column(
+                                      children: [
+                                        Text(sellectId),
+                                        const SizedBox(height: 10),
+                                        ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: ScrollPhysics(),
+                                          itemCount: listKeys.length,
+                                          itemBuilder: ((context, index) {
+                                            print(listKeys[index]);
+
+                                            return DeletedTrackContainer(
+                                              data: data[listKeys[index]],
+                                              fileDocId: sellectId,
+                                              trackId: listKeys[index],
+                                            );
+                                          }),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                } else {
+                                  return const SizedBox();
+                                }
                               },
                             );
                           }

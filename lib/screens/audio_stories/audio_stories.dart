@@ -99,7 +99,7 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
       },
       onError: (e) => print("Error getting document: $e"),
     );
-    print(nameTrack);
+    //print(nameTrack);
     return nameTrack;
   }
 
@@ -226,7 +226,6 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                 child: Column(
                   children: [
-                    //MiniPlayer(),
                     Container(
                       height: MediaQuery.of(context).size.height * 0.6,
                       child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(

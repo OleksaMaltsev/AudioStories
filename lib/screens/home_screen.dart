@@ -3,6 +3,7 @@ import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/audio_stories/audio_stories.dart';
 import 'package:audio_stories/screens/audio_stories/widgets/track_container.dart';
+import 'package:audio_stories/screens/selections/selection.dart';
 import 'package:audio_stories/screens/selections/widgets/stories_box_selections.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
@@ -67,9 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
           firstThreeSellect.add(value.docs[i].data());
           docId.add(value.docs[i].id);
         }
+        setState(() {});
       }
     });
-    setState(() {});
   }
 
   @override
@@ -105,7 +106,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           InkWell(
                             onTap: () {
-                              context.read<TestBloc>().add(StringEvent('new'));
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                SelectionsScreen.routeName,
+                                (route) => false,
+                              );
                             },
                             child: Text(
                               'Відкрити все',

@@ -12,6 +12,7 @@ import 'package:audio_stories/thems/main_thame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+//import 'package:url_launcher/url_launcher.dart';
 
 class CustomDrawer extends StatelessWidget {
   final GlobalKey<NavigatorState> navigatorKey;
@@ -107,14 +108,56 @@ class CustomDrawer extends StatelessWidget {
                     index: 4,
                     routePath: SubscriptionScreen.routeName,
                   ),
-                  const SizedBox(height: 20),
-                  CustomListTile(
-                    title: 'Написати в підтримку',
-                    icon: AppIcons.edit,
-                    navigatorKey: navigatorKey,
-                    index: 4,
-                    routePath: ProfileScreen.routeName,
+                  InkWell(
+                    onTap: () async {
+                      // String? encodeQueryParameters(
+                      //     Map<String, String> params) {
+                      //   return params.entries
+                      //       .map((MapEntry<String, String> e) =>
+                      //           '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+                      //       .join('&');
+                      // }
+
+                      // final Uri emailUri = Uri(
+                      //   scheme: 'mailto',
+                      //   path: 'my.email@gmail.com',
+                      //   query: encodeQueryParameters(<String, String>{
+                      //     'subject': 'Example Subject & Symbols are allowed!',
+                      //   }),
+                      // );
+                      // if (await canLaunchUrl(emailUri)) {
+                      //   launchUrl(emailUri);
+                      // } else {
+                      //   throw Exception(
+                      //       'Невдається відкрити email додаток $emailUri');
+                      // }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(25, 30, 0, 5),
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            AppIcons.edit,
+                            width: 30,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            'Написати в підтримку',
+                            style: mainTheme.textTheme.labelMedium?.copyWith(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
+                  // CustomListTile(
+                  //   title: 'Написати в підтримку',
+                  //   icon: AppIcons.edit,
+                  //   navigatorKey: navigatorKey,
+                  //   index: 4,
+                  //   routePath: ProfileScreen.routeName,
+                  // ),
                 ],
               ),
             )

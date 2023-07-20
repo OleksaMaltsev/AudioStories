@@ -3,6 +3,7 @@ import 'package:audio_stories/providers/allow_to_delete_provider.dart';
 import 'package:audio_stories/providers/change_choose_provider.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
 import 'package:audio_stories/providers/choise_tracks_provider.dart';
+import 'package:audio_stories/providers/delete_list_provider.dart';
 import 'package:audio_stories/providers/sellection_create_provider.dart';
 import 'package:audio_stories/providers/sellection_value_provider.dart';
 import 'package:audio_stories/providers/sms_code_provider.dart';
@@ -73,6 +74,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => SellectionValueProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DeleteListProvider(),
         ),
       ],
       child: MaterialApp(

@@ -304,6 +304,39 @@ class FirebaseRepository {
       final track =
           db.collection('users').doc(currentUser).collection('delete').doc(id);
       //delete with storage
+      await track.get().then((value) async {
+        final data = value.data();
+        for (String item in idTrack) {
+          if (data?[item] != null) {
+            final Map<String, dynamic> currentTrack = data?[item];
+            final storageRef = currentTrack['storagePath'];
+            final desertRef = fbStorageRef.child(storageRef);
+            desertRef.delete();
+            await track.update({item: FieldValue.delete()});
+            bool docIsEmpty =
+                await track.get().then((value) => value.data()!.isEmpty);
+            if (docIsEmpty) {
+              db
+                  .collection('users')
+                  .doc(currentUser)
+                  .collection('delete')
+                  .doc(id)
+                  .delete()
+                  .then((value) => print('Document ${id} deleted'));
+            }
+          }
+        }
+      }, onError: (e) => print("Error getting document: $e"));
+    }
+  }
+
+  void deleteChooseTrackAllOver(
+      List<String>? listDocId, List<String> idTrack) async {
+    if (listDocId == null) return;
+    for (String id in listDocId) {
+      final track =
+          db.collection('users').doc(currentUser).collection('delete').doc(id);
+      //delete with storage
       await track.get().then((value) {
         final data = value.data();
         for (String item in idTrack) {

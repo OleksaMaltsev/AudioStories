@@ -7,6 +7,7 @@ import 'package:audio_stories/providers/track_menu_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/audio_stories/widgets/dropdown_button_one_track.dart';
 import 'package:audio_stories/thems/main_thame.dart';
+import 'package:audio_stories/widgets/mini_player.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

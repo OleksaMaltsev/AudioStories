@@ -1,9 +1,12 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/providers/delete_list_provider.dart';
+import 'package:audio_stories/providers/sellection_value_provider.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class DeleteBottomNavigationBar extends StatelessWidget {
   const DeleteBottomNavigationBar({super.key});
@@ -46,7 +49,12 @@ class DeleteBottomNavigationBar extends StatelessWidget {
             ),
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              final list =
+                  Provider.of<DeleteListProvider>(context, listen: false)
+                      .getList();
+              if (list.isNotEmpty) {}
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
