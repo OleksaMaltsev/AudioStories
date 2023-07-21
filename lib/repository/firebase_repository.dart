@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:audio_stories/models/big_track_model.dart';
+import 'package:audio_stories/models/track_and_sellection_id.dart';
 import 'package:uuid/uuid.dart';
 import 'package:audio_stories/models/user_model.dart';
 import 'package:audio_stories/providers/user_sign_up_provider.dart';
@@ -249,6 +250,94 @@ class FirebaseRepository {
     }
   }
 
+  void recoveryTracks({required List<TrackAndSellectionId>? tracks}) {
+    if (tracks != null) {
+      for (TrackAndSellectionId item in tracks!) {
+        final track = item.idSellection;
+        //Map<String, dynamic>? data;
+        db
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .collection('delete')
+            .doc(item.idSellection)
+            .get()
+            .then((value) {
+          final data = value.data();
+          if (data != null) {
+            db
+                .collection('users')
+                .doc(FirebaseAuth.instance.currentUser?.uid)
+                .collection('tracks')
+                .doc(item.idTrack)
+                .set(data[item.idTrack]!, SetOptions(merge: true));
+            db
+                .collection('users')
+                .doc(FirebaseAuth.instance.currentUser?.uid)
+                .collection('delete')
+                .doc(item.idSellection)
+                .set({
+              item.idTrack: FieldValue.delete(),
+            }, SetOptions(merge: true));
+            print(value.data()!.isEmpty);
+            db
+                .collection('users')
+                .doc(FirebaseAuth.instance.currentUser?.uid)
+                .collection('delete')
+                .doc(item.idSellection)
+                .get()
+                .then((value) {
+              if (value.data() != null && value.data()!.isEmpty) {
+                db
+                    .collection('users')
+                    .doc(currentUser)
+                    .collection('delete')
+                    .doc(item.idSellection)
+                    .delete()
+                    .then((value) =>
+                        print('Document ${item.idSellection} deleted'));
+              }
+            });
+          }
+        });
+      }
+    } else {
+      db
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('delete')
+          .get()
+          .then(
+        (querySnapshot) {
+          for (var docSnapshot in querySnapshot.docs) {
+            print('${docSnapshot.id} => ${docSnapshot.data()}');
+            final data = docSnapshot.data();
+
+            for (var id in data.keys) {
+              db
+                  .collection('users')
+                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                  .collection('tracks')
+                  .doc(id)
+                  .set(data[id], SetOptions(merge: true));
+            }
+            db
+                .collection('users')
+                .doc(FirebaseAuth.instance.currentUser?.uid)
+                .collection('delete')
+                .doc(docSnapshot.id)
+                .delete();
+          }
+        },
+        onError: (e) => print("Error completing: $e"),
+      );
+      // (DocumentSnapshot doc) {
+      //   final data = doc.data() as Map<String, dynamic>;
+      //   print(value);
+      //   print(data);
+      //   if (data != null) {
+    }
+  }
+
   void deleteTrack(List<String> listDocId) async {
     // for (String id in listIdSellection) {
     //   // delete track with sellection
@@ -298,35 +387,61 @@ class FirebaseRepository {
     });
   }
 
-  void deleteTrackAllOver(List<String>? listDocId, List<String> idTrack) async {
-    if (listDocId == null) return;
-    for (String id in listDocId) {
-      final track =
-          db.collection('users').doc(currentUser).collection('delete').doc(id);
-      //delete with storage
-      await track.get().then((value) async {
-        final data = value.data();
-        for (String item in idTrack) {
-          if (data?[item] != null) {
-            final Map<String, dynamic> currentTrack = data?[item];
-            final storageRef = currentTrack['storagePath'];
-            final desertRef = fbStorageRef.child(storageRef);
-            desertRef.delete();
-            await track.update({item: FieldValue.delete()});
-            bool docIsEmpty =
-                await track.get().then((value) => value.data()!.isEmpty);
-            if (docIsEmpty) {
-              db
-                  .collection('users')
-                  .doc(currentUser)
-                  .collection('delete')
-                  .doc(id)
-                  .delete()
-                  .then((value) => print('Document ${id} deleted'));
+  void deleteTrackAllOver(
+      List<String>? listDocId, List<String>? idTrack) async {
+    if (listDocId != null) {
+      for (String id in listDocId) {
+        final track = db
+            .collection('users')
+            .doc(currentUser)
+            .collection('delete')
+            .doc(id);
+        //delete with storage
+        await track.get().then((value) async {
+          final data = value.data();
+          for (String item in idTrack!) {
+            if (data?[item] != null) {
+              final Map<String, dynamic> currentTrack = data?[item];
+              final storageRef = currentTrack['storagePath'];
+              final desertRef = fbStorageRef.child(storageRef);
+              desertRef.delete();
+              await track.update({item: FieldValue.delete()});
+              bool docIsEmpty =
+                  await track.get().then((value) => value.data()!.isEmpty);
+              if (docIsEmpty) {
+                db
+                    .collection('users')
+                    .doc(currentUser)
+                    .collection('delete')
+                    .doc(id)
+                    .delete()
+                    .then((value) => print('Document ${id} deleted'));
+              }
             }
           }
-        }
-      }, onError: (e) => print("Error getting document: $e"));
+        }, onError: (e) => print("Error getting document: $e"));
+      }
+    } else {
+      db
+          .collection('users')
+          .doc(currentUser)
+          .collection('delete')
+          .doc()
+          .delete();
+
+      db.collection("users").doc(currentUser).collection('delete').get().then(
+        (querySnapshot) {
+          for (var docSnapshot in querySnapshot.docs) {
+            db
+                .collection('users')
+                .doc(currentUser)
+                .collection('delete')
+                .doc(docSnapshot.id)
+                .delete();
+          }
+        },
+        onError: (e) => print("Error completing: $e"),
+      );
     }
   }
 

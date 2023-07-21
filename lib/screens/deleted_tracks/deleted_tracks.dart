@@ -1,3 +1,4 @@
+import 'package:audio_stories/providers/choise_tracks_provider.dart';
 import 'package:audio_stories/screens/deleted_tracks/widget/deleted_track_container.dart';
 import 'package:audio_stories/screens/deleted_tracks/widget/dropdown_button_one_track.dart';
 import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
@@ -8,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class DeletedTracksScreen extends StatefulWidget {
   const DeletedTracksScreen({super.key});
@@ -40,6 +42,7 @@ class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
   @override
   void initState() {
     super.initState();
+    Provider.of<ChoiseTrackProvider>(context, listen: false).clearList();
   }
 
   @override
@@ -117,7 +120,7 @@ class _DeletedTracksScreenState extends State<DeletedTracksScreen> {
                                         const SizedBox(height: 10),
                                         ListView.builder(
                                           shrinkWrap: true,
-                                          physics: ScrollPhysics(),
+                                          physics: const ScrollPhysics(),
                                           itemCount: listKeys.length,
                                           itemBuilder: ((context, index) {
                                             print(listKeys[index]);

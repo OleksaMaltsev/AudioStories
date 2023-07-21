@@ -4,6 +4,7 @@ import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
 import 'package:audio_stories/providers/sellection_value_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
+import 'package:audio_stories/screens/deleted_tracks/deleted_tracks.dart';
 import 'package:audio_stories/screens/deleted_tracks/deleted_tracks_choice.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -74,12 +75,24 @@ class _DropdownDeleteMenuState extends State<DropdownDeleteMenu> {
               }
               break;
             case 'Видалити все':
-              setState(() {});
+
               //widget.providerName.changeWidgetNotifier(1);
-              //FirebaseRepository().deleteTrackAllOver(listDocId, idTrack);
+              FirebaseRepository().deleteTrackAllOver(null, null);
+              context.read<NavigationBloc>().add(
+                    NavigateTab(
+                      tabIndex: 3,
+                      route: DeletedTracksScreen.routeName,
+                    ),
+                  );
               break;
             case 'Відновити все':
-              print('delete non');
+              FirebaseRepository().recoveryTracks(tracks: null);
+              context.read<NavigationBloc>().add(
+                    NavigateTab(
+                      tabIndex: 3,
+                      route: DeletedTracksScreen.routeName,
+                    ),
+                  );
               break;
           }
         },

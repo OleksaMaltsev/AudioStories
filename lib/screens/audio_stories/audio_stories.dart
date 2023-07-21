@@ -47,18 +47,6 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection("tracks")
         .get();
-    // .asStream();
-
-    //     .then(
-    //   (querySnapshot) {
-    //     dataSnap = querySnapshot.docs;
-    //     print("Successfully completed");
-    //     for (var docSnapshot in querySnapshot.docs) {
-    //       print('${docSnapshot.id} => ${docSnapshot.data()}');
-    //     }
-    //   },
-    //   onError: (e) => print("Error completing: $e"),
-    // );
   }
 
   void _getPath(String path) async {

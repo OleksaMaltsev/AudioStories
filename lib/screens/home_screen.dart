@@ -285,9 +285,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       final file = snapshot.data?.docs[index];
                                       final fileDocId =
                                           snapshot.data?.docs[index].id;
-                                      print(file!.data());
+
                                       return TrackContainer(
-                                        data: file.data(),
+                                        data: file!.data(),
                                         fileDocId: fileDocId!,
                                       );
                                     },

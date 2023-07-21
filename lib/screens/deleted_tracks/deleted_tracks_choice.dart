@@ -2,9 +2,11 @@ import 'package:audio_stories/blocs/navigation_bloc/navigation_bloc.dart';
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/helpers/audio_helper.dart';
+import 'package:audio_stories/models/track_and_sellection_id.dart';
 import 'package:audio_stories/models/track_model.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
 import 'package:audio_stories/providers/choise_tracks_provider.dart';
+import 'package:audio_stories/providers/choise_tracks_recovery_provider.dart';
 import 'package:audio_stories/providers/track_menu_provider.dart';
 import 'package:audio_stories/providers/track_path_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
@@ -139,6 +141,7 @@ class _DeletedTracksChoiceScreenState extends State<DeletedTracksChoiceScreen> {
                                 final file = snapshot.data?.docs[index];
                                 final data = file!.data();
                                 final List listKeys = data.keys.toList();
+                                final id = snapshot.data?.docs[index].id;
                                 return Padding(
                                   padding: const EdgeInsets.only(top: 10),
                                   child: Column(
@@ -153,6 +156,7 @@ class _DeletedTracksChoiceScreenState extends State<DeletedTracksChoiceScreen> {
                                           return DeletedTrackContainer(
                                             data: data[listKeys[index]],
                                             fileDocId: listKeys[index],
+                                            idSellection: id,
                                           );
                                         }),
                                       ),
@@ -187,10 +191,12 @@ class DeletedTrackContainer extends StatefulWidget {
     super.key,
     required this.data,
     required this.fileDocId,
+    required this.idSellection,
   });
 
   final Map<String, dynamic> data;
   final String fileDocId;
+  final String? idSellection;
 
   @override
   State<DeletedTrackContainer> createState() => _DeletedTrackContainerState();
@@ -335,15 +341,21 @@ class _DeletedTrackContainerState extends State<DeletedTrackContainer> {
               onTap: () => setState(
                 () {
                   choose = !choose;
-                  final list =
-                      Provider.of<ChoiseTrackProvider>(context, listen: false);
+                  final list = Provider.of<ChoiseTrackRecoveryProvider>(context,
+                      listen: false);
 
                   if (choose && !list.getList().contains(track!.url)) {
-                    list.addToList(widget.fileDocId);
+                    list.addToList(TrackAndSellectionId(
+                      idSellection: widget.idSellection!,
+                      idTrack: widget.fileDocId,
+                    ));
                     list.printList();
                   }
                   if (!choose) {
-                    list.removeItem(widget.fileDocId);
+                    list.removeItem(TrackAndSellectionId(
+                      idSellection: widget.idSellection!,
+                      idTrack: widget.fileDocId,
+                    ));
                     list.printList();
                   }
                 },
