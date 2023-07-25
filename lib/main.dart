@@ -5,6 +5,7 @@ import 'package:audio_stories/providers/change_name_track.dart';
 import 'package:audio_stories/providers/choise_tracks_provider.dart';
 import 'package:audio_stories/providers/choise_tracks_recovery_provider.dart';
 import 'package:audio_stories/providers/delete_list_provider.dart';
+import 'package:audio_stories/providers/one_sellection_data_provider.dart';
 import 'package:audio_stories/providers/recovery_list_provider.dart';
 import 'package:audio_stories/providers/sellection_create_provider.dart';
 import 'package:audio_stories/providers/sellection_value_provider.dart';
@@ -85,6 +86,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => ChoiseTrackRecoveryProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => OneSellectionDataProvider(),
         ),
       ],
       child: MaterialApp(

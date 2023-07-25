@@ -15,6 +15,9 @@ class ChangeNameGreenPovider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+ChangeNameGreenPovider gappChangeProvider = ChangeNameGreenPovider();
+
 // class ChangeNamePovider extends ChangeNotifier {
 //   ValueNotifier valueNotifier = ValueNotifier(false);
 //   void changeWidgetNotifier() {

@@ -16,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
+//ChangeNameGreenPovider gappValueNotifier = ChangeNameGreenPovider();
+
 class TrackGreenContainer extends StatefulWidget {
   const TrackGreenContainer({
     super.key,
@@ -37,7 +39,7 @@ class _TrackContainerState extends State<TrackGreenContainer> {
   bool playTrack = false;
   bool choose = false;
 
-  ChangeNameGreenPovider appValueNotifier = ChangeNameGreenPovider();
+  //ChangeNameGreenPovider appValueNotifier = ChangeNameGreenPovider();
   TrackMenuProvider trackNameNotifier = TrackMenuProvider();
 
   TextEditingController trackNameController = TextEditingController();
@@ -62,7 +64,7 @@ class _TrackContainerState extends State<TrackGreenContainer> {
     );
 
     if (widget.choiceAction != null) {
-      appValueNotifier.changeWidgetNotifier(2);
+      gappChangeProvider.changeWidgetNotifier(2);
     }
     // getNameTrackForDb();
   }
@@ -159,7 +161,7 @@ class _TrackContainerState extends State<TrackGreenContainer> {
           Expanded(
             flex: 1,
             child: ValueListenableBuilder(
-              valueListenable: appValueNotifier.valueNotifier,
+              valueListenable: gappChangeProvider.valueNotifier,
               builder: (context, value, child) {
                 if (value == 1) {
                   return InkWell(
@@ -169,7 +171,7 @@ class _TrackContainerState extends State<TrackGreenContainer> {
                         //     .setNewTrackName(trackNameController.text);
                         FirebaseRepository().setNewTrackName(
                             trackNameController.text, widget.data['url']);
-                        appValueNotifier.changeWidgetNotifier(0);
+                        gappChangeProvider.changeWidgetNotifier(0);
                       } else {
                         final snackBar = SnackBar(
                           content: Text(
@@ -237,7 +239,7 @@ class _TrackContainerState extends State<TrackGreenContainer> {
                 } else {
                   return DropdownButtonOneTrackMenuSellection(
                     pathTrack: widget.data['url'],
-                    providerName: appValueNotifier,
+                    providerName: gappChangeProvider,
                     trackData: widget.data,
                     fileDocId: widget.fileDocId,
                   );

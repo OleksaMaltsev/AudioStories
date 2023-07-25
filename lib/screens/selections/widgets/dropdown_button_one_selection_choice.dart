@@ -3,10 +3,12 @@ import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/helpers/allow_dialog_helper.dart';
 import 'package:audio_stories/providers/allow_to_delete_provider.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
+import 'package:audio_stories/providers/choise_tracks_provider.dart';
 import 'package:audio_stories/providers/sellection_create_provider.dart';
 import 'package:audio_stories/providers/sellection_value_provider.dart';
 import 'package:audio_stories/providers/track_menu_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
+import 'package:audio_stories/screens/selections/choice_some_selection.dart';
 import 'package:audio_stories/screens/selections/edit_selection.dart';
 import 'package:audio_stories/screens/selections/one_selection_choice.dart';
 import 'package:audio_stories/screens/selections/selection.dart';
@@ -21,22 +23,22 @@ import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:intl/intl.dart';
 
-class DropdownButtonOneSellection extends StatefulWidget {
+class DropdownButtonOneSellectionChoice extends StatefulWidget {
   final String fileDocId;
   final Map<String, dynamic>? data;
-  const DropdownButtonOneSellection({
+  const DropdownButtonOneSellectionChoice({
     required this.fileDocId,
     required this.data,
     super.key,
   });
 
   @override
-  State<DropdownButtonOneSellection> createState() =>
-      _DropdownButtonOneSellectionState();
+  State<DropdownButtonOneSellectionChoice> createState() =>
+      _DropdownButtonOneSellectionChoiceState();
 }
 
-class _DropdownButtonOneSellectionState
-    extends State<DropdownButtonOneSellection> {
+class _DropdownButtonOneSellectionChoiceState
+    extends State<DropdownButtonOneSellectionChoice> {
   //ChangeNameGreenPovider appValueNotifier = ChangeNameGreenPovider();
   @override
   void initState() {
@@ -44,21 +46,36 @@ class _DropdownButtonOneSellectionState
   }
 
   void sharePressed() {
-    String message = 'Share audio stories';
-    List<XFile> pathList = [];
-    final list = widget.data?['tracks'] as List;
-    list.forEach((element) {
-      pathList.add(XFile(element['url']));
-    });
-    Share.shareXFiles(pathList);
+    final tracks =
+        Provider.of<ChoiseTrackProvider>(context, listen: false).getList();
+    print(tracks);
+    print(widget.data);
+    if (tracks.isNotEmpty) {
+      String message = 'Share audio stories';
+      List<XFile> pathList = [];
+      final List listTracks = widget.data?['tracks'];
+      tracks.map((e) {
+        // if (e == listTracks .contains(e)) {
+        int index = listTracks.indexOf(e);
+        final Map<String, dynamic> value = listTracks[index];
+        pathList.add(XFile(value['url']));
+        // }
+      });
+      // tracks.forEach((element) {
+      //   pathList.add(XFile(element['url']));
+      // });
+      Share.shareXFiles(pathList);
+    }
+
     //[XFile(widget.data?['tracks'])];
   }
 
   final List<String> items = [
-    'Редагувати',
-    'Вибрати декілька',
-    'Видалити підбірку',
+    'Відмінити вибір',
+    'Додати в підбірку',
     'Поділитись',
+    'Скачати',
+    'Видалити',
   ];
   String? selectedValue;
 
@@ -87,48 +104,25 @@ class _DropdownButtonOneSellectionState
         onChanged: (value) async {
           selectedValue = value;
           switch (value) {
-            case 'Редагувати':
-              Navigator.pushNamed(
-                context,
-                EditSelectionScreen.routeName,
-                arguments: widget.data,
-              );
-              if (Provider.of<SellectionValueProvider>(context, listen: false)
-                      .name ==
-                  null) {
-                Provider.of<SellectionValueProvider>(context, listen: false)
-                    .setValues(
-                  name: widget.data?['name'],
-                  description: widget.data?['description'],
-                  photo: widget.data?['photo'],
-                );
-              }
-
+            case 'Відмінити вибір':
+              Navigator.pop(context);
               break;
-            case 'Вибрати декілька':
+            case 'Додати в підбірку':
               Navigator.pushNamed(
                 context,
-                OneSelectionChoiceScreen.routeName,
-                //arguments: widget.data,
+                ChoiceSomeSelectionsScreen.routeName,
               );
               gappChangeProvider.changeWidgetNotifier(2);
               // print(gappChangeProvider.valueNotifier);
 
               break;
-            case 'Видалити підбірку':
-              AllowDialogHelper().allowDeleteDialog(context, widget.fileDocId);
-
-              // if (Provider.of<AllowToDeleteProvider>(context, listen: false)
-              //     .choiceDelete) {
-              //   FirebaseRepository().deleteSellections([widget.fileDocId]);
-              //   Navigator.pushReplacementNamed(
-              //     context,
-              //     SelectionsScreen.routeName,
-              //   );
-              // }
-
-              break;
             case 'Поділитись':
+              sharePressed();
+              break;
+            case 'Скачати':
+              AllowDialogHelper().allowDeleteDialog(context, widget.fileDocId);
+              break;
+            case 'Видалити':
               sharePressed();
               break;
           }
@@ -145,7 +139,7 @@ class _DropdownButtonOneSellectionState
         ),
         menuItemStyleData: MenuItemStyleData(
           customHeights: [
-            ...List<double>.filled(4, 48),
+            ...List<double>.filled(5, 48),
           ],
           padding: const EdgeInsets.only(left: 16, right: 16),
         ),

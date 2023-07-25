@@ -1,5 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/providers/change_name_track.dart';
 import 'package:audio_stories/providers/choise_tracks_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/selections/choies_selection.dart';
@@ -43,27 +44,43 @@ class _ChoiceSomeSelectionsScreenState
                 title: 'Добірки',
                 subTitle: 'Все в одному місці',
                 actions: TextButton(
-                    onPressed: () {
-                      mapChoose.forEach((key, value) {
-                        if (value == true) {
-                          listSellections.add(key);
-                        }
-                      });
-                      print(listSellections);
-                      FirebaseRepository().deleteSellections(listSellections);
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        SelectionsScreen.routeName,
-                        (route) => false,
-                      );
+                  onPressed: () {
+                    mapChoose.forEach((key, value) {
+                      if (value == true) {
+                        listSellections.add(key);
+                      }
+                    });
+                    print(listSellections);
+                    FirebaseRepository().deleteSellections(listSellections);
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      SelectionsScreen.routeName,
+                      (route) => false,
+                    );
+                  },
+                  child: ValueListenableBuilder(
+                    valueListenable: gappChangeProvider.valueNotifier,
+                    builder: (context, value, child) {
+                      if (value == 2) {
+                        return AutoSizeText(
+                          'Додати',
+                          style: mainTheme.textTheme.labelSmall?.copyWith(
+                            fontSize: 8,
+                            color: ColorsApp.colorWhite,
+                          ),
+                        );
+                      } else {
+                        return AutoSizeText(
+                          'Видалити',
+                          style: mainTheme.textTheme.labelSmall?.copyWith(
+                            fontSize: 8,
+                            color: ColorsApp.colorWhite,
+                          ),
+                        );
+                      }
                     },
-                    child: AutoSizeText(
-                      'Видалити',
-                      style: mainTheme.textTheme.labelSmall?.copyWith(
-                        fontSize: 8,
-                        color: ColorsApp.colorWhite,
-                      ),
-                    )),
+                  ),
+                ),
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),

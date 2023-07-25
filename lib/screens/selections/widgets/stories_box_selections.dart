@@ -1,5 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/models/sellection_model.dart';
+import 'package:audio_stories/providers/one_sellection_data_provider.dart';
 import 'package:audio_stories/providers/sellection_value_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/selections/one_selection.dart';
@@ -119,6 +120,13 @@ class _StoriesBoxSelectionsState extends State<StoriesBoxSelections> {
     getTrackSellection();
     return InkWell(
       onTap: () {
+        Provider.of<OneSellectionDataProvider>(
+          context,
+          listen: false,
+        ).initValue(
+          data: widget.data,
+          id: widget.docId,
+        );
         Navigator.pushNamed(
           context,
           OneSelectionScreen.routeName,

@@ -5,6 +5,7 @@ import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/selections/widgets/big_stories_box_selections.dart';
 import 'package:audio_stories/screens/selections/widgets/custom_app_bar_selections.dart';
 import 'package:audio_stories/screens/selections/widgets/dropdown_button_one_selection.dart';
+import 'package:audio_stories/screens/selections/widgets/dropdown_button_one_selection_choice.dart';
 import 'package:audio_stories/screens/selections/widgets/one_track.dart';
 import 'package:audio_stories/screens/selections/widgets/track_container_widget.dart';
 import 'package:audio_stories/thems/main_thame.dart';
@@ -14,15 +15,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class OneSelectionScreen extends StatefulWidget {
-  const OneSelectionScreen({super.key});
-  static const String routeName = '/one-selections';
+class OneSelectionChoiceScreen extends StatefulWidget {
+  const OneSelectionChoiceScreen({super.key});
+  static const String routeName = '/one-selections-choice';
 
   @override
-  State<OneSelectionScreen> createState() => _OneSelectionScreenState();
+  State<OneSelectionChoiceScreen> createState() =>
+      _OneSelectionChoiceScreenState();
 }
 
-class _OneSelectionScreenState extends State<OneSelectionScreen> {
+class _OneSelectionChoiceScreenState extends State<OneSelectionChoiceScreen> {
+  Map<String, dynamic>? allData;
+  String? docsId;
+  List<dynamic>? listTracks = [];
+  int duration = 0;
+
   int maxLines = 3;
   Map<String, dynamic> dataTrack = {};
   Map<String, dynamic> dataSellection = {};
@@ -45,6 +52,22 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
     });
   }
 
+  @override
+  void initState() {
+    super.initState();
+    allData =
+        Provider.of<OneSellectionDataProvider>(context, listen: false).data;
+    docsId = Provider.of<OneSellectionDataProvider>(context, listen: false).id;
+    listTracks = allData?['tracks'];
+    listTracks?.map((e) {
+      final num n = e['duration'];
+      duration += n.toInt();
+    });
+    print(allData);
+    print(docsId);
+    print('fr');
+  }
+
   final dbConnect = FirebaseFirestore.instance
       .collection("users")
       .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -52,11 +75,10 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final arg =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    if (arg['docId'] == null) return SizedBox();
-    getTrackSellection(arg['docId']);
-
+    // final arg =
+    //     ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    // if (arg['docId'] == null) return SizedBox();
+    // getTrackSellection(arg['docId']);
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -70,9 +92,9 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
                 children: [
                   CustomAppBarSelections(
                     name: '',
-                    actions: DropdownButtonOneSellection(
-                      fileDocId: arg['docId'],
-                      data: arg,
+                    actions: DropdownButtonOneSellectionChoice(
+                      fileDocId: docsId!,
+                      data: allData,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -82,7 +104,7 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           Provider.of<SellectionValueProvider>(context).name ??
-                              arg['name'],
+                              allData?['sellectionName'],
                           style: mainTheme.textTheme.labelLarge?.copyWith(
                             color: ColorsApp.colorWhite,
                             fontWeight: FontWeight.w600,
@@ -93,46 +115,19 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
                       BigStoriesBoxSelections(
                         imagePath: Provider.of<SellectionValueProvider>(context)
                                 .photo ??
-                            arg['photo'],
-                        dateTime: arg['date'],
-                        countTracks: arg['countTracks'],
-                        duration: arg['duration'],
+                            allData?['photo'],
+                        dateTime: (allData?['date'] as Timestamp).toDate(),
+                        countTracks: listTracks?.length,
+                        duration: duration.toString(),
                       ),
                       const SizedBox(height: 10),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          Provider.of<SellectionValueProvider>(context)
-                                  .description ??
-                              arg['description'],
-                          style: mainTheme.textTheme.labelSmall,
-                          textAlign: TextAlign.left,
-                          maxLines: maxLines,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          if (maxLines == 3) {
-                            maxLines = 10;
-                          } else {
-                            maxLines = 3;
-                          }
-                          setState(() {});
-                        },
-                        child: Text(
-                          'Детальніше',
-                          style: mainTheme.textTheme.labelSmall?.copyWith(
-                            color: ColorsApp.colorLightOpacityDark,
-                          ),
-                        ),
-                      ),
                       Column(
                         children: [
                           Container(
                             height: MediaQuery.of(context).size.height * 0.37,
                             child: StreamBuilder<
                                 DocumentSnapshot<Map<String, dynamic>>>(
-                              stream: dbConnect.doc(arg['docId']).snapshots(),
+                              stream: dbConnect.doc(docsId).snapshots(),
                               builder: (context, snapshot) {
                                 if (snapshot.hasData &&
                                     snapshot.data?.data()?['tracks'] != null) {
@@ -145,7 +140,7 @@ class _OneSelectionScreenState extends State<OneSelectionScreen> {
                                       final file = list[index];
                                       return TrackGreenContainer(
                                         data: file,
-                                        fileDocId: arg['docId'],
+                                        fileDocId: docsId!,
                                         choiceAction: null,
                                       );
                                     },
