@@ -30,6 +30,7 @@ class _ChoiceSomeSelectionsScreenState
   List<String> listSellections = [];
   Map<String, bool> mapChoose = {};
   bool choose = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,12 +52,28 @@ class _ChoiceSomeSelectionsScreenState
                       }
                     });
                     print(listSellections);
-                    FirebaseRepository().deleteSellections(listSellections);
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      SelectionsScreen.routeName,
-                      (route) => false,
-                    );
+                    if (gappChangeProvider.valueNotifier.value == 2) {
+                      final list = Provider.of<ChoiseTrackProvider>(context,
+                              listen: false)
+                          .getList();
+                      print(list);
+                      FirebaseRepository().addTracksInSellection(
+                          listSellectionId: listSellections,
+                          listTracksId: list);
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        SelectionsScreen.routeName,
+                        (route) => false,
+                      );
+                    } else {
+                      FirebaseRepository().deleteSellections(listSellections);
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        SelectionsScreen.routeName,
+                        (route) => false,
+                      );
+                    }
+                    gappChangeProvider.changeWidgetNotifier(0);
                   },
                   child: ValueListenableBuilder(
                     valueListenable: gappChangeProvider.valueNotifier,
@@ -138,7 +155,7 @@ class _ChoiceSomeSelectionsScreenState
                                     } else {
                                       mapChoose[fileDocId] = true;
                                     }
-
+                                    print(listSellections);
                                     print(mapChoose);
                                     setState(() {});
                                   },

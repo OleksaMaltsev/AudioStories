@@ -29,7 +29,8 @@ class AudioHelper {
           'trackName': data['trackName'],
           'url': data['url'],
           'duration': data['duration'],
-          'id': data['id']
+          'id': data['id'],
+          'storagePath': data['storagePath'],
         };
       },
       onError: (e) => print("Error getting document: $e"),

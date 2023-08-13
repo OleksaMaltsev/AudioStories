@@ -19,6 +19,7 @@ class FirebaseRepository {
   final db = FirebaseFirestore.instance;
   final currentUser = FirebaseAuth.instance.currentUser?.uid;
   final fbStorageRef = FirebaseStorage.instance.ref();
+  Map<String, dynamic> _dataTrackWithId = {};
 
   final dbConnectSellection = FirebaseFirestore.instance
       .collection("users")
@@ -153,6 +154,37 @@ class FirebaseRepository {
   //   }
   // }
 
+  void addTracksInSellection({
+    required List<String> listSellectionId,
+    required List<dynamic> listTracksId,
+  }) async {
+    final sellections =
+        db.collection('users').doc(currentUser).collection('sellections');
+    final tracks = db.collection('users').doc(currentUser).collection('tracks');
+    List<Map<String, dynamic>> listDataTracks = [];
+    List<Map<String, dynamic>> copylistDataTracks;
+
+    for (int i = 0; i < listTracksId.length; i++) {
+      await tracks.doc(listTracksId[i]).get().then((value) {
+        listDataTracks.add(value.data()!);
+      });
+    }
+    print(' $listDataTracks abooob');
+    for (String idSellection in listSellectionId) {
+      List listTrack = [];
+      await sellections
+          .doc(idSellection)
+          .get()
+          .then((doc) => listTrack = doc.data()?['tracks']);
+
+      for (Map<String, dynamic> item in listDataTracks) {
+        listTrack.add(item);
+      }
+      print('$listTrack fefrfeefef');
+      sellections.doc(idSellection).update({'tracks': listTrack});
+    }
+  }
+
   void deleteUserDB() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -219,32 +251,52 @@ class FirebaseRepository {
     }
   }
 
-  Map<String, dynamic> saveTrack(Duration duration, String path, String name,
-      String track, String storagePath) {
+  Future<Map<String, dynamic>> saveTrack(
+    Duration duration,
+    String path,
+    String name,
+    String track,
+    String storagePath,
+  ) async {
     if (FirebaseAuth.instance.currentUser != null) {
       final db = FirebaseFirestore.instance;
       String docRefId = '';
-      final dataTrack = <String, dynamic>{
+      Map<String, dynamic> dataTrack = {
         'trackName': name,
         'url': track,
         'duration': duration.inSeconds,
         'date': Timestamp.now(),
         'storagePath': storagePath,
       };
-      db
+
+      final k = db
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .collection('tracks')
           .add(dataTrack)
-          .then((docRef) {
-        db
+          .then((docRef) async {
+        _dataTrackWithId = {
+          'trackName': name,
+          'url': track,
+          'duration': duration.inSeconds,
+          'storagePath': storagePath,
+          'id': docRef.id,
+        };
+
+        //dataTrack['id'] = await docRef.id;
+        await db
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser?.uid)
             .collection('tracks')
             .doc(docRef.id)
             .set({'id': docRef.id}, SetOptions(merge: true));
+        return _dataTrackWithId;
       });
-      return dataTrack;
+
+      return await k;
+
+      // await Future.delayed(Duration(seconds: 2));
+      //return dataTrackWithId;
     } else {
       return {};
     }
@@ -486,7 +538,7 @@ class FirebaseRepository {
           .putFile(File(pathAudio));
 
       final trackUrl = await putFile.ref.getDownloadURL();
-      final trackMap = FirebaseRepository().saveTrack(
+      final trackMap = await FirebaseRepository().saveTrack(
           duration, pathTrack, trackName, trackUrl, storageDerectoryPath);
 
       if (sellectionName != null &&

@@ -212,13 +212,16 @@ class _TrackContainerState extends State<TrackGreenContainer> {
                             listen: false);
                         choose = !choose;
                         if (choose && !list.getList().contains(track!.url)) {
-                          list.addToList(widget.fileDocId);
+                          //list.addToList(widget.fileDocId);
+                          list.addToList(widget.data['id']);
+
                           list.printList();
                         }
                         if (!choose) {
                           list.removeItem(widget.fileDocId);
                           list.printList();
                         }
+                        print(list);
                       }),
                       child: Container(
                         width: 50,

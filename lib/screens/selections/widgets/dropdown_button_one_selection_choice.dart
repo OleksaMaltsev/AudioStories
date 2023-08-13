@@ -54,13 +54,18 @@ class _DropdownButtonOneSellectionChoiceState
       String message = 'Share audio stories';
       List<XFile> pathList = [];
       final List listTracks = widget.data?['tracks'];
-      tracks.map((e) {
-        // if (e == listTracks .contains(e)) {
-        int index = listTracks.indexOf(e);
-        final Map<String, dynamic> value = listTracks[index];
+      for (int i = 0; i < tracks.length; i++) {
+        //int index = listTracks.indexOf(tracks[i]);
+        final Map<String, dynamic> value = listTracks[i];
         pathList.add(XFile(value['url']));
-        // }
-      });
+      }
+      // tracks.map((e) {
+      //   // if (e == listTracks .contains(e)) {
+      //   int index = listTracks.indexOf(e);
+      //   final Map<String, dynamic> value = listTracks[index];
+      //   pathList.add(XFile(value['url']));
+      //   // }
+      // });
       // tracks.forEach((element) {
       //   pathList.add(XFile(element['url']));
       // });
@@ -120,10 +125,9 @@ class _DropdownButtonOneSellectionChoiceState
               sharePressed();
               break;
             case 'Скачати':
-              AllowDialogHelper().allowDeleteDialog(context, widget.fileDocId);
               break;
             case 'Видалити':
-              sharePressed();
+              AllowDialogHelper().allowDeleteDialog(context, widget.fileDocId);
               break;
           }
         },
