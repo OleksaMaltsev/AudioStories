@@ -452,17 +452,16 @@ class FirebaseRepository {
       data = await value.data()?['tracks'];
       for (int i = 0; i < data.length; i++) {
         String id = '00';
-        if (trackId.length > i) {
-          id = trackId[5];
-        }
-        print(id);
-        print(data[i]['id']);
-        if (data[i]['id'] == id) {
-          sellectionResult.set({
-            'tracks': FieldValue.arrayRemove(
-              [data[i]],
-            )
-          }, SetOptions(merge: true));
+        for (String item in trackId) {
+          print(id);
+          print(data[i]['id']);
+          if (data[i]['id'] == item) {
+            sellectionResult.set({
+              'tracks': FieldValue.arrayRemove(
+                [data[i]],
+              )
+            }, SetOptions(merge: true));
+          }
         }
       }
     });
