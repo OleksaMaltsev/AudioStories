@@ -1,6 +1,7 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/helpers/allow_dialog_helper.dart';
+import 'package:audio_stories/helpers/audio_save_helper.dart';
 import 'package:audio_stories/providers/allow_to_delete_provider.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
 import 'package:audio_stories/providers/choise_tracks_provider.dart';
@@ -17,6 +18,7 @@ import 'package:audio_stories/thems/main_thame.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_saver/file_saver.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -79,7 +81,6 @@ class _DropdownButtonOneSellectionChoiceState
     'Відмінити вибір',
     'Додати в підбірку',
     'Поділитись',
-    'Скачати',
     'Видалити',
   ];
   String? selectedValue;
@@ -119,15 +120,18 @@ class _DropdownButtonOneSellectionChoiceState
               );
               gappChangeProvider.changeWidgetNotifier(2);
               // print(gappChangeProvider.valueNotifier);
-
               break;
             case 'Поділитись':
               sharePressed();
               break;
-            case 'Скачати':
-              break;
             case 'Видалити':
-              AllowDialogHelper().allowDeleteDialog(context, widget.fileDocId);
+              FirebaseRepository().deleteSeveralTrackInSellection(
+                  widget.fileDocId,
+                  Provider.of<ChoiseTrackProvider>(context, listen: false)
+                      .getList());
+              gappChangeProvider.changeWidgetNotifier(0);
+              Navigator.pop(context);
+
               break;
           }
         },
@@ -143,7 +147,7 @@ class _DropdownButtonOneSellectionChoiceState
         ),
         menuItemStyleData: MenuItemStyleData(
           customHeights: [
-            ...List<double>.filled(5, 48),
+            ...List<double>.filled(4, 48),
           ],
           padding: const EdgeInsets.only(left: 16, right: 16),
         ),

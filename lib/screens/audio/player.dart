@@ -116,6 +116,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
       name: 'audio',
       filePath: pathTrack,
     );
+    print(pathTrack);
   }
 
   void sharePressed() {
