@@ -3,11 +3,13 @@ import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/models/big_track_model.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
+import 'package:audio_stories/providers/choise_tracks_provider.dart';
 import 'package:audio_stories/providers/track_menu_provider.dart';
 import 'package:audio_stories/providers/track_path_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/home_screen.dart';
 import 'package:audio_stories/screens/main_page.dart';
+import 'package:audio_stories/screens/selections/choice_some_selection.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -95,7 +97,14 @@ class _DropdownButtonOneTrackMenuState
           selectedValue = value;
           switch (value) {
             case 'Додати в добірку':
-              widget.providerName.changeWidgetNotifier(2);
+              Provider.of<ChoiseTrackProvider>(context, listen: false)
+                  .addToList(widget.trackData['id']);
+              Navigator.pushNamed(
+                context,
+                ChoiceSomeSelectionsScreen.routeName,
+              );
+              gappChangeProvider.changeWidgetNotifier(2);
+              //widget.providerName.changeWidgetNotifier(2);
               print('ono');
               break;
             case 'Поділитись':

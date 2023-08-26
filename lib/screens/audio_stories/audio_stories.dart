@@ -1,5 +1,6 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
+import 'package:audio_stories/screens/audio_stories/widgets/dropdown_button_tracks.dart';
 import 'package:audio_stories/screens/audio_stories/widgets/track_container.dart';
 import 'package:audio_stories/thems/main_thame.dart';
 import 'package:audio_stories/widgets/appBar/custom_app_bar.dart';
@@ -109,7 +110,10 @@ class _AudioStoriesScreenState extends State<AudioStoriesScreen> {
                 leading: null,
                 title: 'Аудіозаписи',
                 subTitle: 'Все в одному місці',
-                actions: null,
+                actions: DropdownButtonTracks(
+                    // fileDocId: arg['docId'],
+                    // data: arg,
+                    ),
               ),
               Container(
                 padding: const EdgeInsets.fromLTRB(20, 20, 25, 40),
