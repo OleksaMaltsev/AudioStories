@@ -2,6 +2,7 @@ import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/helpers/allow_dialog_helper.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
+import 'package:audio_stories/screens/audio_stories/audio_stories_track_choice.dart';
 import 'package:audio_stories/screens/audio_stories/tracks_choice.dart';
 import 'package:audio_stories/screens/selections/one_selection_choice.dart';
 import 'package:audio_stories/thems/main_thame.dart';
@@ -74,12 +75,15 @@ class _DropdownButtonTracksState extends State<DropdownButtonTracks> {
             case 'Вибрати декілька':
               Navigator.pushNamed(
                 context,
-                TracksChoiceScreen.routeName,
+                AudioStoriesChoiceScreen.routeName,
               );
               gappChangeProvider.changeWidgetNotifier(2);
               break;
             case 'Видалити декілька':
-              //AllowDialogHelper().allowDeleteDialog(context, widget.fileDocId);
+              Navigator.pushNamed(
+                context,
+                AudioStoriesChoiceScreen.routeName,
+              );
               break;
             case 'Поділитись':
               sharePressed();

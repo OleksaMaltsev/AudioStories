@@ -169,7 +169,6 @@ class FirebaseRepository {
         listDataTracks.add(value.data()!);
       });
     }
-    print(' $listDataTracks abooob');
     for (String idSellection in listSellectionId) {
       List listTrack = [];
       await sellections
@@ -390,7 +389,7 @@ class FirebaseRepository {
     }
   }
 
-  void deleteTrack(List<String> listDocId) async {
+  void deleteTrack(List<dynamic> listDocId) async {
     // for (String id in listIdSellection) {
     //   // delete track with sellection
     //   final sellection = db

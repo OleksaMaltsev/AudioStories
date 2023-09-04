@@ -5,29 +5,29 @@ import 'package:audio_stories/providers/choise_tracks_provider.dart';
 import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/selections/choice_some_selection.dart';
 import 'package:audio_stories/thems/main_thame.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-class DropdownButtonOneSellectionChoice extends StatefulWidget {
-  final String fileDocId;
-  final Map<String, dynamic>? data;
-  const DropdownButtonOneSellectionChoice({
-    required this.fileDocId,
-    required this.data,
+class DropdownButtonTracksChoice extends StatefulWidget {
+  // final String fileDocId;
+  // final Map<String, dynamic>? data;
+  const DropdownButtonTracksChoice({
+    // required this.fileDocId,
+    // required this.data,
     super.key,
   });
 
   @override
-  State<DropdownButtonOneSellectionChoice> createState() =>
-      _DropdownButtonOneSellectionChoiceState();
+  State<DropdownButtonTracksChoice> createState() =>
+      _DropdownButtonTracksChoiceState();
 }
 
-class _DropdownButtonOneSellectionChoiceState
-    extends State<DropdownButtonOneSellectionChoice> {
-  //ChangeNameGreenPovider appValueNotifier = ChangeNameGreenPovider();
+class _DropdownButtonTracksChoiceState
+    extends State<DropdownButtonTracksChoice> {
   @override
   void initState() {
     super.initState();
@@ -37,30 +37,23 @@ class _DropdownButtonOneSellectionChoiceState
     final tracks =
         Provider.of<ChoiseTrackProvider>(context, listen: false).getList();
     print(tracks);
-    print(widget.data);
+    // print(widget.data);
     if (tracks.isNotEmpty) {
-      String message = 'Share audio stories';
-      List<XFile> pathList = [];
-      final List listTracks = widget.data?['tracks'];
-      for (int i = 0; i < tracks.length; i++) {
-        //int index = listTracks.indexOf(tracks[i]);
-        final Map<String, dynamic> value = listTracks[i];
-        pathList.add(XFile(value['url']));
-      }
-      // tracks.map((e) {
-      //   // if (e == listTracks .contains(e)) {
-      //   int index = listTracks.indexOf(e);
-      //   final Map<String, dynamic> value = listTracks[index];
-      //   pathList.add(XFile(value['url']));
-      //   // }
-      // });
-      // tracks.forEach((element) {
-      //   pathList.add(XFile(element['url']));
-      // });
-      Share.shareXFiles(pathList);
-    }
+      // String message = 'Share audio stories';
+      // List<XFile> pathList = [];
+      // List listTracks = [];
+      // FirebaseFirestore.instance
+      //     .collection('tracks')
+      //     .get()
+      //     .then((value) => print(value));
+      // print(listTracks);
 
-    //[XFile(widget.data?['tracks'])];
+      // for (int i = 0; i < tracks.length; i++) {
+      //   final Map<String, dynamic> value = listTracks[i];
+      //   pathList.add(XFile(value['url']));
+      // }
+      // Share.shareXFiles(pathList);
+    }
   }
 
   final List<String> items = [
@@ -105,19 +98,19 @@ class _DropdownButtonOneSellectionChoiceState
                 ChoiceSomeSelectionsScreen.routeName,
               );
               gappChangeProvider.changeWidgetNotifier(2);
-              // print(gappChangeProvider.valueNotifier);
               break;
             case 'Поділитись':
               sharePressed();
               break;
             case 'Видалити':
-              FirebaseRepository().deleteSeveralTrackInSellection(
-                  widget.fileDocId,
-                  Provider.of<ChoiseTrackProvider>(context, listen: false)
-                      .getList());
               gappChangeProvider.changeWidgetNotifier(0);
               Navigator.pop(context);
-
+              List list =
+                  Provider.of<ChoiseTrackProvider>(context, listen: false)
+                      .getList();
+              Provider.of<ChoiseTrackProvider>(context, listen: false)
+                  .clearList();
+              FirebaseRepository().deleteTrack(list);
               break;
           }
         },

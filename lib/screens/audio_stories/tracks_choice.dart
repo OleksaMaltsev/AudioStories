@@ -1,6 +1,8 @@
 import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/providers/one_sellection_data_provider.dart';
 import 'package:audio_stories/providers/sellection_value_provider.dart';
+import 'package:audio_stories/screens/audio_stories/widgets/dropdown_button_tracks_choice.dart';
+import 'package:audio_stories/screens/audio_stories/widgets/track_container_widget.dart';
 import 'package:audio_stories/screens/selections/widgets/big_stories_box_selections.dart';
 import 'package:audio_stories/screens/selections/widgets/custom_app_bar_selections.dart';
 import 'package:audio_stories/screens/selections/widgets/dropdown_button_one_selection_choice.dart';
@@ -88,10 +90,7 @@ class _TracksChoiceScreenState extends State<TracksChoiceScreen> {
                 children: [
                   CustomAppBarSelections(
                     name: '',
-                    actions: DropdownButtonOneSellectionChoice(
-                      fileDocId: docsId!,
-                      data: allData,
-                    ),
+                    actions: DropdownButtonTracksChoice(),
                   ),
                   const SizedBox(height: 10),
                   Column(
@@ -99,8 +98,9 @@ class _TracksChoiceScreenState extends State<TracksChoiceScreen> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          Provider.of<SellectionValueProvider>(context).name ??
-                              allData?['sellectionName'],
+                          // Provider.of<SellectionValueProvider>(context).name  ??
+                          //     allData?['sellectionName'],
+                          '22',
                           style: mainTheme.textTheme.labelLarge?.copyWith(
                             color: ColorsApp.colorWhite,
                             fontWeight: FontWeight.w600,
@@ -134,7 +134,7 @@ class _TracksChoiceScreenState extends State<TracksChoiceScreen> {
                                     itemCount: list.length,
                                     itemBuilder: (context, index) {
                                       final file = list[index];
-                                      return TrackGreenContainer(
+                                      return TrackBlueContainer(
                                         data: file,
                                         fileDocId: docsId!,
                                         choiceAction: null,

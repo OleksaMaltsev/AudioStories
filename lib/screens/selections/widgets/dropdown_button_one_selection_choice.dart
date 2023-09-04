@@ -119,7 +119,6 @@ class _DropdownButtonOneSellectionChoiceState
                 ChoiceSomeSelectionsScreen.routeName,
               );
               gappChangeProvider.changeWidgetNotifier(2);
-              // print(gappChangeProvider.valueNotifier);
               break;
             case 'Поділитись':
               sharePressed();
