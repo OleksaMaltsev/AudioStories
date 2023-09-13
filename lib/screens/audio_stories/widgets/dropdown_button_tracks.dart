@@ -2,6 +2,8 @@ import 'package:audio_stories/constants/colors.dart';
 import 'package:audio_stories/constants/icons.dart';
 import 'package:audio_stories/helpers/allow_dialog_helper.dart';
 import 'package:audio_stories/providers/change_name_track.dart';
+import 'package:audio_stories/providers/choise_tracks_provider.dart';
+import 'package:audio_stories/repository/firebase_repository.dart';
 import 'package:audio_stories/screens/audio_stories/audio_stories_track_choice.dart';
 import 'package:audio_stories/screens/audio_stories/tracks_choice.dart';
 import 'package:audio_stories/screens/selections/one_selection_choice.dart';
@@ -9,6 +11,7 @@ import 'package:audio_stories/thems/main_thame.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class DropdownButtonTracks extends StatefulWidget {
@@ -43,7 +46,6 @@ class _DropdownButtonTracksState extends State<DropdownButtonTracks> {
   final List<String> items = [
     'Вибрати декілька',
     'Видалити декілька',
-    'Поділитись',
   ];
   String? selectedValue;
 
@@ -84,9 +86,7 @@ class _DropdownButtonTracksState extends State<DropdownButtonTracks> {
                 context,
                 AudioStoriesChoiceScreen.routeName,
               );
-              break;
-            case 'Поділитись':
-              sharePressed();
+              gappChangeProvider.changeWidgetNotifier(2);
               break;
           }
         },
@@ -102,7 +102,7 @@ class _DropdownButtonTracksState extends State<DropdownButtonTracks> {
         ),
         menuItemStyleData: MenuItemStyleData(
           customHeights: [
-            ...List<double>.filled(3, 48),
+            ...List<double>.filled(2, 48),
           ],
           padding: const EdgeInsets.only(left: 16, right: 16),
         ),

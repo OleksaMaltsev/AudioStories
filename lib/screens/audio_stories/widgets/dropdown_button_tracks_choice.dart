@@ -42,12 +42,22 @@ class _DropdownButtonTracksChoiceState
       // String message = 'Share audio stories';
       // List<XFile> pathList = [];
       // List listTracks = [];
-      // FirebaseFirestore.instance
-      //     .collection('tracks')
-      //     .get()
-      //     .then((value) => print(value));
+      // // FirebaseFirestore.instance
+      // //     .collection('tracks')
+      // //     .get()
+      // //     .then((value) => print(value));
+      // // print(listTracks);
+      // for (String item in tracks) {
+      //   FirebaseFirestore.instance
+      //       .collection('tracks')
+      //       .doc(item)
+      //       .get()
+      //       .then((value) {
+      //     final data = value.data();
+      //     listTracks.add(data);
+      //   });
+      // }
       // print(listTracks);
-
       // for (int i = 0; i < tracks.length; i++) {
       //   final Map<String, dynamic> value = listTracks[i];
       //   pathList.add(XFile(value['url']));
@@ -59,7 +69,6 @@ class _DropdownButtonTracksChoiceState
   final List<String> items = [
     'Відмінити вибір',
     'Додати в підбірку',
-    'Поділитись',
     'Видалити',
   ];
   String? selectedValue;
@@ -99,18 +108,14 @@ class _DropdownButtonTracksChoiceState
               );
               gappChangeProvider.changeWidgetNotifier(2);
               break;
-            case 'Поділитись':
-              sharePressed();
-              break;
             case 'Видалити':
               gappChangeProvider.changeWidgetNotifier(0);
               Navigator.pop(context);
-              List list =
+              FirebaseRepository().deleteTrack(
                   Provider.of<ChoiseTrackProvider>(context, listen: false)
-                      .getList();
+                      .getList());
               Provider.of<ChoiseTrackProvider>(context, listen: false)
                   .clearList();
-              FirebaseRepository().deleteTrack(list);
               break;
           }
         },
@@ -126,7 +131,7 @@ class _DropdownButtonTracksChoiceState
         ),
         menuItemStyleData: MenuItemStyleData(
           customHeights: [
-            ...List<double>.filled(4, 48),
+            ...List<double>.filled(3, 48),
           ],
           padding: const EdgeInsets.only(left: 16, right: 16),
         ),

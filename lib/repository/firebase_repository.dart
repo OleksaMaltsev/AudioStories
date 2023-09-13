@@ -390,6 +390,7 @@ class FirebaseRepository {
   }
 
   void deleteTrack(List<dynamic> listDocId) async {
+    print('fef $listDocId');
     // for (String id in listIdSellection) {
     //   // delete track with sellection
     //   final sellection = db
